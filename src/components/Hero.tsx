@@ -1,4 +1,4 @@
-import heroTree from "@/assets/hero-tree.jpg";
+import leticia from "@/assets/leticia.jpg";
 
 export function Hero() {
   return (
@@ -38,10 +38,10 @@ export function Hero() {
         </div>
         <div className="relative animate-reveal [animation-delay:200ms]">
           <img
-            src={heroTree}
-            alt="Árvore representando linhagem familiar — metáfora da Psicogenealogia"
-            width={1024}
-            height={1280}
+            src={leticia}
+            alt="Letícia — fundadora do Instituto LIZ"
+            width={1126}
+            height={1408}
             className="w-full aspect-[4/5] object-cover rounded-[2rem] shadow-[var(--shadow-card)] ring-1 ring-border"
           />
           <div className="absolute -bottom-6 -left-6 md:-left-10 bg-card p-6 rounded-2xl shadow-[var(--shadow-card)] max-w-[16rem] border border-border">

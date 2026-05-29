@@ -31,7 +31,7 @@ function AdminPage() {
 
   const { data: professionals = [], isLoading } = useQuery({
     queryKey: ["professionals"],
-    queryFn: fetchProfessionals,
+    queryFn: () => fetchProfessionals({ fallbackOnEmpty: false, fallbackOnError: false }),
     enabled: isAdmin,
   });
 

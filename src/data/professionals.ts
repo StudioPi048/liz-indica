@@ -3,118 +3,99 @@ export type Badge = "destaque" | "certificado" | "internacional" | "docente";
 export interface Professional {
   id: string;
   name: string;
-  city: string;
-  country: string;
-  bio: string;
-  specialties: string[];
-  languages: string[];
-  online: boolean;
-  inPerson: boolean;
-  badges: Badge[];
-  imagePrompt: string;
   initials: string;
+  badges: Badge[];
 }
 
-export const professionals: Professional[] = [
-  {
-    id: "leticia-baccin",
-    name: "Letícia Baccin",
-    city: "Curitiba",
-    country: "Brasil",
-    bio: "Psicogenealogista, docente internacional e fundadora do Instituto LIZ. Especialista em feridas ancestrais e transgeracionalidade.",
-    specialties: ["Psicogenealogia", "Cabalá", "Neurociência"],
-    languages: ["Português", "Espanhol"],
-    online: true,
-    inPerson: true,
-    badges: ["destaque", "docente"],
-    imagePrompt: "Professional headshot of a warm smiling woman in her 40s, soft natural lighting",
-    initials: "LB",
-  },
-  {
-    id: "marcus-mendes",
-    name: "Marcus Mendes",
-    city: "Porto",
-    country: "Portugal",
-    bio: "Atendimento focado em constelação familiar e genealogia sistêmica aplicada a carreiras e desenvolvimento pessoal.",
-    specialties: ["Constelação Familiar", "Empresas", "Desenvolvimento Pessoal"],
-    languages: ["Português", "Inglês"],
-    online: true,
-    inPerson: true,
-    badges: ["certificado"],
-    imagePrompt: "Professional headshot of a calm man in his 50s, warm lighting, neutral background",
-    initials: "MM",
-  },
-  {
-    id: "ana-sofia-vidal",
-    name: "Ana Sofia Vidal",
-    city: "Madrid",
-    country: "Espanha",
-    bio: "Especialista em decodificação biológica e memórias de gestação. Atendimento em três idiomas com foco em adultos e casais.",
-    specialties: ["Decodificação Biológica", "Projeto Sentido", "Casais"],
-    languages: ["Espanhol", "Português", "Inglês"],
-    online: true,
-    inPerson: false,
-    badges: ["internacional"],
-    imagePrompt: "Professional headshot of an elegant mature woman with kind eyes, soft studio lighting",
-    initials: "AV",
-  },
-  {
-    id: "ricardo-azevedo",
-    name: "Ricardo Azevedo",
-    city: "São Paulo",
-    country: "Brasil",
-    bio: "Astro Psicogenealogista com formação em neurociência. Atendimento especializado em adolescentes e crianças.",
-    specialties: ["Astro Psicogenealogia", "Adolescentes", "Crianças"],
-    languages: ["Português"],
-    online: true,
-    inPerson: true,
-    badges: ["certificado"],
-    imagePrompt: "Professional headshot of a thoughtful man in his 40s, glasses, warm neutral background",
-    initials: "RA",
-  },
-  {
-    id: "camila-fontes",
-    name: "Camila Fontes",
-    city: "Lisboa",
-    country: "Portugal",
-    bio: "Consteladora e psicogenealogista com foco em projeto sentido, gestação e linhagem materna.",
-    specialties: ["Projeto Sentido", "Constelação Familiar", "Psicogenealogia"],
-    languages: ["Português", "Francês"],
-    online: true,
-    inPerson: true,
-    badges: ["internacional"],
-    imagePrompt: "Professional headshot of a serene woman in her 30s with a warm smile, soft natural light",
-    initials: "CF",
-  },
-  {
-    id: "joao-pereira",
-    name: "João Pereira",
-    city: "Londres",
-    country: "Reino Unido",
-    bio: "Psicogenealogista e cabalista, atende em comunidade lusófona internacional com foco em desenvolvimento pessoal.",
-    specialties: ["Cabalá", "Psicogenealogia", "Desenvolvimento Pessoal"],
-    languages: ["Português", "Inglês"],
-    online: true,
-    inPerson: false,
-    badges: ["internacional", "destaque"],
-    imagePrompt: "Professional headshot of a man in his 40s, contemplative gaze, neutral studio background",
-    initials: "JP",
-  },
+const names = [
+  "Adriana Antunes Schmidt",
+  "Alice Augusta Seixo de Britto de Fleury",
+  "Aline Duprat Ramos",
+  "Aline Vendramin Lira",
+  "Ana Cristina Rodrigues",
+  "Ana Natacha Ferreira Bento",
+  "Andréa Cristina Carvalho",
+  "Bethisa de Oliveira Bueno Ferraz",
+  "Bianca Nunes dos Anjos",
+  "Camila Rejane Amarante e Silva",
+  "Caroline de Oliveira Gimenez",
+  "Cássia Morgana Busanello",
+  "Cristiane Valério",
+  "Daniel Henriques Azevedo",
+  "Daniela Barbosa da Silva",
+  "Daniele Batista Soares",
+  "Denise Reiff Toller Silveira",
+  "Eva Laiz Velasque Antunes",
+  "Fabiana Oshiro",
+  "Filipa Eduarda Ventura Martinho",
+  "Flávia Silva Barits Glória Campos",
+  "Franciele Hubner Teis Andrade",
+  "Glauco Yassuhico Yasuda",
+  "Joelma Duarte de Souza",
+  "Kátia Cristina Domingues",
+  "Katia Regina Puchaski",
+  "Katiucia Garcia Vilela",
+  "Kelly Sayuri Bando Sano",
+  "Larissa da Silva Lopes",
+  "Leandra de Aguiar Caetano",
+  "Lígia Martins Rodrigues Robles",
+  "Luana Gomes Filippsen",
+  "Luciana Cintra Saffioti",
+  "Luís Fernando de Magalhães Teixeira",
+  "Márcia Betana Cargnin",
+  "Maria Antónia Feliciano Pedrão",
+  "Maria Camila Fernandes Suzini Francisco",
+  "Maribel Goettems",
+  "Máximiliano Shoiti Sano",
+  "Michele Sullam",
+  "Natália Raquel Dias Teixeira",
+  "Nédia Osman Safa Sakhr",
+  "Neide Castro Moreira da Silva",
+  "Ninete Rocha",
+  "Paola Maria Patriarca",
+  "Paula Andréa Barbosa Barreto",
+  "Pedro Henrik Pereira Lopes",
+  "Priscila Reis Santos",
+  "Radha Krishna Barros Freire Margaria",
+  "Regina Márcia Gerber",
+  "Renata Fontana Merkes Lucatelli",
+  "Sabrina Sabalianskas Marin Vidotti",
+  "Samanta Lemes Carneiro",
+  "Silvia Teresa Marques Martins",
+  "Solange Roquini Sermidi",
+  "Susana Novais de Carvalho",
+  "Teresa Isabel de Oliveira Silvestre",
+  "Thamara Gonçalves da Crus de Oliveira",
+  "Vânia de Jesus Lemos Tavares",
+  "Flávia Miglio Martin",
+  "Ana Karina Mendes Chaves Pequeno",
+  "Rosana Santos Costa",
+  "Catarina Alexandra Valente Pereira",
+  "Priscila Barp Rodrigues Czapla",
+  "Rosiris Gomide Castanheira",
+  "Carmelita Schneider",
+  "Josandra Cleci Kaszewski",
 ];
 
-export const allSpecialties = [
-  "Psicogenealogia",
-  "Cabalá",
-  "Constelação Familiar",
-  "Decodificação Biológica",
-  "Astro Psicogenealogia",
-  "Neurociência",
-  "Desenvolvimento Pessoal",
-  "Empresas",
-  "Casais",
-  "Adolescentes",
-  "Crianças",
-  "Projeto Sentido",
-];
+function initialsOf(name: string) {
+  const parts = name.split(" ").filter((p) => p.length > 2);
+  const first = parts[0]?.[0] ?? "";
+  const last = parts[parts.length - 1]?.[0] ?? "";
+  return (first + last).toUpperCase();
+}
 
-export const allLanguages = ["Português", "Inglês", "Espanhol", "Francês"];
+function slugOf(name: string) {
+  return name
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+}
+
+export const professionals: Professional[] = names.map((name) => ({
+  id: slugOf(name),
+  name,
+  initials: initialsOf(name),
+  badges: ["certificado"],
+}));

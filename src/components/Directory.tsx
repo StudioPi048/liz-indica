@@ -8,7 +8,7 @@ export function Directory() {
 
   const { data: professionals = [], isLoading } = useQuery({
     queryKey: ["professionals"],
-    queryFn: fetchProfessionals,
+    queryFn: () => fetchProfessionals(),
   });
 
   const filtered = useMemo(() => {

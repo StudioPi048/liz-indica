@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import { professionals as fallbackProfessionals } from "@/data/professionals";
 
 export interface Professional {
   id: string;
@@ -23,12 +24,38 @@ export function getInitials(name: string) {
   return (first + last).toUpperCase();
 }
 
-export async function fetchProfessionals(): Promise<Professional[]> {
+const fallbackDirectory: Professional[] = fallbackProfessionals.map((pro, index) => ({
+  id: pro.id,
+  name: pro.name,
+  city: null,
+  country: null,
+  bio: null,
+  specialties: [],
+  languages: [],
+  photo_url: null,
+  contact_url: null,
+  online: true,
+  in_person: false,
+  sort_order: index + 1,
+  published: true,
+}));
+
+export async function fetchProfessionals(options?: {
+  fallbackOnEmpty?: boolean;
+  fallbackOnError?: boolean;
+}): Promise<Professional[]> {
+  const fallbackOnEmpty = options?.fallbackOnEmpty ?? true;
+  const fallbackOnError = options?.fallbackOnError ?? true;
+
   const { data, error } = await supabase
     .from("professionals")
     .select("*")
     .order("sort_order", { ascending: true })
     .order("name", { ascending: true });
-  if (error) throw error;
+  if (error) {
+    if (fallbackOnError) return fallbackDirectory;
+    throw error;
+  }
+  if ((!data || data.length === 0) && fallbackOnEmpty) return fallbackDirectory;
   return (data ?? []) as Professional[];
 }

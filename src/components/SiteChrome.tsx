@@ -62,7 +62,8 @@ export function SiteFooter() {
           </span>
         </div>
         <p className="text-[11px] text-muted-foreground font-mono uppercase tracking-widest">
-          © 2026 Instituto LIZ · Rede oficial de psicogenealogistas
+          © 2026 Instituto LIZ · Rede oficial de psicogenealogistas ·{" "}
+          <a href="/auth" className="hover:text-primary transition-colors">Admin</a>
         </p>
       </div>
     </footer>

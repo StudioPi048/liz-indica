@@ -1,15 +1,27 @@
 import { useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { ProfessionalCard } from "./ProfessionalCard";
-import { professionals } from "@/data/professionals";
+import { fetchProfessionals } from "@/lib/professionals-api";
 
 export function Directory() {
   const [query, setQuery] = useState("");
 
+  const { data: professionals = [], isLoading } = useQuery({
+    queryKey: ["professionals"],
+    queryFn: fetchProfessionals,
+  });
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return professionals;
-    return professionals.filter((p) => p.name.toLowerCase().includes(q));
-  }, [query]);
+    const list = professionals.filter((p) => p.published);
+    if (!q) return list;
+    return list.filter(
+      (p) =>
+        p.name.toLowerCase().includes(q) ||
+        (p.city ?? "").toLowerCase().includes(q) ||
+        (p.country ?? "").toLowerCase().includes(q),
+    );
+  }, [query, professionals]);
 
   return (
     <section id="diretorio" className="py-24 px-6 bg-background scroll-mt-20">
@@ -34,16 +46,18 @@ export function Directory() {
               type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Buscar por nome…"
+              placeholder="Buscar por nome, cidade ou país…"
               className="flex-1 h-12 px-4 bg-background border border-border rounded-xl focus:ring-2 focus:ring-ring focus:border-primary outline-none transition-all text-sm"
             />
             <span className="text-xs text-muted-foreground md:ml-auto">
-              {filtered.length} mentorados encontrados
+              {isLoading ? "Carregando…" : `${filtered.length} mentorados encontrados`}
             </span>
           </div>
         </div>
 
-        {filtered.length === 0 ? (
+        {isLoading ? (
+          <div className="text-center py-16 text-muted-foreground">Carregando…</div>
+        ) : filtered.length === 0 ? (
           <div className="text-center py-16 text-muted-foreground">
             Nenhum mentorado encontrado.
           </div>

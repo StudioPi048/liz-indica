@@ -28,6 +28,7 @@ export type Database = {
           online: boolean
           photo_url: string | null
           published: boolean
+          social_media: string | null
           sort_order: number
           specialties: string[]
           updated_at: string
@@ -45,6 +46,7 @@ export type Database = {
           online?: boolean
           photo_url?: string | null
           published?: boolean
+          social_media?: string | null
           sort_order?: number
           specialties?: string[]
           updated_at?: string
@@ -62,6 +64,7 @@ export type Database = {
           online?: boolean
           photo_url?: string | null
           published?: boolean
+          social_media?: string | null
           sort_order?: number
           specialties?: string[]
           updated_at?: string

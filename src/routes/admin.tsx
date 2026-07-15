@@ -39,37 +39,6 @@ function AdminPage() {
   const [editing, setEditing] = useState<Professional | null>(null);
   const [creating, setCreating] = useState(false);
 
-  const handleSeed = async () => {
-    if (!confirm("Isso vai importar todos os profissionais da planilha (inclusive os em revisão) para o Banco de Dados. Continuar?")) return;
-    
-    // First delete existing records
-    const { data: existing } = await supabase.from('professionals').select('id');
-    if (existing && existing.length > 0) {
-      const ids = existing.map(e => e.id);
-      await supabase.from('professionals').delete().in('id', ids);
-    }
-
-    for (const pro of fallbackProfessionals) {
-      const payload = {
-        name: pro.name,
-        city: pro.city,
-        country: pro.country,
-        bio: pro.bio,
-        specialties: pro.specialties,
-        languages: pro.languages,
-        contact_url: pro.contact_url,
-        photo_url: pro.photo_url,
-        online: pro.online,
-        in_person: pro.in_person,
-        published: pro.published,
-        sort_order: pro.sort_order,
-        social_media: pro.social_media,
-      };
-      await supabase.from("professionals").insert(payload);
-    }
-    alert("Importação concluída! Atualize a página.");
-    refetch();
-  };
 
   if (loading) {
     return <div className="min-h-screen grid place-items-center text-muted-foreground">Carregando…</div>;

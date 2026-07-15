@@ -30,7 +30,7 @@ function AdminPage() {
     if (!user) navigate({ to: "/auth" });
   }, [loading, user, navigate]);
 
-  const { data: professionals = [], isLoading, refetch } = useQuery({
+  const { data: professionals = [], isLoading } = useQuery({
     queryKey: ["professionals"],
     queryFn: () => fetchProfessionals(),
     enabled: isAdmin,

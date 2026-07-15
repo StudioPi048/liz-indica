@@ -7,7 +7,7 @@ import {
   getInitials,
   type Professional,
 } from "@/lib/professionals-api";
-import { professionals as fallbackProfessionals } from "@/data/professionals";
+
 import { useAdmin } from "@/hooks/use-admin";
 
 export const Route = createFileRoute("/admin")({
@@ -30,46 +30,15 @@ function AdminPage() {
     if (!user) navigate({ to: "/auth" });
   }, [loading, user, navigate]);
 
-  const { data: professionals = [], isLoading, refetch } = useQuery({
+  const { data: professionals = [], isLoading } = useQuery({
     queryKey: ["professionals"],
-    queryFn: () => fetchProfessionals({ fallbackOnEmpty: false, fallbackOnError: false }),
+    queryFn: () => fetchProfessionals(),
     enabled: isAdmin,
   });
 
   const [editing, setEditing] = useState<Professional | null>(null);
   const [creating, setCreating] = useState(false);
 
-  const handleSeed = async () => {
-    if (!confirm("Isso vai importar todos os profissionais da planilha (inclusive os em revisão) para o Banco de Dados. Continuar?")) return;
-    
-    // First delete existing records
-    const { data: existing } = await supabase.from('professionals').select('id');
-    if (existing && existing.length > 0) {
-      const ids = existing.map(e => e.id);
-      await supabase.from('professionals').delete().in('id', ids);
-    }
-
-    for (const pro of fallbackProfessionals) {
-      const payload = {
-        name: pro.name,
-        city: pro.city,
-        country: pro.country,
-        bio: pro.bio,
-        specialties: pro.specialties,
-        languages: pro.languages,
-        contact_url: pro.contact_url,
-        photo_url: pro.photo_url,
-        online: pro.online,
-        in_person: pro.in_person,
-        published: pro.published,
-        sort_order: pro.sort_order,
-        social_media: pro.social_media,
-      };
-      await supabase.from("professionals").insert(payload);
-    }
-    alert("Importação concluída! Atualize a página.");
-    refetch();
-  };
 
   if (loading) {
     return <div className="min-h-screen grid place-items-center text-muted-foreground">Carregando…</div>;
@@ -110,12 +79,6 @@ function AdminPage() {
             <p className="text-xs text-muted-foreground">{user.email}</p>
           </div>
           <div className="flex gap-3">
-            <button
-              onClick={handleSeed}
-              className="px-4 py-2 text-sm border border-border rounded-lg hover:bg-muted"
-            >
-              Importar Planilha Inicial
-            </button>
             <button
               onClick={() => navigate({ to: "/" })}
               className="px-4 py-2 text-sm border border-border rounded-lg hover:bg-muted"

@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { ProfessionalCard, CATEGORY_COLORS } from "./ProfessionalCard";
+import { ProfessionalCard, CATEGORY_COLORS, CATEGORY_GRADIENTS } from "./ProfessionalCard";
 import { fetchProfessionals } from "@/lib/professionals-api";
 import { Search, Filter, X } from "lucide-react";
 
@@ -155,26 +155,41 @@ export function Directory() {
 
           {/* MAIN CONTENT */}
           <div className="flex-1 min-w-0">
-            <div className="flex items-center justify-between mb-6 pb-4 border-b border-border/50">
-              <h3 className="text-lg font-display text-primary-deep">
-                {isLoading ? "Buscando…" : `${filtered.length} mentorado${filtered.length !== 1 ? 's' : ''}`}
-              </h3>
-              
-              <div className="flex items-center gap-3">
-                {(query || modality !== "all" || selectedSpecialties.size > 0) && (
+            <div className="flex flex-col gap-4 mb-6 pb-4 border-b border-border/50">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-display text-primary-deep">
+                  {isLoading ? "Buscando…" : `${filtered.length} mentorado${filtered.length !== 1 ? 's' : ''}`}
+                </h3>
+                
+                <div className="flex items-center gap-3">
+                  {(query || modality !== "all" || selectedSpecialties.size > 0) && (
+                    <button 
+                      onClick={clearFilters}
+                      className="text-xs text-muted-foreground hover:text-primary transition-colors flex items-center gap-1"
+                    >
+                      <X className="size-3" /> Limpar Filtros
+                    </button>
+                  )}
                   <button 
-                    onClick={clearFilters}
-                    className="text-xs text-muted-foreground hover:text-primary transition-colors flex items-center gap-1"
+                    onClick={() => setShowFiltersMobile(!showFiltersMobile)}
+                    className="lg:hidden flex items-center gap-2 text-sm font-medium px-3 py-1.5 bg-muted rounded-lg border border-border/50"
                   >
-                    <X className="size-3" /> Limpar Filtros
+                    <Filter className="size-4" /> Filtros
                   </button>
-                )}
-                <button 
-                  onClick={() => setShowFiltersMobile(!showFiltersMobile)}
-                  className="lg:hidden flex items-center gap-2 text-sm font-medium px-3 py-1.5 bg-muted rounded-lg"
-                >
-                  <Filter className="size-4" /> Filtros
-                </button>
+                </div>
+              </div>
+
+              {/* Color Legend */}
+              <div className="bg-card/50 p-3 rounded-xl border border-border/50 backdrop-blur-sm">
+                <p className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground mb-2 px-1">Cores de Atuação (Banners):</p>
+                <div className="flex flex-wrap gap-2.5">
+                  {Object.entries(CATEGORY_GRADIENTS).map(([name, gradient]) => (
+                    <div key={name} className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-background/50 border border-border/30">
+                      <div className={`size-3 rounded-full bg-gradient-to-r ${gradient} shadow-sm border border-black/5`}></div>
+                      <span className="text-[11px] font-medium text-foreground">{name}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
 

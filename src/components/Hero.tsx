@@ -1,4 +1,4 @@
-import leticia from "@/assets/leticia.jpg";
+import heroImage from "@/assets/hero-tree.jpg";
 
 export function Hero() {
   return (
@@ -38,13 +38,13 @@ export function Hero() {
         </div>
         <div className="relative animate-reveal [animation-delay:200ms]">
           <img
-            src={leticia}
-            alt="Letícia — fundadora do Instituto LIZ"
-            width={1126}
-            height={1408}
-            className="w-full aspect-[4/5] object-cover rounded-[2rem] shadow-[var(--shadow-card)] ring-1 ring-border"
+            src={heroImage}
+            alt="Conexão e Ancestralidade - Instituto LIZ"
+            width={1600}
+            height={900}
+            className="w-full aspect-[4/3] object-cover rounded-[2rem] shadow-[var(--shadow-card)] ring-2 ring-primary/20"
           />
-          <div className="absolute -bottom-6 -left-6 md:-left-10 bg-card p-6 rounded-2xl shadow-[var(--shadow-card)] max-w-[16rem] border border-border">
+          <div className="absolute -bottom-6 -left-6 md:-left-10 bg-card p-6 rounded-2xl shadow-xl max-w-[16rem] border border-border/50">
             <div className="font-mono text-[10px] uppercase tracking-widest text-primary mb-2">
               Processo Oficial
             </div>

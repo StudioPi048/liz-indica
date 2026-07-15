@@ -29,7 +29,7 @@ for (const row of records) {
   const socialMedia = (row.midias_sociais_original || '').replace(/\\n/g, '\n');
   const contact = (row.contato_autorizado_original || '').replace(/\\n/g, '\n');
   const bio = (row.breve_curriculo_original || '').replace(/\\n/g, '\n');
-  const published = row.status_importacao !== 'REVISAR';
+  const published = true;
 
   output.push({
     name,

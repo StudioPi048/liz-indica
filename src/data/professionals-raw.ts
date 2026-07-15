@@ -4,7 +4,7 @@ export const rawProfessionalsData = [
     "socialMedia": "@adrianantuneschmidt\nSite: www.servocemelhor.com\n21 96435-1001",
     "contact": "Opção 1",
     "bio": "Adriana Schmidt, Facilitadora Sistêmica, Alquimista, Psicogenealogista, Decodificadora Dental, conhecimento sempre! Filha, esposa, mãe de 4 filhos: Daniel, Gustavo, Tassiana e Leonardo casada a 37 anos com Gustavo, palestrante, escritora e Teologa,.",
-    "published": false
+    "published": true
   },
   {
     "name": "Alice Augusta Seixo de Britto de Fleury",
@@ -39,7 +39,7 @@ export const rawProfessionalsData = [
     "socialMedia": "@anakarinapequeno",
     "contact": "(85) 99947-0969",
     "bio": "Psicogenealogista formada pelo Instituto LIZ e Terapeuta. Integrando técnicas que te permitem alcançar consciências. Advogada com Mestrado em Direito Constitucional.",
-    "published": false
+    "published": true
   },
   {
     "name": "Ana Natacha Ferreira Bento",
@@ -60,7 +60,7 @@ export const rawProfessionalsData = [
     "socialMedia": "@bethisabueno\n@institutobethisabueno",
     "contact": "Whats up 12 996011914 - além das mídias sociais",
     "bio": "",
-    "published": false
+    "published": true
   },
   {
     "name": "Bianca Nunes dos Anjos",
@@ -74,7 +74,7 @@ export const rawProfessionalsData = [
     "socialMedia": "Instagram camilaamaranteoficial",
     "contact": "Instagram",
     "bio": "Especialista em História Familiar e Dinâmicas Sistêmicas\nTrabalho com abordagens terapêuticas e sistêmicas que investigam como a história familiar, os símbolos pessoais e o ambiente influenciam escolhas, relações e caminhos de vida.\nMinha atuação integra ferramentas como Psicogenealogia, Constelação Familiar, Direito Sistêmico, Contoterapia, Decodificação de Nomes e Tatuagens, Florais, Feng Shui e Medicina Germânica, permitindo uma leitura profunda dos padrões que se repetem nas famílias.\nMeu foco é ampliar consciência, reorganizar relações e abrir espaço para novas possibilidades de vida.",
-    "published": false
+    "published": true
   },
   {
     "name": "Caroline de Oliveira Gimenez",
@@ -109,42 +109,42 @@ export const rawProfessionalsData = [
     "socialMedia": "Instagram: @psicogenealogiadbs8",
     "contact": "Instagram, Celular e email. (estou no genealiz também).",
     "bio": "Sou formada em Administração de Empresas pelo Mackenzie, MBA em Controladoria, Finanças e Risco pela Fipecafi-Usp, Contadora, com 17 anos de experiência no mundo corporativo em uma das maiores instituições financeiras do país. Atuei nas áreas de Estatística, Controladoria, Eficiência / Custos, Operações, Financeiro e Produtos. Além disso, também trilhei outros rumos: Constelação, Hipnose Ericksoniana, Hipnose Não Verbal (magnetismo, mesmerismo, fascinação), PNL, Neurociência sob a ótica da espiritualidade, tarot, etc... Ah! Sou Judoca também. Estudo minha árvore genealógica há mais de 25 anos e foi conhecendo a PSICOGENEALOGIA que tudo se conectou, tudo se esclareceu: tanto as dores quanto as potências. Além da Psicogenealogia, também decodifico nomes à luz das letras hebraicas. Iniciei meus estudos na Cabalá e no meu atendimento abro a possibilidade de conectarmos a Psicogenealogia à Cabalá.",
-    "published": false
+    "published": true
   },
   {
     "name": "Daniele Batista Soares",
     "socialMedia": "Instagram @danielebsoaresfisio\nFacebook - Daniele Soares",
     "contact": "Opção 1",
     "bio": "Fisioterapeuta, Microfisioterapia, Radiestesia em terapias Integrativas, Prospecção Bioemocional, Origem Emocional dos Sintomas, Psicogenealogistas e Decodificadora de nomes de pessoa Física e Juridica",
-    "published": false
+    "published": true
   },
   {
     "name": "Denise Reiff Toller Silveira",
     "socialMedia": "1 )Instagram: denise_reiff_toller ; 2) Facebook : Denise Reiff Toller",
     "contact": "Opção 1",
     "bio": "Fisioterapeuta, especializada em Microfisioterapia , Nova Medicina Germânica, Leitura Biológica, Psicogenealogia, Cabala",
-    "published": false
+    "published": true
   },
   {
     "name": "Eva Laiz Velasque Antunes",
     "socialMedia": "@evalaiz_bioconstelacao e Facebook/ Eva Laiz Antunes - Biodança & Constelação Familiar e o whatsapp",
     "contact": "Opção 1",
     "bio": "Facilitadora de Biodanza Consteladora nas áreas Familiar, Estrutural e Empresarial Formação em Psicogenealogia e Desenho Sistêmico Há mais de 15 anos conduzindo grupos",
-    "published": false
+    "published": true
   },
   {
     "name": "Fabiana Oshiro",
     "socialMedia": "fabi_oshiro_ (insta)",
     "contact": "11 995430499",
     "bio": "Formação em Coach , Master Pactioner em PNL, Psicogenealogia (Liz) entre outras",
-    "published": false
+    "published": true
   },
   {
     "name": "Fabiana Oshiro",
     "socialMedia": "Insta fabi_oshiro_",
     "contact": "Insta",
     "bio": "Sou psicogenealogista , Coach de Vida , Master Practioner em PNL,",
-    "published": false
+    "published": true
   },
   {
     "name": "Filipa Eduarda Ventura Martinho",
@@ -158,7 +158,7 @@ export const rawProfessionalsData = [
     "socialMedia": "@flaviamigliomartin",
     "contact": "31987621105, email e insta",
     "bio": "Já foi pela.zap",
-    "published": false
+    "published": true
   },
   {
     "name": "FLÁVIA SILVA BARITS GLÓRIA CAMPOS",
@@ -200,14 +200,14 @@ export const rawProfessionalsData = [
     "socialMedia": "@katiaregina",
     "contact": "Insta, e-mail, WhatsApp Bussiness (em construção)",
     "bio": "Graduada em Direito, pela UFPR. Formação em Psicogenealogia com Letícia K Baccin.",
-    "published": false
+    "published": true
   },
   {
     "name": "Katiucia Garcia Vilela",
     "socialMedia": "Instagram @katiuciagarciavilela @institutokalel @espacoarcturus",
     "contact": "Todos",
     "bio": "Doutora em Direito, com ênfase em Saúde Integral, é investigadora do Ser Sensível e das inteligências ocultas do corpo.\nFundadora da Escola Ser InComum, do Método Ser InComum, do Instituto Kalel e do Espaço Arcturus, dedica sua vida a revelar um caminho raro: o encontro do ser humano com sua própria fonte de consciência, cura e verdade.\nSua especialidade é a IntroVisão — o acesso consciente ao inconsciente biológico, compreendida como AutoMedicina: a arte de atravessar as camadas invisíveis da memória, reconciliar o corpo e despertar a inteligência viva que habita cada célula.\nSeu trabalho convida a ReVer a Vida, reconhecer o corpo como templo de consciência e recordar que a cura mais profunda nasce quando o ser humano volta a escutar o Íntimo.",
-    "published": false
+    "published": true
   },
   {
     "name": "Kelly Sayuri Bando Sano",
@@ -221,7 +221,7 @@ export const rawProfessionalsData = [
     "socialMedia": "@larissa.s.lopes",
     "contact": "Instagram",
     "bio": "Bacharel em administração, terapeuta integrativa que promove o desenvolvimento humano através do eneagrama, bases sistêmicas e floral de bach .",
-    "published": false
+    "published": true
   },
   {
     "name": "Leandra de Aguiar Caetano",
@@ -242,7 +242,7 @@ export const rawProfessionalsData = [
     "socialMedia": "@luanafilippsen",
     "contact": "instagram",
     "bio": "Advogada, psicogenealogista, consteladora, hipnotista e mestranda em psicologia, atuação com foco no alinhamento e liberação de mulheres e casais.",
-    "published": false
+    "published": true
   },
   {
     "name": "LUCIANA CINTRA SAFFIOTI",
@@ -256,42 +256,42 @@ export const rawProfessionalsData = [
     "socialMedia": "@sejavoceadiferenca @alinhamentobiossistemico",
     "contact": "Opção 1",
     "bio": "Fernando Magalhães é professor e terapeuta biossistêmico. Atua há 21 anos na área da saúde integral e desenvolveu sua metodologia de atendimento: o Alinhamento Biossistêmico ⠀ “Sou co-fundador do Inner Self Núcleo de Terapias Integradas e co-idealizador do Seja Você a Diferença. ⠀ Tenho diversas formações na área da saúde e desenvolvimento pessoal entre elas se destacam as Medicina Germânica, Leitura Biológica, PNL (Programação Neurolinguística), Hipnose Ericksoniana e Clínica, Constelação Familiar, Psicogenealogia Evolutiva, Life Coaching, Psych-K entre outras. ⠀ Sou Bacharel em Educação Física com pós-graduação em Fisiologia e atualmente, estou me dedicando a mais duas especializações: Terapia Crânio-Sacral e os estudos das letras hebraicas. ⠀ Meu trabalho é baseado em uma tríade que considero essencial para o trabalho com o ser humano: Biologia e Fisiologia (Medicina Germânica), Comportamento e Emoções (Psicologia e PNL) Transgeracional e Sistêmico (Psicogenealogia e Constelação Familiar). ⠀ Tenho como propósito iluminar as histórias e o caminhar de meus clientes, para que possam assumir a responsabilidade de suas vidas e viver plenamente seus potenciais.”",
-    "published": false
+    "published": true
   },
   {
     "name": "Márcia Betana Cargnin",
     "socialMedia": "WhatsApp, Instagram, Facebook, tiktok",
     "contact": "Todas",
     "bio": "Psicogenealogista, fundadora do Instituto Raiz e Essencia Práticas Integrativas, Enfermeira docente no ensino superior de Enfermagem, atuando principalmente com as técnicas de Acupuntura, Dança Circular, Reiki e Psicigenealogia, sempre integrando os conhecimentos de forma Holística",
-    "published": false
+    "published": true
   },
   {
     "name": "Maria Antónia Feliciano Pedrão",
     "socialMedia": "Penso que a pergunta se refere a redes sociais: Istagram =antonia.pedrao",
     "contact": "EMAIL e Istagram",
     "bio": "Reikiana, cursos diversos em Relações Humanas,Consteladora, Curso de Psicogenealogia com ênfase na analise do Genosociograma e ba Decodificacao de Nomes",
-    "published": false
+    "published": true
   },
   {
     "name": "Maria Antónia Feliciano Pedrão",
     "socialMedia": "Instagram",
     "contact": "Mail, e telemovel",
     "bio": "Psicogenealogistacom enfase na analise do Genosociograma, Consteladora Sistemica e Reikiana",
-    "published": false
+    "published": true
   },
   {
     "name": "Maria Camila Fernandes Suzini Francisco",
     "socialMedia": "mariacamila_terapeuta",
     "contact": "44 999362490",
     "bio": "Graduada em Letras - Port/ Inglês , Terapia Integrativa Complementar, Psicogenealogista, Cursando especialização em Neurociências",
-    "published": false
+    "published": true
   },
   {
     "name": "Maria Camila Fernandes Suzini Francisco",
     "socialMedia": "mariacamila_terapeuta Instagram",
     "contact": "mariacamila_terapeuta",
     "bio": "Terapeuta Integrativa Complementar com ênfase na Psicogenealogia",
-    "published": false
+    "published": true
   },
   {
     "name": "Maribel Goettems",
@@ -305,7 +305,7 @@ export const rawProfessionalsData = [
     "socialMedia": "@maxsano no Instagram e Facebook",
     "contact": "Instagram e/ou link do whatsapp se for o caso",
     "bio": "Instrutor de Mindfulness pelo Inst. de Psiquiatria do Hosp. das Clínicas da Fac. de Medicina da Universidade de SP | HCFMUSP e International Meditation Teachers and Therapists Association | IMTTA; Master em Programação Neurolinguística e NLP™ Coach | The Society of NLP™; Formações terapêutica em práticas complementares;",
-    "published": false
+    "published": true
   },
   {
     "name": "Michele Sullam",
@@ -326,7 +326,7 @@ export const rawProfessionalsData = [
     "socialMedia": "nediasakhr.microfisioterapia@hotmail.com",
     "contact": "Telefone , mídias sociais",
     "bio": "Fisioterapeuta com formação em Microfisioterapia, Leitura Biológica, Terapia Informacional, Memórias e Ciclos de Vida e Psicogenealogia Viva",
-    "published": false
+    "published": true
   },
   {
     "name": "Neide Castro Moreira da Silva",
@@ -340,14 +340,14 @@ export const rawProfessionalsData = [
     "socialMedia": "Instagram: @nineterocha e Facebook Ninete Rocha",
     "contact": "Opção 1",
     "bio": "Sou psicologa de formação, com pos graduação em psicologia psicossomatica e neuroeducaçao. Formada em Constelacao Familiar pelo IDESV; e em PSICOGENEALOGIA pelo INSTITUTO LIZ.",
-    "published": false
+    "published": true
   },
   {
     "name": "PAOLA MARIA PATRIARCA",
     "socialMedia": "@paolapatriarca_terapeuta; www.agendaintegrativa.com.br ; @agendaintegrativa",
     "contact": "Opção 1",
     "bio": "FARMACEUTICA , com mestrado em Relações Internacionais, Tradutora Pública de Italiano e Terapeuta integrativa formada com as Leis Biológicas , Radiestesia, Reikiana e Psicogenealogista formada pelo Instituto LIZ.",
-    "published": false
+    "published": true
   },
   {
     "name": "Paula Andréa Barbosa Barreto",
@@ -368,7 +368,7 @@ export const rawProfessionalsData = [
     "socialMedia": "https://instagram.com/priscilareisterapeuta?igshid=YmMyMTA2M2Y=\nPriscila Reis (Facebook)\nWhatsapp: 24 99818-0402",
     "contact": "Todas, uso mais o Instagram e o Whatsapp",
     "bio": "Formada em Letras, pós-graduação em Gestão de Pessoas e Projetos Sociais e em Empreendedorismo e Inovação Empresarial. Formada em Psicogenealogia, Leitura Biológica, Taróloga e Formação em Terapias Holísticas/ Terapias Integrativas(Florais de Bach, Reiki, Coaching Sistêmico Integrado, Sagrado Feminino, Escrita Terapêutica, Xamanismo, Auriculoterapia). Estudante de Mitologia e Formação em Psicanálise dos Contos de Fadas",
-    "published": false
+    "published": true
   },
   {
     "name": "Radha Krishna Barros Freire Margaria",
@@ -382,14 +382,14 @@ export const rawProfessionalsData = [
     "socialMedia": "@reginagerber7",
     "contact": "(47) 999914432",
     "bio": "Nessa jornada da vida dei-me conta que nasci para gerar facilidade e, nessa busca, deparei-me com conhecimento que hoje me auxiliam nessa missão: numerologia, alquimia, constelação sistêmica, cabalà do nome, psicogenealogia e matriz ( Psico + cabalá).",
-    "published": false
+    "published": true
   },
   {
     "name": "Regina Márcia Gerber",
     "socialMedia": "@reginagerber7",
     "contact": "(47) 999914432",
     "bio": "Nessa jornada da vida dei-me conta que nasci para gerar facilidade e, nessa busca, deparei-me com conhecimento que hoje me auxiliam nessa missão: numerologia, alquimia, constelação sistêmica e mais recentemente Psicogenealogia Sistêmica.",
-    "published": false
+    "published": true
   },
   {
     "name": "Renata Fontana Merkes Lucatelli",
@@ -403,7 +403,7 @@ export const rawProfessionalsData = [
     "socialMedia": "sabrinasabalianskas - Instagram (não faço divulgação em mídia hoje)",
     "contact": "Instagram, e-mail, telefone",
     "bio": "Administradora com pós graduação em International Business pela Universidade de British Columbia no Canadá, empresária, formada em Eneagrama, Reikiana, iniciada em Magnified Healing®, Terapeuta Āyurveda, Psicogenealogista.",
-    "published": false
+    "published": true
   },
   {
     "name": "Samanta lemes Carneiro",
@@ -417,14 +417,14 @@ export const rawProfessionalsData = [
     "socialMedia": "Facebok, instragram",
     "contact": "Instragram @silviateresaMartins e telefone +351 914886167",
     "bio": "Consteladora sistemica, astróloga, terapeuta multinacional, psicogenealogista",
-    "published": false
+    "published": true
   },
   {
     "name": "Silvia Teresa Marques Martins",
     "socialMedia": "@silviateresamartins, instragam",
     "contact": "914886167",
     "bio": "Atrologa, consteladora familiar, psicogenealogista",
-    "published": false
+    "published": true
   },
   {
     "name": "Solange Roquini Sermidi",
@@ -466,14 +466,14 @@ export const rawProfessionalsData = [
     "socialMedia": "@flaviamigliomartin",
     "contact": "31987621105, email e insta",
     "bio": "Já foi pela.zap",
-    "published": false
+    "published": true
   },
   {
     "name": "Ana Karina Mendes Chaves Pequeno",
     "socialMedia": "@anakarinapequeno",
     "contact": "(85) 99947-0969",
     "bio": "Psicogenealogista formada pelo Instituto LIZ e Terapeuta. Integrando técnicas que te permitem alcançar consciências. Advogada com Mestrado em Direito Constitucional.",
-    "published": false
+    "published": true
   },
   {
     "name": "Rosana Santos Costa",

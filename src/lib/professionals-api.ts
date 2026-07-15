@@ -1,5 +1,4 @@
 import { supabase } from "@/integrations/supabase/client";
-import { professionals as fallbackProfessionals } from "@/data/professionals";
 
 export interface Professional {
   id: string;

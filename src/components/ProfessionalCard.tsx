@@ -88,14 +88,18 @@ export function ProfessionalCard({ pro }: { pro: Professional }) {
 
   return (
     <Dialog>
-      <article className="group flex flex-col bg-card rounded-2xl overflow-hidden border border-border shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1.5 relative h-full cursor-pointer">
+      <article className="group flex flex-col bg-card/60 backdrop-blur-xl rounded-xl overflow-hidden border border-border/40 shadow-sm hover:shadow-[0_8px_32px_-12px_rgba(0,0,0,0.15)] transition-all duration-500 hover:-translate-y-1 relative h-full cursor-pointer">
+        {/* INNER FRAME (Premium detail) */}
+        <div className="absolute inset-2 border border-border/30 rounded-lg pointer-events-none z-20 mix-blend-overlay"></div>
+        
         {/* TOP COVER */}
-        <div className={`h-28 w-full bg-gradient-to-r ${getGradient(pro.specialties)} relative opacity-80 group-hover:opacity-100 transition-opacity`}>
-          <div className="absolute inset-0 bg-white/20 mix-blend-overlay"></div>
+        <div className={`h-24 w-full bg-gradient-to-r ${getGradient(pro.specialties)} relative opacity-70 group-hover:opacity-90 transition-opacity duration-500`}>
+          <div className="absolute inset-0 bg-noise opacity-50 mix-blend-overlay"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-card/60"></div>
         </div>
         
         {/* AVATAR OVERLAPPING COVER */}
-        <div className="px-5 md:px-6 relative flex justify-between items-start -mt-12 mb-3">
+        <div className="px-6 relative flex justify-between items-start -mt-10 mb-3 z-10">
           {pro.photo_url ? (
             <img
               src={pro.photo_url}
@@ -118,20 +122,20 @@ export function ProfessionalCard({ pro }: { pro: Professional }) {
           </div>
         </div>
 
-        <div className="px-5 md:px-6 flex-1 flex flex-col">
+        <div className="px-6 flex-1 flex flex-col relative z-10">
           {/* HEADER INFO */}
-          <h3 className="font-display text-xl leading-tight group-hover:text-primary transition-colors line-clamp-1 mb-1">
+          <h3 className="font-display text-2xl leading-tight text-primary-deep group-hover:text-primary transition-colors line-clamp-1 mb-1.5">
             {pro.name}
           </h3>
           
-          <div className="text-xs text-muted-foreground flex items-center gap-1.5 mb-4">
+          <div className="text-[11px] font-sans tracking-wide text-muted-foreground flex items-center gap-1.5 mb-5 uppercase">
             {(pro.city || pro.country) ? (
               <>
-                <MapPin className="size-3.5" />
+                <MapPin className="size-3" />
                 {[pro.city, pro.country].filter(Boolean).join(" · ")}
               </>
             ) : (
-              <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/80">
+              <span className="font-mono text-[9px] tracking-[0.2em] text-muted-foreground/80">
                 Mentorado · Instituto LIZ
               </span>
             )}

@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ProfessionalCard, CATEGORY_COLORS, CATEGORY_GRADIENTS } from "./ProfessionalCard";
 import { fetchProfessionals } from "@/lib/professionals-api";
 import { Search, Filter, X } from "lucide-react";
+import rootsBg from "@/assets/roots.jpg";
 
 export function Directory() {
   const [query, setQuery] = useState("");
@@ -61,8 +62,24 @@ export function Directory() {
   }, [query, modality, selectedSpecialties, professionals]);
 
   return (
-    <section id="diretorio" className="py-12 md:py-20 px-6 sm:px-8 lg:px-12 bg-slate-50/50 min-h-screen scroll-mt-20">
-      <div className="max-w-[1600px] mx-auto">
+    <section id="diretorio" className="relative py-12 md:py-20 px-6 sm:px-8 lg:px-12 bg-background/50 min-h-screen scroll-mt-20 overflow-hidden">
+      
+      {/* Decorative Assets */}
+      <div className="absolute inset-0 bg-noise opacity-30 mix-blend-overlay pointer-events-none z-0"></div>
+      <img 
+        src={rootsBg} 
+        alt="" 
+        className="absolute top-0 right-[-10%] w-[800px] opacity-[0.15] mix-blend-multiply pointer-events-none rotate-[15deg] z-0"
+        aria-hidden="true"
+      />
+      <img 
+        src={rootsBg} 
+        alt="" 
+        className="absolute bottom-[-10%] left-[-15%] w-[900px] opacity-[0.10] mix-blend-multiply pointer-events-none -rotate-[45deg] z-0"
+        aria-hidden="true"
+      />
+
+      <div className="max-w-[1600px] mx-auto relative z-10">
         <header className="mb-10 md:mb-12 max-w-3xl">
           <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-primary">
             Diretório oficial

@@ -1,16 +1,7 @@
 import { rawProfessionalsData } from "./professionals-raw";
+import { Professional } from "../lib/professionals-api";
 
 export type Badge = "destaque" | "certificado" | "internacional" | "docente";
-
-export interface Professional {
-  id: string;
-  name: string;
-  initials: string;
-  badges: Badge[];
-  bio?: string;
-  contact_url?: string;
-  social_media?: string;
-}
 
 function initialsOf(name: string) {
   const parts = name.split(" ").filter((p) => p.length > 2);
@@ -28,33 +19,68 @@ function slugOf(name: string) {
     .replace(/(^-|-$)/g, "");
 }
 
-// Clean up contact string to only digits for whatsapp link, or keep original if it's an email/link
 function extractContactUrl(contact: string) {
-  if (!contact) return undefined;
+  if (!contact) return null;
+  if (contact.toLowerCase().includes("opção 1") && contact.length < 10) return null;
   
-  // If it's just "Opção 1" or similar generic text, ignore
-  if (contact.toLowerCase().includes("opção 1") && contact.length < 10) return undefined;
-  
-  // Extract first sequence of digits (at least 8)
   const phoneMatch = contact.replace(/\D/g, "");
   if (phoneMatch.length >= 10 && !contact.includes("@")) {
-    // Basic phone number formatting
     let phone = phoneMatch;
     if (phone.length === 10 || phone.length === 11) {
       phone = "55" + phone;
     }
     return `https://wa.me/${phone}`;
   }
-  
-  return contact; // could be email or messy string, just return it
+  return contact;
 }
 
-export const professionals: Professional[] = rawProfessionalsData.map((data) => ({
-  id: slugOf(data.name),
-  name: data.name,
-  initials: initialsOf(data.name),
-  badges: ["certificado"],
-  bio: data.bio,
-  contact_url: extractContactUrl(data.contact),
-  social_media: data.socialMedia !== "Opção 1" ? data.socialMedia : undefined,
-}));
+const CATEGORIES = {
+  "Psicogenealogia": ["psicogenealog", "genossociograma"],
+  "Constelação Familiar": ["constela", "sistemica", "sistêmica", "sistêmico", "sistemico"],
+  "Terapias Manuais": ["fisioterap", "microfisioterapia", "massoterapia", "osteopata", "acupuntura", "reiki", "quiropraxia"],
+  "Ciência & Mente": ["neurociência", "psicanal", "psicolog", "hipnoterap", "pnl", "coach", "neuro"],
+  "Energético & Espiritual": ["cabala", "cabalá", "tarô", "astrolog", "radiestesia", "thetahealing", "holística", "espiritual"],
+  "Medicina & Saúde": ["medicina germânica", "leitura biológica", "biologia", "odontologia", "enfermagem", "saúde"]
+};
+
+function extractSpecialties(bio: string): string[] {
+  if (!bio) return [];
+  const lowerBio = bio.toLowerCase();
+  const found = new Set<string>();
+  
+  for (const [category, keywords] of Object.entries(CATEGORIES)) {
+    if (keywords.some(k => lowerBio.includes(k))) {
+      found.add(category);
+    }
+  }
+  
+  return Array.from(found);
+}
+
+export const professionals: Professional[] = rawProfessionalsData.map((data, index) => {
+  const specialties = extractSpecialties(data.bio);
+  
+  // Basic heuristic: if it mentions specific locations or has a non-BR phone, might be international or specific
+  // For now, we leave city/country null as they are too complex to parse from these unstructured bios
+  
+  // Default to both online and in person for maximum reach unless specified
+  const isOnline = data.bio?.toLowerCase().includes("online") ?? true;
+  const inPerson = data.bio?.toLowerCase().includes("presencial") ?? true;
+
+  return {
+    id: slugOf(data.name),
+    name: data.name,
+    city: null,
+    country: null,
+    bio: data.bio,
+    specialties: specialties,
+    languages: [],
+    photo_url: null, // We don't have real photos yet
+    contact_url: extractContactUrl(data.contact),
+    social_media: data.socialMedia !== "Opção 1" ? data.socialMedia : null,
+    online: isOnline || (!isOnline && !inPerson), // Default to true if neither is found
+    in_person: inPerson || (!isOnline && !inPerson), // Default to true if neither is found
+    sort_order: index,
+    published: true,
+  };
+});

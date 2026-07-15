@@ -25,22 +25,7 @@ export function getInitials(name: string) {
   return (first + last).toUpperCase();
 }
 
-const fallbackDirectory: Professional[] = fallbackProfessionals.map((pro, index) => ({
-  id: pro.id,
-  name: pro.name,
-  city: null,
-  country: null,
-  bio: pro.bio ?? null,
-  specialties: [],
-  languages: [],
-  photo_url: null,
-  contact_url: pro.contact_url ?? null,
-  social_media: (pro as any).social_media ?? null,
-  online: true,
-  in_person: false,
-  sort_order: index + 1,
-  published: true,
-}));
+const fallbackDirectory: Professional[] = fallbackProfessionals;
 
 export async function fetchProfessionals(options?: {
   fallbackOnEmpty?: boolean;

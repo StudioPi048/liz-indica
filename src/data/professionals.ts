@@ -81,6 +81,6 @@ export const professionals: Professional[] = rawProfessionalsData.map((data, ind
     online: isOnline || (!isOnline && !inPerson), // Default to true if neither is found
     in_person: inPerson || (!isOnline && !inPerson), // Default to true if neither is found
     sort_order: index,
-    published: true,
+    published: (data as any).published ?? true,
   };
 });

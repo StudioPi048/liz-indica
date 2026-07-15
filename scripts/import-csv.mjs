@@ -25,25 +25,22 @@ const records = parse(fileContent, {
 const output = [];
 
 for (const row of records) {
-  if (row.status_importacao === 'REVISAR') {
-    continue;
-  }
-
-  // Replace literal '\n' string with actual newline character \n
   const name = row.nome_completo || '';
   const socialMedia = (row.midias_sociais_original || '').replace(/\\n/g, '\n');
   const contact = (row.contato_autorizado_original || '').replace(/\\n/g, '\n');
   const bio = (row.breve_curriculo_original || '').replace(/\\n/g, '\n');
+  const published = row.status_importacao !== 'REVISAR';
 
   output.push({
     name,
     socialMedia,
     contact,
-    bio
+    bio,
+    published
   });
 }
 
-console.log(`Processado. Total de profissionais PRONTOS: ${output.length} de ${records.length} lidos.`);
+console.log(`Processado. Total de profissionais lidos: ${output.length} de ${records.length} lidos.`);
 
 // Write to src/data/professionals-raw.ts
 const outPath = path.join(__dirname, '..', 'src', 'data', 'professionals-raw.ts');

@@ -80,12 +80,6 @@ function AdminPage() {
           </div>
           <div className="flex gap-3">
             <button
-              onClick={handleSeed}
-              className="px-4 py-2 text-sm border border-border rounded-lg hover:bg-muted"
-            >
-              Importar Planilha Inicial
-            </button>
-            <button
               onClick={() => navigate({ to: "/" })}
               className="px-4 py-2 text-sm border border-border rounded-lg hover:bg-muted"
             >

@@ -14,9 +14,6 @@ export function Hero() {
         {/* Dark Gradients tailored for text readability preserving original image color */}
         <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/50 to-transparent w-full md:w-[70%]" />
         
-        {/* Bottom gradient to transition into the beige page below */}
-        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-background to-transparent" />
-        
         <div className="absolute inset-0 bg-noise mix-blend-overlay opacity-30" />
       </div>
       

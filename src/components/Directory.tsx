@@ -109,7 +109,7 @@ export function Directory() {
 
         <div className="flex flex-col lg:flex-row gap-8">
           {/* SIDEBAR FILTERS */}
-          <aside className={`lg:w-64 xl:w-72 shrink-0 space-y-8 ${showFiltersMobile ? 'block' : 'hidden lg:block'}`}>
+          <aside className="lg:w-64 xl:w-72 shrink-0 space-y-8">
             
             {/* Search */}
             <div className="space-y-3">
@@ -200,12 +200,6 @@ export function Directory() {
                       <X className="size-3" /> Limpar Filtros
                     </button>
                   )}
-                  <button 
-                    onClick={() => setShowFiltersMobile(!showFiltersMobile)}
-                    className="lg:hidden flex items-center gap-2 text-sm font-medium px-3 py-1.5 bg-muted rounded-lg border border-border/50"
-                  >
-                    <Filter className="size-4" /> Filtros
-                  </button>
                 </div>
               </div>
             </div>

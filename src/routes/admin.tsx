@@ -181,6 +181,7 @@ function EditorDialog({
     in_person: pro?.in_person ?? false,
     published: pro?.published ?? true,
     sort_order: pro?.sort_order ?? 999,
+    social_media: pro?.social_media ?? "",
   });
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -235,6 +236,7 @@ function EditorDialog({
         in_person: form.in_person,
         published: form.published,
         sort_order: Number(form.sort_order) || 0,
+        social_media: form.social_media.trim() || null,
       };
       if (isNew) {
         const { error } = await supabase.from("professionals").insert(payload);
@@ -342,6 +344,15 @@ function EditorDialog({
               value={form.contact_url}
               onChange={(e) => set("contact_url", e.target.value)}
               placeholder="https://wa.me/55..."
+              className="input"
+            />
+          </Field>
+
+          <Field label="Redes Sociais (Instagram, Site)">
+            <input
+              value={form.social_media}
+              onChange={(e) => set("social_media", e.target.value)}
+              placeholder="@instagram, www.site.com"
               className="input"
             />
           </Field>

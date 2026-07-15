@@ -18,6 +18,51 @@ export const CATEGORY_COLORS: Record<string, string> = {
   "Medicina & Saúde": "bg-rose-50 text-rose-800 border-rose-200",
 };
 
+function Linkify({ text }: { text: string }) {
+  if (!text) return null;
+  const regex = /((?:https?:\/\/|www\.)[^\s]+)|(@[\w.]+)/gi;
+  
+  const parts = [];
+  let lastIndex = 0;
+  let match;
+  
+  while ((match = regex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push(text.substring(lastIndex, match.index));
+    }
+    
+    const matchedText = match[0];
+    let href = matchedText;
+    
+    if (matchedText.startsWith('@')) {
+      href = `https://instagram.com/${matchedText.substring(1)}`;
+    } else if (matchedText.toLowerCase().startsWith('www.')) {
+      href = `https://${matchedText}`;
+    }
+    
+    parts.push(
+      <a 
+        key={match.index} 
+        href={href} 
+        target="_blank" 
+        rel="noopener noreferrer"
+        className="text-primary hover:underline font-semibold"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {matchedText}
+      </a>
+    );
+    
+    lastIndex = regex.lastIndex;
+  }
+  
+  if (lastIndex < text.length) {
+    parts.push(text.substring(lastIndex));
+  }
+  
+  return <>{parts.length > 0 ? parts : text}</>;
+}
+
 export function ProfessionalCard({ pro }: { pro: Professional }) {
   const contactHref = pro.contact_url?.trim() || defaultWhatsApp(pro);
 
@@ -195,7 +240,7 @@ export function ProfessionalCard({ pro }: { pro: Professional }) {
           {pro.social_media && (
             <div className="mt-6 p-4 bg-muted/50 rounded-xl">
               <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Redes Sociais & Links</h4>
-              <p className="text-sm break-words">{pro.social_media}</p>
+              <p className="text-sm break-words text-foreground/90 leading-relaxed"><Linkify text={pro.social_media} /></p>
             </div>
           )}
         </div>

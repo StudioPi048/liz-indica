@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { ProfessionalCard, CATEGORY_COLORS, CATEGORY_GRADIENTS } from "./ProfessionalCard";
+import { ProfessionalCard } from "./ProfessionalCard";
 import { fetchProfessionals } from "@/lib/professionals-api";
 import { Search, Filter, X } from "lucide-react";
 import rootsBg from "@/assets/roots.jpg";
@@ -195,23 +195,10 @@ export function Directory() {
                   </button>
                 </div>
               </div>
-
-              {/* Color Legend */}
-              <div className="bg-card/50 p-3 rounded-xl border border-border/50 backdrop-blur-sm">
-                <p className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground mb-2 px-1">Cores de Atuação (Banners):</p>
-                <div className="flex flex-wrap gap-2.5">
-                  {Object.entries(CATEGORY_GRADIENTS).map(([name, gradient]) => (
-                    <div key={name} className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-background/50 border border-border/30">
-                      <div className={`size-3 rounded-full bg-gradient-to-r ${gradient} shadow-sm border border-black/5`}></div>
-                      <span className="text-[11px] font-medium text-foreground">{name}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
             </div>
 
             {isLoading ? (
-              <div className="grid gap-6" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(290px, 1fr))' }}>
+              <div className="grid gap-6" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))' }}>
                 {[1, 2, 3, 4, 5, 6].map(i => (
                   <div key={i} className="h-[360px] bg-card rounded-2xl border border-border animate-pulse"></div>
                 ))}
@@ -227,7 +214,7 @@ export function Directory() {
                 </button>
               </div>
             ) : (
-              <div className="grid gap-6" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(290px, 1fr))' }}>
+              <div className="grid gap-6" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))' }}>
                 {filtered.map((p) => (
                   <ProfessionalCard key={p.id} pro={p} />
                 ))}

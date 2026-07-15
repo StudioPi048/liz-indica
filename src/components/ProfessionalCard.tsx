@@ -9,35 +9,6 @@ function defaultWhatsApp(pro: Professional) {
   return `https://wa.me/?text=${msg}`;
 }
 
-export const CATEGORY_COLORS: Record<string, string> = {
-  "Psicogenealogia": "bg-[#F3F6F8] text-[#2C485A] border-[#9DB5C4]/40",
-  "Constelação Familiar": "bg-[#F9F4F5] text-[#6E2C3F] border-[#C495A2]/40",
-  "Terapias Manuais": "bg-[#F4F6F3] text-[#3D5A40] border-[#A3B8A5]/40",
-  "Ciência & Mente": "bg-[#FDF9F1] text-[#9A6D2C] border-[#E8C589]/40",
-  "Energético & Espiritual": "bg-[#F6F4F8] text-[#543864] border-[#B59FBF]/40",
-  "Medicina & Saúde": "bg-[#FDF6F4] text-[#8C3E2D] border-[#D99A8C]/40",
-};
-
-export const CATEGORY_GRADIENTS: Record<string, string> = {
-  "Psicogenealogia": "from-[#597F97] to-[#3B5D73]",
-  "Constelação Familiar": "from-[#944458] to-[#6E2C3F]",
-  "Terapias Manuais": "from-[#5C7E60] to-[#3D5A40]",
-  "Ciência & Mente": "from-[#C49141] to-[#9A6D2C]",
-  "Energético & Espiritual": "from-[#78538C] to-[#543864]",
-  "Medicina & Saúde": "from-[#B85741] to-[#8C3E2D]",
-};
-
-function getGradient(specialties: string[]) {
-  if (!specialties || specialties.length === 0) return "from-primary/10 to-primary/5";
-  if (specialties.length === 1) {
-    return CATEGORY_GRADIENTS[specialties[0]] || "from-primary/10 to-primary/5";
-  }
-  // Se tiver mais de uma, mesclamos o início da primeira com o final da segunda
-  const c1 = CATEGORY_GRADIENTS[specialties[0]]?.split(' ')[0] || "from-primary/10";
-  const c2 = CATEGORY_GRADIENTS[specialties[1]]?.split(' ')[1] || "to-primary/5";
-  return `${c1} ${c2}`;
-}
-
 function Linkify({ text }: { text: string }) {
   if (!text) return null;
   const regex = /((?:https?:\/\/|www\.)[^\s]+)|(@[\w.]+)/gi;
@@ -88,47 +59,41 @@ export function ProfessionalCard({ pro }: { pro: Professional }) {
 
   return (
     <Dialog>
-      <article className="group flex flex-col bg-card/60 backdrop-blur-xl rounded-xl overflow-hidden border border-border/40 shadow-sm hover:shadow-[0_8px_32px_-12px_rgba(0,0,0,0.15)] transition-all duration-500 hover:-translate-y-1 relative h-full cursor-pointer">
-        {/* INNER FRAME (Premium detail) */}
-        <div className="absolute inset-2 border border-border/30 rounded-lg pointer-events-none z-20 mix-blend-overlay"></div>
+      {/* PROFESSIONAL CARD (Large Avatar, Clean Background) */}
+      <article className="group flex flex-col bg-card rounded-[1.25rem] overflow-hidden border border-border/60 shadow-sm hover:shadow-xl hover:shadow-primary/5 transition-all duration-500 hover:-translate-y-1 relative h-full cursor-pointer">
         
-        {/* TOP COVER */}
-        <div className={`h-24 w-full bg-gradient-to-r ${getGradient(pro.specialties)} relative opacity-70 group-hover:opacity-90 transition-opacity duration-500`}>
-          <div className="absolute inset-0 bg-noise opacity-50 mix-blend-overlay"></div>
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-card/60"></div>
-        </div>
-        
-        {/* AVATAR OVERLAPPING COVER */}
-        <div className="px-6 relative flex justify-between items-start -mt-10 mb-3 z-10">
+        {/* HUGE AVATAR HEADER */}
+        <div className="relative aspect-square w-full overflow-hidden bg-muted">
           {pro.photo_url ? (
             <img
               src={pro.photo_url}
               alt={pro.name}
-              className="size-20 rounded-xl object-cover ring-4 ring-card bg-card shadow-sm shrink-0"
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               loading="lazy"
             />
           ) : (
             <div
-              className="size-20 rounded-xl bg-gradient-to-br from-primary-soft to-primary/20 ring-4 ring-card shadow-sm shrink-0 grid place-items-center font-display text-2xl text-primary-deep"
+              className="w-full h-full bg-gradient-to-br from-primary-soft to-primary/20 grid place-items-center font-display text-7xl text-primary-deep"
               aria-hidden="true"
             >
               {getInitials(pro.name)}
             </div>
           )}
           
-          {/* Modality Badge */}
-          <div className="mt-14 flex items-center gap-1 text-[10px] uppercase font-semibold tracking-wider text-muted-foreground bg-muted/80 px-2 py-1 rounded">
+          {/* Floating Modality Badge */}
+          <div className="absolute top-4 left-4 bg-background/95 backdrop-blur-md px-3 py-1.5 rounded-full text-[10px] uppercase font-bold tracking-wider text-foreground shadow-sm">
             {pro.online && pro.in_person ? "Online & Presencial" : pro.online ? "Online" : "Presencial"}
           </div>
         </div>
 
-        <div className="px-6 flex-1 flex flex-col relative z-10">
+        {/* CARD BODY */}
+        <div className="p-6 md:p-8 flex-1 flex flex-col bg-card">
           {/* HEADER INFO */}
-          <h3 className="font-display text-2xl leading-tight text-primary-deep group-hover:text-primary transition-colors line-clamp-1 mb-1.5">
+          <h3 className="font-display text-2xl md:text-3xl leading-tight text-primary-deep group-hover:text-primary transition-colors line-clamp-1 mb-2">
             {pro.name}
           </h3>
           
-          <div className="text-[11px] font-sans tracking-wide text-muted-foreground flex items-center gap-1.5 mb-5 uppercase">
+          <div className="text-[11px] font-sans tracking-wide text-muted-foreground flex items-center gap-1.5 mb-6 uppercase">
             {(pro.city || pro.country) ? (
               <>
                 <MapPin className="size-3" />
@@ -141,22 +106,19 @@ export function ProfessionalCard({ pro }: { pro: Professional }) {
             )}
           </div>
 
-          {/* SPECIALTIES PILLS */}
+          {/* SPECIALTIES PILLS (Monochrome / Clean) */}
           {pro.specialties.length > 0 && (
-            <div className="flex flex-wrap gap-1.5 mb-4">
-               {pro.specialties.slice(0, 3).map((s) => {
-                 const colorClass = CATEGORY_COLORS[s] || "bg-slate-50 text-slate-700 border-slate-200";
-                 return (
-                   <span
-                     key={s}
-                     className={`px-2 py-0.5 text-[10px] rounded border ${colorClass} font-medium`}
-                   >
-                     {s}
-                   </span>
-                 );
-               })}
+            <div className="flex flex-wrap gap-2 mb-6">
+               {pro.specialties.slice(0, 3).map((s) => (
+                 <span
+                   key={s}
+                   className="px-2.5 py-1 text-[11px] rounded-md bg-muted/60 text-muted-foreground font-medium border border-border/40"
+                 >
+                   {s}
+                 </span>
+               ))}
                {pro.specialties.length > 3 && (
-                 <span className="px-2 py-0.5 text-[10px] rounded border bg-slate-50 text-slate-500 font-medium border-slate-200">
+                 <span className="px-2.5 py-1 text-[11px] rounded-md bg-muted/30 text-muted-foreground/70 font-medium border border-border/40">
                    +{pro.specialties.length - 3}
                  </span>
                )}
@@ -165,19 +127,19 @@ export function ProfessionalCard({ pro }: { pro: Professional }) {
 
           {/* BIO */}
           {pro.bio && (
-            <p className="text-sm text-foreground/80 mb-6 line-clamp-3 leading-relaxed">
+            <p className="text-sm text-foreground/70 mb-8 line-clamp-2 leading-relaxed">
               {pro.bio}
             </p>
           )}
           
           {/* ACTIONS */}
-          <div className="mt-auto flex flex-col gap-2 pt-4 border-t border-border/50 pb-5 md:pb-6 relative z-10">
+          <div className="mt-auto flex flex-col gap-3 pt-5 border-t border-border/40">
             <a
               href={contactHref}
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
-              className="w-full py-2.5 text-sm font-semibold text-white rounded-xl hover:scale-[1.02] transition-transform flex items-center justify-center gap-2 shadow-sm"
+              className="w-full py-3.5 text-sm font-semibold text-white rounded-xl hover:scale-[1.02] transition-transform flex items-center justify-center gap-2 shadow-sm"
               style={{ backgroundColor: "var(--whatsapp, #25D366)" }}
               title="Entrar em contato via WhatsApp"
               aria-label="WhatsApp"
@@ -186,7 +148,7 @@ export function ProfessionalCard({ pro }: { pro: Professional }) {
               Falar no WhatsApp
             </a>
             <DialogTrigger asChild>
-              <button className="w-full py-2 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-xl transition-colors flex items-center justify-center">
+              <button className="w-full py-2.5 text-xs font-semibold text-primary hover:text-primary-deep hover:bg-primary/5 rounded-xl transition-colors flex items-center justify-center">
                 Ver Currículo Completo
               </button>
             </DialogTrigger>
@@ -194,71 +156,70 @@ export function ProfessionalCard({ pro }: { pro: Professional }) {
         </div>
       </article>
 
-      {/* MODAL */}
-      <DialogContent className="sm:max-w-[600px] bg-background p-0 overflow-hidden border-border/50 shadow-2xl">
-        {/* MODAL COVER */}
-        <div className={`h-32 w-full bg-gradient-to-r ${getGradient(pro.specialties)} relative opacity-90`}>
-          <div className="absolute inset-0 bg-white/20 mix-blend-overlay"></div>
-        </div>
-
-        <div className="px-6 pb-6 relative -mt-12 sm:-mt-16">
-          <DialogHeader>
-            <div className="flex flex-col sm:flex-row sm:items-end gap-4 sm:gap-6 mb-6">
-              {pro.photo_url ? (
+      {/* MODAL FULL DETAILS */}
+      <DialogContent className="sm:max-w-[700px] bg-background p-0 overflow-hidden border-border/50 shadow-2xl rounded-2xl">
+        
+        {/* MODAL HEADER (Dark Premium with White Text inside) */}
+        <div className="w-full bg-gradient-to-br from-[#121B22] to-[#090D10] relative px-6 sm:px-10 pt-10 pb-12">
+          <div className="absolute inset-0 bg-noise opacity-30 mix-blend-overlay pointer-events-none"></div>
+          
+          <div className="relative z-10 flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-left">
+             {pro.photo_url ? (
                 <img
                   src={pro.photo_url}
                   alt={pro.name}
-                  className="size-24 sm:size-28 rounded-2xl object-cover ring-4 ring-background shadow-lg shrink-0 bg-background"
+                  className="size-32 sm:size-36 rounded-2xl object-cover ring-2 ring-white/10 shadow-xl shrink-0"
                 />
               ) : (
                 <div
-                  className="size-24 sm:size-28 rounded-2xl bg-gradient-to-br from-primary-soft to-primary/20 ring-4 ring-background shadow-lg shrink-0 grid place-items-center font-display text-4xl text-primary-deep"
+                  className="size-32 sm:size-36 rounded-2xl bg-white/5 ring-2 ring-white/10 shadow-xl shrink-0 grid place-items-center font-display text-5xl text-white"
                 >
                   {getInitials(pro.name)}
                 </div>
               )}
-              <div className="flex-1 pb-1 text-left">
-                <DialogTitle className="font-display text-2xl sm:text-3xl mb-2 text-balance leading-tight">{pro.name}</DialogTitle>
+              
+              <div className="flex-1 pt-2">
+                <DialogHeader>
+                  <DialogTitle className="font-display text-3xl sm:text-4xl mb-3 text-balance leading-tight text-white">{pro.name}</DialogTitle>
+                </DialogHeader>
                 {(pro.city || pro.country) ? (
-                  <span className="text-sm text-muted-foreground flex items-center gap-1.5 mb-2.5">
+                  <span className="text-sm text-white/70 flex items-center justify-center sm:justify-start gap-1.5 mb-5">
                     <MapPin className="size-4 shrink-0" />
                     {[pro.city, pro.country].filter(Boolean).join(" · ")}
                   </span>
                 ) : (
-                  <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground block mb-2.5">
+                  <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-white/60 block mb-5">
                     Mentorado Oficial Instituto LIZ
                   </span>
                 )}
                 {/* Modal Modality Badge */}
-                <div className="inline-flex items-center gap-1.5 text-[10px] uppercase font-semibold tracking-wider text-muted-foreground bg-muted px-2.5 py-1 rounded-md">
+                <div className="inline-flex items-center gap-1.5 text-[10px] uppercase font-bold tracking-wider text-black bg-white/95 px-3.5 py-1.5 rounded-full shadow-sm">
                   {pro.online && pro.in_person ? "Online & Presencial" : pro.online ? "Atendimento Online" : "Atendimento Presencial"}
                 </div>
               </div>
-            </div>
-          </DialogHeader>
+          </div>
+        </div>
 
-          <div className="max-h-[50vh] overflow-y-auto pr-2 custom-scrollbar">
+        {/* MODAL BODY */}
+        <div className="px-6 sm:px-10 py-8 max-h-[55vh] overflow-y-auto custom-scrollbar bg-card">
           {pro.specialties.length > 0 && (
-            <div className="mb-6">
-              <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Especialidades</h4>
-              <div className="flex flex-wrap gap-2">
-                {pro.specialties.map((s) => {
-                  const colorClass = CATEGORY_COLORS[s] || "bg-slate-50 text-slate-700 border-slate-200";
-                  return (
-                    <span
-                      key={s}
-                      className={`px-3 py-1 text-xs rounded-full border ${colorClass} font-medium`}
-                    >
-                      {s}
-                    </span>
-                  );
-                })}
+            <div className="mb-8">
+              <h4 className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-4">Especialidades</h4>
+              <div className="flex flex-wrap gap-2.5">
+                {pro.specialties.map((s) => (
+                  <span
+                    key={s}
+                    className="px-3.5 py-1.5 text-xs rounded-md bg-muted text-muted-foreground font-medium border border-border/50"
+                  >
+                    {s}
+                  </span>
+                ))}
               </div>
             </div>
           )}
 
           {pro.bio ? (
-            <div className="space-y-4 text-sm leading-relaxed text-foreground/90">
+            <div className="space-y-4 text-[15px] leading-relaxed text-foreground/80 font-light">
               {pro.bio.split('\n').map((paragraph, i) => (
                 <p key={i}>{paragraph}</p>
               ))}
@@ -270,14 +231,13 @@ export function ProfessionalCard({ pro }: { pro: Professional }) {
           )}
 
           {pro.social_media && (
-            <div className="mt-6 p-4 bg-muted/50 rounded-xl">
-              <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Redes Sociais & Links</h4>
-              <p className="text-sm break-words text-foreground/90 leading-relaxed whitespace-pre-line"><Linkify text={pro.social_media} /></p>
+            <div className="mt-8 p-5 bg-muted/40 rounded-xl border border-border/50">
+              <h4 className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-3">Redes Sociais & Links</h4>
+              <p className="text-sm break-words text-foreground/80 leading-relaxed whitespace-pre-line"><Linkify text={pro.social_media} /></p>
             </div>
           )}
-        </div>
 
-          <div className="mt-6 flex justify-end pt-4 border-t border-border/50">
+          <div className="mt-8 flex justify-end pt-6 border-t border-border/50">
             <a
               href={contactHref}
               target="_blank"

@@ -2,35 +2,35 @@ import logoLiz from "@/assets/logo-liz.png";
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
-      <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-        <a href="/" className="flex items-center gap-3">
+    <header className="sticky top-0 z-50 bg-[#0A0A0A]/95 backdrop-blur-md border-b border-white/10 shadow-sm">
+      <div className="max-w-7xl mx-auto px-6 h-24 flex items-center justify-between">
+        <a href="/" className="flex items-center gap-4">
           <img
             src={logoLiz}
             alt="Instituto LIZ"
-            width={44}
-            height={44}
-            className="size-10 object-contain"
+            width={64}
+            height={64}
+            className="size-14 md:size-16 object-contain drop-shadow-md"
           />
-          <span className="flex items-baseline gap-1.5">
-            <span className="font-display text-2xl font-bold tracking-tight text-primary-deep">
+          <span className="flex flex-col md:flex-row md:items-baseline gap-0.5 md:gap-2">
+            <span className="font-display text-2xl md:text-3xl font-bold tracking-wide text-white">
               LIZ
             </span>
-            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+            <span className="font-mono text-[10px] md:text-xs uppercase tracking-[0.3em] text-[#F1DFD1]">
               Indica
             </span>
           </span>
         </a>
         <nav className="hidden md:flex gap-8 text-sm font-medium items-center">
-          <a href="#diretorio" className="hover:text-primary transition-colors">
+          <a href="#diretorio" className="text-white/80 hover:text-white transition-colors">
             Diretório
           </a>
-          <a href="#instituto" className="hover:text-primary transition-colors">
+          <a href="#instituto" className="text-white/80 hover:text-white transition-colors">
             O Instituto
           </a>
           <a
             href="#indicado"
-            className="px-5 py-2.5 bg-foreground text-background rounded-full hover:bg-primary transition-all"
+            className="px-6 py-2.5 bg-white text-black rounded-full hover:bg-white/90 transition-all font-semibold"
           >
             Quero ser Indicado
           </a>

@@ -7,7 +7,7 @@ import {
   getInitials,
   type Professional,
 } from "@/lib/professionals-api";
-import { professionals as fallbackProfessionals } from "@/data/professionals";
+
 import { useAdmin } from "@/hooks/use-admin";
 
 export const Route = createFileRoute("/admin")({

@@ -103,12 +103,28 @@ function AdminPage() {
           <h2 className="font-display text-2xl">
             Mentorados ({professionals.length})
           </h2>
-          <button
-            onClick={() => setCreating(true)}
-            className="px-5 py-2.5 bg-primary text-primary-foreground rounded-full text-sm font-medium hover:bg-primary-deep"
-          >
-            + Novo profissional
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={async () => {
+                if (!confirm("Tem certeza que deseja publicar TODOS os profissionais ocultos de uma vez?")) return;
+                const { error } = await supabase.from('professionals').update({ published: true }).eq('published', false);
+                if (error) alert("Erro: " + error.message);
+                else {
+                  alert("Todos publicados com sucesso!");
+                  refresh();
+                }
+              }}
+              className="px-5 py-2.5 bg-background border border-border text-foreground rounded-full text-sm font-medium hover:bg-muted"
+            >
+              Publicar Todos
+            </button>
+            <button
+              onClick={() => setCreating(true)}
+              className="px-5 py-2.5 bg-primary text-primary-foreground rounded-full text-sm font-medium hover:bg-primary-deep"
+            >
+              + Novo profissional
+            </button>
+          </div>
         </div>
 
         {isLoading ? (

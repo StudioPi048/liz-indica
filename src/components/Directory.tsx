@@ -36,15 +36,28 @@ export function Directory() {
   };
 
   const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
+    const normalize = (str: string) => str ? str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase() : "";
+    const q = normalize(query.trim());
+    
     const list = professionals.filter((p) => p.published);
     
-    return list.filter((p) => {
+    // Remove duplicates (mesmo nome e foto)
+    const uniqueList = [];
+    const seen = new Set<string>();
+    for (const p of list) {
+      const key = `${normalize(p.name)}-${p.photo_url || ''}`;
+      if (!seen.has(key)) {
+        seen.add(key);
+        uniqueList.push(p);
+      }
+    }
+    
+    return uniqueList.filter((p) => {
       // Name/City Match
       const matchesText = !q || 
-        p.name.toLowerCase().includes(q) ||
-        (p.city ?? "").toLowerCase().includes(q) ||
-        (p.country ?? "").toLowerCase().includes(q);
+        normalize(p.name).includes(q) ||
+        normalize(p.city || "").includes(q) ||
+        normalize(p.country || "").includes(q);
 
       // Modality Match
       const matchesModality = 

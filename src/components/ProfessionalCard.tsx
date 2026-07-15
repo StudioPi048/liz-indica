@@ -10,21 +10,21 @@ function defaultWhatsApp(pro: Professional) {
 }
 
 export const CATEGORY_COLORS: Record<string, string> = {
-  "Psicogenealogia": "bg-sky-50 text-sky-800 border-sky-200",
-  "Constelação Familiar": "bg-purple-50 text-purple-800 border-purple-200",
-  "Terapias Manuais": "bg-emerald-50 text-emerald-800 border-emerald-200",
-  "Ciência & Mente": "bg-amber-50 text-amber-800 border-amber-200",
-  "Energético & Espiritual": "bg-indigo-50 text-indigo-800 border-indigo-200",
-  "Medicina & Saúde": "bg-rose-50 text-rose-800 border-rose-200",
+  "Psicogenealogia": "bg-stone-50 text-stone-800 border-stone-200",
+  "Constelação Familiar": "bg-orange-50 text-orange-900 border-orange-200",
+  "Terapias Manuais": "bg-amber-50 text-amber-900 border-amber-200",
+  "Ciência & Mente": "bg-slate-50 text-slate-800 border-slate-200",
+  "Energético & Espiritual": "bg-rose-50 text-rose-900 border-rose-200",
+  "Medicina & Saúde": "bg-red-50 text-red-900 border-red-200",
 };
 
 export const CATEGORY_GRADIENTS: Record<string, string> = {
-  "Psicogenealogia": "from-sky-200 to-cyan-200",
-  "Constelação Familiar": "from-purple-200 to-pink-200",
-  "Terapias Manuais": "from-emerald-200 to-teal-200",
-  "Ciência & Mente": "from-amber-200 to-orange-200",
-  "Energético & Espiritual": "from-indigo-200 to-violet-200",
-  "Medicina & Saúde": "from-rose-200 to-red-200",
+  "Psicogenealogia": "from-stone-300 to-stone-100",
+  "Constelação Familiar": "from-orange-200 to-orange-50",
+  "Terapias Manuais": "from-amber-200 to-amber-50",
+  "Ciência & Mente": "from-slate-300 to-slate-100",
+  "Energético & Espiritual": "from-rose-200 to-rose-50",
+  "Medicina & Saúde": "from-red-200 to-red-50",
 };
 
 function getGradient(specialties: string[]) {

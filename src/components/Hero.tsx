@@ -12,7 +12,7 @@ export function Hero() {
           className="w-full h-full object-cover object-center scale-105 animate-[pulse_20s_ease-in-out_infinite] opacity-90"
         />
         {/* Dark Gradients tailored for text readability preserving original image color */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/50 to-transparent w-full md:w-[70%]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/90 via-black/70 to-black/30 md:bg-gradient-to-r md:from-black/90 md:via-black/50 md:to-transparent w-full md:w-[70%]" />
         
         <div className="absolute inset-0 bg-noise mix-blend-overlay opacity-30" />
       </div>
@@ -25,11 +25,12 @@ export function Hero() {
             Rede oficial Instituto LIZ
           </span>
           
-          <h1 className="font-display text-5xl md:text-7xl lg:text-[5rem] leading-[1.05] mb-8 text-balance text-white drop-shadow-lg">
+          <h1 className="font-display text-4xl sm:text-5xl md:text-7xl lg:text-[5rem] leading-[1.05] mb-6 md:mb-8 text-balance text-white drop-shadow-lg">
             A Maior Rede de{" "}
             <em className="italic text-primary-light not-italic font-normal" style={{ color: "#F1DFD1" }}>
               Psicogenealogistas
             </em>{" "}
+            <br className="md:hidden" />
             do Mundo
           </h1>
           
@@ -42,13 +43,13 @@ export function Hero() {
           <div className="flex flex-col sm:flex-row flex-wrap gap-4">
             <a
               href="#diretorio"
-              className="flex items-center justify-center px-8 py-4 bg-white text-black rounded-full font-medium hover:bg-white/90 transition-all duration-300 shadow-xl"
+              className="flex items-center justify-center px-6 md:px-8 py-3.5 md:py-4 bg-white text-black rounded-full text-sm md:text-base font-medium hover:bg-white/90 transition-all duration-300 shadow-xl"
             >
               Encontrar Profissional
             </a>
             <a
               href="#indicado"
-              className="flex items-center justify-center gap-2 px-8 py-4 bg-black/30 border border-white/30 text-white rounded-full font-medium hover:bg-white/10 transition-all duration-300 backdrop-blur-sm"
+              className="flex items-center justify-center gap-2 px-6 md:px-8 py-3.5 md:py-4 bg-black/30 border border-white/30 text-white rounded-full text-sm md:text-base font-medium hover:bg-white/10 transition-all duration-300 backdrop-blur-sm"
             >
               <Play className="size-4 fill-white" />
               Conhecer a Formação

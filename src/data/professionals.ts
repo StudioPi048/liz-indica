@@ -1,3 +1,5 @@
+import { rawProfessionalsData } from "./professionals-raw";
+
 export type Badge = "destaque" | "certificado" | "internacional" | "docente";
 
 export interface Professional {
@@ -5,77 +7,10 @@ export interface Professional {
   name: string;
   initials: string;
   badges: Badge[];
+  bio?: string;
+  contact_url?: string;
+  social_media?: string;
 }
-
-const names = [
-  "Adriana Antunes Schmidt",
-  "Alice Augusta Seixo de Britto de Fleury",
-  "Aline Duprat Ramos",
-  "Aline Vendramin Lira",
-  "Ana Cristina Rodrigues",
-  "Ana Natacha Ferreira Bento",
-  "Andréa Cristina Carvalho",
-  "Bethisa de Oliveira Bueno Ferraz",
-  "Bianca Nunes dos Anjos",
-  "Camila Rejane Amarante e Silva",
-  "Caroline de Oliveira Gimenez",
-  "Cássia Morgana Busanello",
-  "Cristiane Valério",
-  "Daniel Henriques Azevedo",
-  "Daniela Barbosa da Silva",
-  "Daniele Batista Soares",
-  "Denise Reiff Toller Silveira",
-  "Eva Laiz Velasque Antunes",
-  "Fabiana Oshiro",
-  "Filipa Eduarda Ventura Martinho",
-  "Flávia Silva Barits Glória Campos",
-  "Franciele Hubner Teis Andrade",
-  "Glauco Yassuhico Yasuda",
-  "Joelma Duarte de Souza",
-  "Kátia Cristina Domingues",
-  "Katia Regina Puchaski",
-  "Katiucia Garcia Vilela",
-  "Kelly Sayuri Bando Sano",
-  "Larissa da Silva Lopes",
-  "Leandra de Aguiar Caetano",
-  "Lígia Martins Rodrigues Robles",
-  "Luana Gomes Filippsen",
-  "Luciana Cintra Saffioti",
-  "Luís Fernando de Magalhães Teixeira",
-  "Márcia Betana Cargnin",
-  "Maria Antónia Feliciano Pedrão",
-  "Maria Camila Fernandes Suzini Francisco",
-  "Maribel Goettems",
-  "Máximiliano Shoiti Sano",
-  "Michele Sullam",
-  "Natália Raquel Dias Teixeira",
-  "Nédia Osman Safa Sakhr",
-  "Neide Castro Moreira da Silva",
-  "Ninete Rocha",
-  "Paola Maria Patriarca",
-  "Paula Andréa Barbosa Barreto",
-  "Pedro Henrik Pereira Lopes",
-  "Priscila Reis Santos",
-  "Radha Krishna Barros Freire Margaria",
-  "Regina Márcia Gerber",
-  "Renata Fontana Merkes Lucatelli",
-  "Sabrina Sabalianskas Marin Vidotti",
-  "Samanta Lemes Carneiro",
-  "Silvia Teresa Marques Martins",
-  "Solange Roquini Sermidi",
-  "Susana Novais de Carvalho",
-  "Teresa Isabel de Oliveira Silvestre",
-  "Thamara Gonçalves da Crus de Oliveira",
-  "Vânia de Jesus Lemos Tavares",
-  "Flávia Miglio Martin",
-  "Ana Karina Mendes Chaves Pequeno",
-  "Rosana Santos Costa",
-  "Catarina Alexandra Valente Pereira",
-  "Priscila Barp Rodrigues Czapla",
-  "Rosiris Gomide Castanheira",
-  "Carmelita Schneider",
-  "Josandra Cleci Kaszewski",
-];
 
 function initialsOf(name: string) {
   const parts = name.split(" ").filter((p) => p.length > 2);
@@ -93,9 +28,33 @@ function slugOf(name: string) {
     .replace(/(^-|-$)/g, "");
 }
 
-export const professionals: Professional[] = names.map((name) => ({
-  id: slugOf(name),
-  name,
-  initials: initialsOf(name),
+// Clean up contact string to only digits for whatsapp link, or keep original if it's an email/link
+function extractContactUrl(contact: string) {
+  if (!contact) return undefined;
+  
+  // If it's just "Opção 1" or similar generic text, ignore
+  if (contact.toLowerCase().includes("opção 1") && contact.length < 10) return undefined;
+  
+  // Extract first sequence of digits (at least 8)
+  const phoneMatch = contact.replace(/\D/g, "");
+  if (phoneMatch.length >= 10 && !contact.includes("@")) {
+    // Basic phone number formatting
+    let phone = phoneMatch;
+    if (phone.length === 10 || phone.length === 11) {
+      phone = "55" + phone;
+    }
+    return `https://wa.me/${phone}`;
+  }
+  
+  return contact; // could be email or messy string, just return it
+}
+
+export const professionals: Professional[] = rawProfessionalsData.map((data) => ({
+  id: slugOf(data.name),
+  name: data.name,
+  initials: initialsOf(data.name),
   badges: ["certificado"],
+  bio: data.bio,
+  contact_url: extractContactUrl(data.contact),
+  social_media: data.socialMedia !== "Opção 1" ? data.socialMedia : undefined,
 }));

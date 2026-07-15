@@ -11,6 +11,7 @@ export interface Professional {
   languages: string[];
   photo_url: string | null;
   contact_url: string | null;
+  social_media: string | null;
   online: boolean;
   in_person: boolean;
   sort_order: number;
@@ -29,11 +30,12 @@ const fallbackDirectory: Professional[] = fallbackProfessionals.map((pro, index)
   name: pro.name,
   city: null,
   country: null,
-  bio: null,
+  bio: pro.bio ?? null,
   specialties: [],
   languages: [],
   photo_url: null,
-  contact_url: null,
+  contact_url: pro.contact_url ?? null,
+  social_media: (pro as any).social_media ?? null,
   online: true,
   in_person: false,
   sort_order: index + 1,

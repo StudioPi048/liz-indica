@@ -24,7 +24,7 @@ export function About() {
             },
             {
               t: "Metodologia Própria",
-              d: "Integração entre Psicogenealogia, Cabalá, Neurociência e Constelação.",
+              d: "Integração entre Psicogenealogia, Cabalá, Neurociência.",
             },
             {
               t: "Comunidade Ativa",

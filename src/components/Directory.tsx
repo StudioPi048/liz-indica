@@ -61,8 +61,8 @@ export function Directory() {
   }, [query, modality, selectedSpecialties, professionals]);
 
   return (
-    <section id="diretorio" className="py-12 md:py-24 px-4 sm:px-6 bg-background scroll-mt-20">
-      <div className="max-w-7xl mx-auto">
+    <section id="diretorio" className="py-12 md:py-20 px-6 sm:px-8 lg:px-12 bg-slate-50/50 min-h-screen scroll-mt-20">
+      <div className="max-w-[1600px] mx-auto">
         <header className="mb-10 md:mb-12 max-w-3xl">
           <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-primary">
             Diretório oficial
@@ -179,7 +179,7 @@ export function Directory() {
             </div>
 
             {isLoading ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
+              <div className="grid gap-6" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(290px, 1fr))' }}>
                 {[1, 2, 3, 4, 5, 6].map(i => (
                   <div key={i} className="h-[360px] bg-card rounded-2xl border border-border animate-pulse"></div>
                 ))}
@@ -195,7 +195,7 @@ export function Directory() {
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
+              <div className="grid gap-6" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(290px, 1fr))' }}>
                 {filtered.map((p) => (
                   <ProfessionalCard key={p.id} pro={p} />
                 ))}

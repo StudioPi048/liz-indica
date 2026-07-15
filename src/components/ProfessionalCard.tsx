@@ -197,31 +197,31 @@ export function ProfessionalCard({ pro }: { pro: Professional }) {
           <div className="absolute inset-0 bg-white/20 mix-blend-overlay"></div>
         </div>
 
-        <div className="px-6 pb-6 relative -mt-16">
+        <div className="px-6 pb-6 relative -mt-12 sm:-mt-16">
           <DialogHeader>
-            <div className="flex flex-col sm:flex-row sm:items-end gap-4 mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-end gap-4 sm:gap-6 mb-6">
               {pro.photo_url ? (
                 <img
                   src={pro.photo_url}
                   alt={pro.name}
-                  className="size-28 rounded-2xl object-cover ring-4 ring-background shadow-lg shrink-0 bg-background"
+                  className="size-24 sm:size-28 rounded-2xl object-cover ring-4 ring-background shadow-lg shrink-0 bg-background"
                 />
               ) : (
                 <div
-                  className="size-28 rounded-2xl bg-gradient-to-br from-primary-soft to-primary/20 ring-4 ring-background shadow-lg shrink-0 grid place-items-center font-display text-4xl text-primary-deep"
+                  className="size-24 sm:size-28 rounded-2xl bg-gradient-to-br from-primary-soft to-primary/20 ring-4 ring-background shadow-lg shrink-0 grid place-items-center font-display text-4xl text-primary-deep"
                 >
                   {getInitials(pro.name)}
                 </div>
               )}
-              <div className="flex-1 pb-1">
-                <DialogTitle className="font-display text-3xl mb-1.5">{pro.name}</DialogTitle>
+              <div className="flex-1 pb-1 text-left">
+                <DialogTitle className="font-display text-2xl sm:text-3xl mb-2 text-balance leading-tight">{pro.name}</DialogTitle>
                 {(pro.city || pro.country) ? (
-                  <span className="text-sm text-muted-foreground flex items-center gap-1.5 mb-2">
-                    <MapPin className="size-4" />
+                  <span className="text-sm text-muted-foreground flex items-center gap-1.5 mb-2.5">
+                    <MapPin className="size-4 shrink-0" />
                     {[pro.city, pro.country].filter(Boolean).join(" · ")}
                   </span>
                 ) : (
-                  <span className="font-mono text-xs uppercase tracking-[0.18em] text-muted-foreground block mb-2">
+                  <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground block mb-2.5">
                     Mentorado Oficial Instituto LIZ
                   </span>
                 )}

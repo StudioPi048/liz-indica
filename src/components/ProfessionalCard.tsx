@@ -240,7 +240,7 @@ export function ProfessionalCard({ pro }: { pro: Professional }) {
           {pro.social_media && (
             <div className="mt-6 p-4 bg-muted/50 rounded-xl">
               <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Redes Sociais & Links</h4>
-              <p className="text-sm break-words text-foreground/90 leading-relaxed"><Linkify text={pro.social_media} /></p>
+              <p className="text-sm break-words text-foreground/90 leading-relaxed whitespace-pre-line"><Linkify text={pro.social_media} /></p>
             </div>
           )}
         </div>

@@ -23,25 +23,13 @@ export function getInitials(name: string) {
   const last = parts[parts.length - 1]?.[0] ?? "";
   return (first + last).toUpperCase();
 }
-
-const fallbackDirectory: Professional[] = fallbackProfessionals;
-
-export async function fetchProfessionals(options?: {
-  fallbackOnEmpty?: boolean;
-  fallbackOnError?: boolean;
-}): Promise<Professional[]> {
-  const fallbackOnEmpty = options?.fallbackOnEmpty ?? true;
-  const fallbackOnError = options?.fallbackOnError ?? true;
-
+export async function fetchProfessionals(): Promise<Professional[]> {
   const { data, error } = await supabase
     .from("professionals")
     .select("*")
     .order("sort_order", { ascending: true })
     .order("name", { ascending: true });
-  if (error) {
-    if (fallbackOnError) return fallbackDirectory;
-    throw error;
-  }
-  if ((!data || data.length === 0) && fallbackOnEmpty) return fallbackDirectory;
+  if (error) throw error;
   return (data ?? []) as Professional[];
 }
+

@@ -75,7 +75,7 @@ export const professionals: Professional[] = rawProfessionalsData.map((data, ind
     bio: data.bio,
     specialties: specialties,
     languages: [],
-    photo_url: null, // We don't have real photos yet
+    photo_url: (data as any).photo_url || null,
     contact_url: extractContactUrl(data.contact),
     social_media: data.socialMedia !== "Opção 1" ? data.socialMedia : null,
     online: isOnline || (!isOnline && !inPerson), // Default to true if neither is found

@@ -80,6 +80,53 @@ export type Database = {
         }
         Relationships: []
       }
+      professional_profile_change_requests: {
+        Row: {
+          admin_notes: string | null
+          created_at: string
+          id: string
+          payload: Json
+          professional_id: string
+          requested_by: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: Database["public"]["Enums"]["profile_change_request_status"]
+          updated_at: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          created_at?: string
+          id?: string
+          payload: Json
+          professional_id: string
+          requested_by: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["profile_change_request_status"]
+          updated_at?: string
+        }
+        Update: {
+          admin_notes?: string | null
+          created_at?: string
+          id?: string
+          payload?: Json
+          professional_id?: string
+          requested_by?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["profile_change_request_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "professional_profile_change_requests_professional_id_fkey"
+            columns: ["professional_id"]
+            isOneToOne: false
+            referencedRelation: "professionals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       professionals: {
         Row: {
           bio: string | null
@@ -173,6 +220,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      link_professional_owner_by_email: {
+        Args: { _email: string; _professional_id: string }
+        Returns: string
+      }
     }
     Enums: {
       app_role: "admin" | "user" | "professional"
@@ -180,6 +231,11 @@ export type Database = {
         | "received"
         | "reviewing"
         | "changes_requested"
+        | "approved"
+        | "rejected"
+      profile_change_request_status:
+        | "pending"
+        | "reviewing"
         | "approved"
         | "rejected"
     }
@@ -314,6 +370,12 @@ export const Constants = {
         "received",
         "reviewing",
         "changes_requested",
+        "approved",
+        "rejected",
+      ],
+      profile_change_request_status: [
+        "pending",
+        "reviewing",
         "approved",
         "rejected",
       ],

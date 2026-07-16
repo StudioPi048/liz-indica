@@ -14,6 +14,72 @@ export type Database = {
   }
   public: {
     Tables: {
+      professional_applications: {
+        Row: {
+          admin_notes: string | null
+          bio: string | null
+          city: string | null
+          country: string | null
+          created_at: string
+          email: string
+          formation: string
+          full_name: string
+          id: string
+          in_person: boolean
+          languages: string[]
+          links: string | null
+          online: boolean
+          phone: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          specialties: string[]
+          status: Database["public"]["Enums"]["professional_application_status"]
+          updated_at: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          bio?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          email: string
+          formation: string
+          full_name: string
+          id?: string
+          in_person?: boolean
+          languages?: string[]
+          links?: string | null
+          online?: boolean
+          phone?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          specialties?: string[]
+          status?: Database["public"]["Enums"]["professional_application_status"]
+          updated_at?: string
+        }
+        Update: {
+          admin_notes?: string | null
+          bio?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          email?: string
+          formation?: string
+          full_name?: string
+          id?: string
+          in_person?: boolean
+          languages?: string[]
+          links?: string | null
+          online?: boolean
+          phone?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          specialties?: string[]
+          status?: Database["public"]["Enums"]["professional_application_status"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       professionals: {
         Row: {
           bio: string | null
@@ -106,7 +172,13 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "admin" | "user"
+      app_role: "admin" | "user" | "professional"
+      professional_application_status:
+        | "received"
+        | "reviewing"
+        | "changes_requested"
+        | "approved"
+        | "rejected"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -234,7 +306,14 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "user"],
+      app_role: ["admin", "user", "professional"],
+      professional_application_status: [
+        "received",
+        "reviewing",
+        "changes_requested",
+        "approved",
+        "rejected",
+      ],
     },
   },
 } as const

@@ -92,6 +92,7 @@ export type Database = {
           languages: string[]
           name: string
           online: boolean
+          owner_user_id: string | null
           photo_url: string | null
           published: boolean
           social_media: string | null
@@ -110,6 +111,7 @@ export type Database = {
           languages?: string[]
           name: string
           online?: boolean
+          owner_user_id?: string | null
           photo_url?: string | null
           published?: boolean
           social_media?: string | null
@@ -128,6 +130,7 @@ export type Database = {
           languages?: string[]
           name?: string
           online?: boolean
+          owner_user_id?: string | null
           photo_url?: string | null
           published?: boolean
           social_media?: string | null

@@ -1,10 +1,10 @@
-import logoLiz from "@/assets/logo-liz.png";
+import logoLiz from "@/assets/logo-liz-mark.webp";
 
 export function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 bg-[#0A0A0A]/95 backdrop-blur-md border-b border-white/10 shadow-sm">
       <div className="max-w-7xl mx-auto px-6 h-24 flex items-center justify-between">
-        <a href="/" className="flex items-center gap-4">
+        <a href="/" className="flex items-center gap-4" aria-label="Ir para a página inicial">
           <img
             src={logoLiz}
             alt="Instituto LIZ"
@@ -21,20 +21,32 @@ export function SiteHeader() {
             </span>
           </span>
         </a>
-        <nav className="hidden md:flex gap-8 text-sm font-medium items-center">
-          <a href="#diretorio" className="text-white/80 hover:text-white transition-colors">
+        <nav
+          className="hidden md:flex gap-8 text-sm font-medium items-center"
+          aria-label="Navegação principal"
+        >
+          <a href="/#diretorio" className="text-white/80 hover:text-white transition-colors">
             Diretório
           </a>
-          <a href="#instituto" className="text-white/80 hover:text-white transition-colors">
+          <a href="/#instituto" className="text-white/80 hover:text-white transition-colors">
             O Instituto
           </a>
+          <a href="/profissional" className="text-white/80 hover:text-white transition-colors">
+            Área do Profissional
+          </a>
           <a
-            href="#indicado"
+            href="/#indicado"
             className="px-6 py-2.5 bg-white text-black rounded-full hover:bg-white/90 transition-all font-semibold"
           >
             Quero ser Indicado
           </a>
         </nav>
+        <a
+          href="/#diretorio"
+          className="inline-flex min-h-11 items-center rounded-full bg-white px-4 text-sm font-semibold text-black transition-colors hover:bg-white/90 md:hidden"
+        >
+          Buscar
+        </a>
       </div>
     </header>
   );
@@ -53,9 +65,7 @@ export function SiteFooter() {
             className="size-9 object-contain"
           />
           <span className="flex items-baseline gap-1.5">
-            <span className="font-display text-xl font-bold text-primary-deep">
-              LIZ
-            </span>
+            <span className="font-display text-xl font-bold text-primary-deep">LIZ</span>
             <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
               Indica
             </span>
@@ -63,7 +73,13 @@ export function SiteFooter() {
         </div>
         <p className="text-[11px] text-muted-foreground font-mono uppercase tracking-widest">
           © 2026 Instituto LIZ · Rede oficial de psicogenealogistas ·{" "}
-          <a href="/auth" className="hover:text-primary transition-colors">Admin</a>
+          <a href="/auth" className="hover:text-primary transition-colors">
+            Admin
+          </a>
+          {" · "}
+          <a href="/profissional" className="hover:text-primary transition-colors">
+            Profissional
+          </a>
         </p>
       </div>
     </footer>

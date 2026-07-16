@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /auth
+Disallow: /profissional
+
+Sitemap: https://liz-indica.lovable.app/sitemap.xml

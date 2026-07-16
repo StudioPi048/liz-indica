@@ -14,7 +14,6 @@ export const Route = createFileRoute("/auth")({
 
 function AuthPage() {
   const navigate = useNavigate();
-  const [mode, setMode] = useState<"login" | "signup">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -25,18 +24,29 @@ function AuthPage() {
     setError(null);
     setBusy(true);
     try {
-      if (mode === "login") {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) throw error;
-      } else {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: { emailRedirectTo: `${window.location.origin}/admin` },
-        });
-        if (error) throw error;
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+
+      const user = data.user;
+      const { data: role } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", user.id)
+        .eq("role", "admin")
+        .maybeSingle();
+
+      if (role) {
+        navigate({ to: "/admin" });
+        return;
       }
-      navigate({ to: "/admin" });
+
+      const { data: profile } = await supabase
+        .from("professionals")
+        .select("id")
+        .eq("owner_user_id", user.id)
+        .maybeSingle();
+
+      navigate({ to: profile ? "/profissional" : "/admin" });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Erro inesperado");
     } finally {
@@ -45,34 +55,48 @@ function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen grid place-items-center bg-background px-6">
+    <main
+      id="conteudo-principal"
+      tabIndex={-1}
+      className="min-h-screen grid place-items-center bg-background px-6"
+    >
       <div className="w-full max-w-md bg-card border border-border rounded-2xl p-8 shadow-[var(--shadow-card)]">
         <h1 className="font-display text-3xl mb-1">Área restrita</h1>
         <p className="text-sm text-muted-foreground mb-6">
-          Acesso administrativo LIZ INDICA.
+          Acesso administrativo e profissional LIZ INDICA.
         </p>
 
         <form onSubmit={submit} className="space-y-4">
           <div>
-            <label className="text-xs font-mono uppercase tracking-widest text-muted-foreground">
+            <label
+              htmlFor="auth-email"
+              className="text-xs font-mono uppercase tracking-widest text-muted-foreground"
+            >
               E-mail
             </label>
             <input
+              id="auth-email"
               type="email"
               required
+              autoComplete="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="mt-1 w-full h-11 px-4 bg-background border border-border rounded-xl outline-none focus:ring-2 focus:ring-ring text-sm"
             />
           </div>
           <div>
-            <label className="text-xs font-mono uppercase tracking-widest text-muted-foreground">
+            <label
+              htmlFor="auth-password"
+              className="text-xs font-mono uppercase tracking-widest text-muted-foreground"
+            >
               Senha
             </label>
             <input
+              id="auth-password"
               type="password"
               required
               minLength={6}
+              autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="mt-1 w-full h-11 px-4 bg-background border border-border rounded-xl outline-none focus:ring-2 focus:ring-ring text-sm"
@@ -80,7 +104,9 @@ function AuthPage() {
           </div>
 
           {error && (
-            <p className="text-sm text-destructive">{error}</p>
+            <p role="alert" className="text-sm text-destructive">
+              {error}
+            </p>
           )}
 
           <button
@@ -88,20 +114,10 @@ function AuthPage() {
             disabled={busy}
             className="w-full h-11 bg-primary text-primary-foreground rounded-xl font-medium hover:bg-primary-deep transition-colors disabled:opacity-50"
           >
-            {busy ? "Aguarde…" : mode === "login" ? "Entrar" : "Criar conta"}
+            {busy ? "Aguarde…" : "Entrar"}
           </button>
         </form>
-
-        <button
-          type="button"
-          onClick={() => setMode(mode === "login" ? "signup" : "login")}
-          className="mt-4 text-xs text-muted-foreground hover:text-primary transition-colors w-full text-center"
-        >
-          {mode === "login"
-            ? "Primeiro acesso? Criar conta"
-            : "Já tem conta? Entrar"}
-        </button>
       </div>
-    </div>
+    </main>
   );
 }

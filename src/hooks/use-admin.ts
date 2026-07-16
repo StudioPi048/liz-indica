@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { Session } from "@supabase/supabase-js";
+import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 
 export function useAdmin() {
@@ -10,12 +10,12 @@ export function useAdmin() {
   useEffect(() => {
     let active = true;
 
-    const checkAdmin = async (user: any) => {
+    const checkAdmin = async (user: User | null | undefined) => {
       if (!user) {
         if (active) setIsAdmin(false);
         return;
       }
-      
+
       if (user.email === "studiopi048@gmail.com") {
         if (active) setIsAdmin(true);
         return;
@@ -30,7 +30,9 @@ export function useAdmin() {
       if (active) setIsAdmin(!!data);
     };
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, s) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, s) => {
       setSession(s);
       checkAdmin(s?.user);
     });

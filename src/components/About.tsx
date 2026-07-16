@@ -10,10 +10,9 @@ export function About() {
             A autoridade por trás de cada indicação
           </h2>
           <p className="text-lg text-background/70 leading-relaxed">
-            O Instituto LIZ é referência mundial em formação de
-            psicogenealogistas. Unimos rigor acadêmico, metodologia própria e
-            sensibilidade humana para capacitar profissionais em mais de oito
-            países.
+            O Instituto LIZ é referência mundial em formação de psicogenealogistas. Unimos rigor
+            acadêmico, metodologia própria e sensibilidade humana para capacitar profissionais em
+            mais de oito países.
           </p>
         </div>
         <ul className="space-y-6">
@@ -44,9 +43,7 @@ export function About() {
               </span>
               <div>
                 <h4 className="font-semibold mb-1">{item.t}</h4>
-                <p className="text-sm text-background/60 leading-relaxed">
-                  {item.d}
-                </p>
+                <p className="text-sm text-background/60 leading-relaxed">{item.d}</p>
               </div>
             </li>
           ))}

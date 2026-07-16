@@ -30,15 +30,10 @@ export function HowItWorks() {
         </header>
         <div className="grid md:grid-cols-3 gap-8">
           {steps.map((s) => (
-            <div
-              key={s.n}
-              className="bg-card border border-border rounded-2xl p-8"
-            >
+            <div key={s.n} className="bg-card border border-border rounded-2xl p-8">
               <div className="font-mono text-xs text-primary mb-6">{s.n}</div>
               <h3 className="font-display text-2xl mb-3">{s.title}</h3>
-              <p className="text-muted-foreground leading-relaxed text-sm">
-                {s.text}
-              </p>
+              <p className="text-muted-foreground leading-relaxed text-sm">{s.text}</p>
             </div>
           ))}
         </div>

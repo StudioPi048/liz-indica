@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">LIZ INDICA</title>
+  <desc id="desc">Diretório oficial de psicogenealogistas indicados pelo Instituto LIZ.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#15120f"/>
+      <stop offset="0.55" stop-color="#3f2c1f"/>
+      <stop offset="1" stop-color="#8d5b37"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="70%" cy="25%" r="65%">
+      <stop offset="0" stop-color="#f1dfd1" stop-opacity="0.5"/>
+      <stop offset="1" stop-color="#f1dfd1" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+  <path d="M0 515C148 444 262 438 420 487C578 536 706 560 866 509C1009 464 1100 472 1200 525V630H0Z" fill="#f7f2e8" opacity="0.92"/>
+  <g fill="none" stroke="#f1dfd1" stroke-opacity="0.3" stroke-width="2">
+    <path d="M820 110c-98 64-166 145-204 244"/>
+    <path d="M840 160c-61 23-111 59-151 108"/>
+    <path d="M730 122c-23 61-35 121-37 179"/>
+  </g>
+  <text x="82" y="170" fill="#f1dfd1" font-family="Georgia, serif" font-size="116" font-weight="700" letter-spacing="4">LIZ</text>
+  <text x="88" y="230" fill="#f1dfd1" font-family="Arial, sans-serif" font-size="28" font-weight="700" letter-spacing="14">INDICA</text>
+  <text x="84" y="342" fill="#ffffff" font-family="Georgia, serif" font-size="58" font-weight="500">Diretório oficial de</text>
+  <text x="84" y="410" fill="#ffffff" font-family="Georgia, serif" font-size="58" font-weight="500">psicogenealogistas</text>
+  <text x="86" y="482" fill="#f1dfd1" font-family="Arial, sans-serif" font-size="25" font-weight="600" letter-spacing="1">Profissionais indicados pelo Instituto LIZ</text>
+</svg>

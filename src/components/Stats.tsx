@@ -58,18 +58,21 @@ export function Stats() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="bg-card border-y border-border py-12">
+    <section
+      ref={sectionRef}
+      className="border-y border-[var(--color-gold)]/45 bg-[var(--color-parchment)] py-14"
+    >
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-5 gap-8">
         {stats.map((s) => (
           <div key={s.label} data-stat-item className="text-center md:text-left">
             <div
               data-stat-value={s.target}
               data-stat-suffix={s.suffix ?? ""}
-              className="font-display text-4xl md:text-5xl font-bold text-primary mb-1 tabular-nums"
+              className="font-display text-4xl md:text-5xl text-[var(--color-ink)] mb-1 tabular-nums"
             >
               {`0${s.suffix ?? ""}`}
             </div>
-            <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+            <div className="label-mono">
               {s.label}
             </div>
           </div>

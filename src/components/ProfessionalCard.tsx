@@ -129,35 +129,7 @@ export function ProfessionalCard({ pro }: { pro: Professional }) {
             </a>
           )}
 
-        {pro.bio && (
-          <p className="mb-8 line-clamp-3 text-sm leading-relaxed text-foreground/70">{pro.bio}</p>
-        )}
 
-        <div className="mt-auto flex flex-col gap-3 border-t border-border/40 pt-5">
-          {hasContact ? (
-            <a
-              href={contactHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(event) => event.stopPropagation()}
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3.5 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:scale-[1.02] hover:bg-primary-deep"
-              title={`Entrar em contato com ${pro.name}`}
-              aria-label={`Entrar em contato com ${pro.name}`}
-            >
-              <MessageCircle className="size-4" />
-              Entrar em contato
-            </a>
-          ) : (
-            <button
-              type="button"
-              disabled
-              className="flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-xl border border-border/60 bg-muted/70 py-3.5 text-sm font-semibold text-muted-foreground"
-              title="Contato ainda não informado"
-            >
-              <MessageCircle className="size-4" />
-              Contato em revisão
-            </button>
-          )}
 
           <a
             href={profilePath}

@@ -8,6 +8,7 @@ import { HowItWorks } from "@/components/HowItWorks";
 import { Directory } from "@/components/Directory";
 import { About } from "@/components/About";
 import { LazyOnVisible } from "@/components/LazyOnVisible";
+import { LineageThread } from "@/components/LineageThread";
 import { SITE_URL } from "@/lib/professionals-api";
 
 const LazyBecomeIndicated = lazy(() =>
@@ -70,18 +71,25 @@ function Index() {
   return (
     <div className="min-h-screen bg-background text-foreground selection:bg-primary/20">
       <SiteHeader />
-      <main id="conteudo-principal" tabIndex={-1}>
+      <main id="conteudo-principal" tabIndex={-1} className="relative">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(homeJsonLd).replace(/</g, "\\u003c") }}
         />
+        <LineageThread />
+        <span data-thread-anchor aria-hidden="true" />
         <Hero />
+        <span data-thread-anchor aria-hidden="true" />
         <Stats />
+        <span data-thread-anchor aria-hidden="true" />
         <Directory />
+        <span data-thread-anchor aria-hidden="true" />
         <HowItWorks />
+        <span data-thread-anchor aria-hidden="true" />
         <section id="instituto">
           <About />
         </section>
+        <span data-thread-anchor aria-hidden="true" />
         <LazyOnVisible
           id="indicado"
           label="Carregando formulário de indicação"
@@ -91,6 +99,7 @@ function Index() {
         >
           <LazyBecomeIndicated sectionId={null} />
         </LazyOnVisible>
+        <span data-thread-anchor aria-hidden="true" />
       </main>
       <SiteFooter />
     </div>

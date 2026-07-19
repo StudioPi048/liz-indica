@@ -1,4 +1,6 @@
 import { useScrollReveal } from "@/hooks/use-gsap";
+
+const steps = [
   {
     n: "01",
     title: "Escolha um profissional",

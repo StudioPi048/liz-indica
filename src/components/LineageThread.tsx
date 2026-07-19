@@ -73,7 +73,7 @@ export function LineageThread() {
     <div
       ref={wrapRef}
       aria-hidden="true"
-      className="pointer-events-none absolute inset-y-0 left-1/2 z-20 hidden w-px -translate-x-1/2 md:block"
+      className="pointer-events-none absolute inset-y-0 left-1/2 z-0 hidden w-px -translate-x-1/2 md:block"
     >
       <div
         ref={lineRef}

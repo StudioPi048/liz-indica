@@ -26,7 +26,7 @@ export function HowItWorks() {
   });
 
   return (
-    <section className="border-t border-[var(--color-gold)]/45 bg-[var(--color-parchment)] px-6 py-24">
+    <section className="relative z-10 border-t border-[var(--color-gold)]/45 bg-[var(--color-parchment)] px-6 py-24">
       <div className="max-w-7xl mx-auto">
         <header className="mb-16 max-w-2xl">
           <span className="label-mono">Como funciona</span>

@@ -60,7 +60,7 @@ export function Stats() {
   return (
     <section
       ref={sectionRef}
-      className="border-y border-[var(--color-gold)]/45 bg-[var(--color-parchment)] py-14"
+      className="relative z-10 border-y border-[var(--color-gold)]/45 bg-[var(--color-parchment)] py-14"
     >
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-5 gap-8">
         {stats.map((s) => (

@@ -70,7 +70,7 @@ export function BecomeIndicated({ sectionId = "indicado" }: BecomeIndicatedProps
   };
 
   return (
-    <section id={sectionId ?? undefined} className="scroll-mt-20 bg-background px-6 py-24">
+    <section id={sectionId ?? undefined} className="relative z-10 scroll-mt-20 bg-background px-6 py-24">
       <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
         <div className="lg:sticky lg:top-28">
           <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-primary">

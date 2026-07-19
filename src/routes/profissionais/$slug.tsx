@@ -328,7 +328,7 @@ function ProfessionalProfilePage() {
                         {location}
                       </span>
                     )}
-                    {professional.languages.slice(0, 2).map((lang) => (
+                    {professional.languages.slice(0, 2).map((lang: string) => (
                       <span
                         key={lang}
                         className="chip !border-white/20 !bg-white/10 !text-[var(--color-parchment)]/85"

@@ -1,9 +1,31 @@
+import { useEffect, useRef, useState } from "react";
 import logoLiz from "@/assets/logo-liz-mark.webp";
 
 export function SiteHeader() {
+  const [scrolled, setScrolled] = useState(false);
+  const headerRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
-    <header className="sticky top-0 z-50 bg-[#0A0A0A]/95 backdrop-blur-md border-b border-white/10 shadow-sm">
-      <div className="max-w-7xl mx-auto px-6 h-24 flex items-center justify-between">
+    <header
+      ref={headerRef}
+      className={`sticky top-0 z-50 backdrop-blur-md border-b transition-all duration-500 ${
+        scrolled
+          ? "bg-[#0A0A0A]/95 border-white/10 shadow-md"
+          : "bg-[#0A0A0A]/70 border-transparent shadow-none"
+      }`}
+    >
+      <div
+        className={`max-w-7xl mx-auto px-6 flex items-center justify-between transition-all duration-500 ${
+          scrolled ? "h-16 md:h-20" : "h-24"
+        }`}
+      >
         <a href="/" className="flex items-center gap-4" aria-label="Ir para a página inicial">
           <img
             src={logoLiz}

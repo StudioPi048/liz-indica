@@ -231,7 +231,7 @@ function ProfessionalProfilePage() {
       )}
 
       <main id="conteudo-principal" tabIndex={-1}>
-        <section className="relative overflow-hidden bg-[#15120f] px-6 pb-14 pt-28 text-white sm:px-8 lg:px-12">
+        <section className="relative overflow-hidden bg-[var(--color-ink)] px-6 pb-14 pt-28 text-white sm:px-8 lg:px-12">
           <div className="absolute inset-0 bg-noise opacity-30 mix-blend-overlay"></div>
           <div className="absolute inset-x-0 bottom-0 h-px bg-[var(--color-gold)]/75"></div>
 

@@ -52,8 +52,8 @@ export function LazyOnVisible({
       return () => window.cancelIdleCallback(idleId);
     }
 
-    const timeoutId = window.setTimeout(() => setShouldRender(true), 1800);
-    return () => window.clearTimeout(timeoutId);
+    const timeoutId = setTimeout(() => setShouldRender(true), 1800);
+    return () => clearTimeout(timeoutId);
   }, [loadOnIdle, shouldRender]);
 
   return (

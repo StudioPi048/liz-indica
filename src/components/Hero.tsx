@@ -6,47 +6,24 @@ import { gsap, prefersReducedMotion } from "@/hooks/use-gsap";
 export function Hero() {
   const [heroQuery, setHeroQuery] = useState("");
   const rootRef = useRef<HTMLElement | null>(null);
-  const bgRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const el = rootRef.current;
     if (!el || prefersReducedMotion()) return;
 
     const ctx = gsap.context(() => {
-      // Entrance timeline
-      const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-      tl.from("[data-hero-eyebrow]", { opacity: 0, y: 16, duration: 0.7 })
+      // Entrance timeline — sober, single ease/duration scale.
+      const tl = gsap.timeline({ defaults: { ease: "power2.out", duration: 0.7 } });
+      tl.from("[data-hero-eyebrow]", { opacity: 0, y: 12 })
         .from(
           "[data-hero-title] > *",
-          { opacity: 0, y: 40, duration: 1.0, stagger: 0.12 },
-          "-=0.4",
-        )
-        .from("[data-hero-lede]", { opacity: 0, y: 24, duration: 0.8 }, "-=0.6")
-        .from("[data-hero-search]", { opacity: 0, y: 20, duration: 0.7 }, "-=0.5")
-        .from(
-          "[data-hero-chip]",
-          { opacity: 0, y: 12, duration: 0.5, stagger: 0.06 },
-          "-=0.4",
-        )
-        .from(
-          "[data-hero-cta]",
-          { opacity: 0, y: 20, duration: 0.6, stagger: 0.1 },
+          { opacity: 0, y: 24, duration: 0.8, stagger: 0.08 },
           "-=0.3",
-        );
-
-      // Parallax background
-      if (bgRef.current) {
-        gsap.to(bgRef.current, {
-          yPercent: 15,
-          ease: "none",
-          scrollTrigger: {
-            trigger: el,
-            start: "top top",
-            end: "bottom top",
-            scrub: true,
-          },
-        });
-      }
+        )
+        .from("[data-hero-lede]", { opacity: 0, y: 16 }, "-=0.5")
+        .from("[data-hero-search]", { opacity: 0, y: 12 }, "-=0.4")
+        .from("[data-hero-chip]", { opacity: 0, y: 8, duration: 0.4, stagger: 0.05 }, "-=0.4")
+        .from("[data-hero-cta]", { opacity: 0, y: 12, stagger: 0.08 }, "-=0.3");
     }, el);
 
     return () => ctx.revert();
@@ -94,15 +71,15 @@ export function Hero() {
       ref={rootRef}
       className="relative min-h-[90vh] flex items-center pt-24 pb-20 overflow-hidden bg-[var(--color-ink)] border-b border-[var(--color-gold)]/70"
     >
-      {/* Background Image (Immersive) */}
-      <div ref={bgRef} className="absolute inset-0 w-full h-full z-0 will-change-transform">
+      {/* Background Image (Immersive) — parallax removed for calmer feel */}
+      <div className="absolute inset-0 w-full h-full z-0">
         <img
           src={heroImage}
           alt=""
           aria-hidden="true"
           decoding="async"
           fetchPriority="high"
-          className="w-full h-full object-cover object-center scale-110 opacity-90"
+          className="w-full h-full object-cover object-center opacity-90"
         />
         {/* Dark Gradients tailored for text readability preserving original image color */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/90 via-black/70 to-black/30 md:bg-gradient-to-r md:from-black/90 md:via-black/50 md:to-transparent w-full md:w-[70%]" />
@@ -127,10 +104,7 @@ export function Hero() {
           >
             <span className="block">A Maior Rede de</span>
             <span className="block">
-              <em
-                className="italic not-italic font-normal hero-shimmer"
-                style={{ color: "#F1DFD1" }}
-              >
+              <em className="italic font-normal" style={{ color: "var(--color-gold-soft)" }}>
                 Psicogenealogistas
               </em>
             </span>

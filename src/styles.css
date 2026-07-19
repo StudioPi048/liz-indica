@@ -274,13 +274,15 @@ h4 {
   color: var(--color-sepia-soft);
 }
 
-/* Tratamento sépia para fotos dos profissionais */
+/* Tratamento sépia para fotos dos profissionais — reforçado para neutralizar
+   turquesa/marca embutido nas artes de post que vieram das fotos originais. */
 @utility photo-sepia {
-  filter: sepia(0.22) saturate(0.88) contrast(1.02);
+  filter: sepia(0.55) saturate(0.7) contrast(1.03) hue-rotate(-8deg);
 }
 @utility photo-sepia-strong {
-  filter: sepia(0.4) saturate(0.75) contrast(1.03);
+  filter: sepia(0.75) saturate(0.55) contrast(1.05) hue-rotate(-10deg);
 }
+
 
 /* Divisor "fio" dourado — separa seções ink ↔ parchment sem degradê */
 @utility hairline {

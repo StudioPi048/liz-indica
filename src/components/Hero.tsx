@@ -69,7 +69,7 @@ export function Hero() {
   return (
     <section
       ref={rootRef}
-      className="relative min-h-[90vh] flex items-center pt-24 pb-20 overflow-hidden bg-[var(--color-ink)] border-b border-[var(--color-gold)]/70"
+      className="relative z-10 min-h-[90vh] flex items-center pt-24 pb-20 overflow-hidden bg-[var(--color-ink)] border-b border-[var(--color-gold)]/70"
     >
       {/* Background Image (Immersive) — parallax removed for calmer feel */}
       <div className="absolute inset-0 w-full h-full z-0">

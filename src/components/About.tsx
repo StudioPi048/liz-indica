@@ -1,6 +1,6 @@
 export function About() {
   return (
-    <section className="relative border-y border-[var(--color-gold)]/45 bg-[var(--color-ink)] px-6 py-32 text-[var(--color-parchment)]">
+    <section className="relative z-10 border-y border-[var(--color-gold)]/45 bg-[var(--color-ink)] px-6 py-32 text-[var(--color-parchment)]">
       <div className="mx-auto grid max-w-7xl items-start gap-16 md:grid-cols-2">
         <div>
           <span className="label-mono text-[var(--color-gold-soft)]">O Instituto LIZ</span>

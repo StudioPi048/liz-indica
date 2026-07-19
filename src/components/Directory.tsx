@@ -331,6 +331,41 @@ export function Directory() {
   );
   const remainingProfessionals = Math.max(filtered.length - visibleProfessionals.length, 0);
 
+  const gridRef = useRef<HTMLDivElement | null>(null);
+  const prevVisibleCountRef = useRef(0);
+
+  useEffect(() => {
+    const grid = gridRef.current;
+    if (!grid) return;
+    if (prefersReducedMotion()) {
+      prevVisibleCountRef.current = visibleProfessionals.length;
+      return;
+    }
+
+    const cards = grid.querySelectorAll<HTMLElement>("[data-pro-card]");
+    if (!cards.length) return;
+
+    const prevCount = prevVisibleCountRef.current;
+    // Animate new (or all) cards
+    const targets = prevCount === 0 ? Array.from(cards) : Array.from(cards).slice(prevCount);
+
+    if (targets.length) {
+      gsap.from(targets, {
+        opacity: 0,
+        y: 32,
+        duration: 0.7,
+        ease: "power3.out",
+        stagger: 0.06,
+        scrollTrigger: prevCount === 0
+          ? { trigger: grid, start: "top 85%" }
+          : undefined,
+      });
+    }
+
+    prevVisibleCountRef.current = visibleProfessionals.length;
+  }, [visibleProfessionals]);
+
+
   const activeFilters = [
     query
       ? {

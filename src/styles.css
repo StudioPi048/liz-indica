@@ -35,13 +35,24 @@
   --color-ring: var(--ring);
   --color-whatsapp: var(--whatsapp);
 
-  --font-display: "Cormorant Garamond", serif;
+  /* "O Fio da Linhagem" — Fase 1 tokens */
+  --color-ink: #161008;
+  --color-parchment: #f6efe2;
+  --color-gold: #c6a15b;
+  --color-gold-soft: #e2cf9d;
+  --color-terracotta: #a9502f;
+  --color-terracotta-deep: #7f3a1f;
+  --color-terracotta-soft: #f0d9cc;
+  --color-sepia: #57493a;
+  --color-sepia-soft: #8a7a68;
+
+  --font-display: "Fraunces", "Cormorant Garamond", serif;
   --font-sans: "Outfit", sans-serif;
   --font-mono: "JetBrains Mono", monospace;
 
-  --shadow-soft: 0 4px 24px -8px oklch(0.55 0.13 240 / 0.12);
-  --shadow-card: 0 1px 2px oklch(0.55 0.13 240 / 0.04), 0 8px 32px -12px oklch(0.55 0.13 240 / 0.1);
-  --shadow-glow: 0 8px 32px -8px oklch(0.65 0.15 230 / 0.25);
+  --shadow-soft: 0 4px 24px -8px rgb(22 16 8 / 0.1);
+  --shadow-card: 0 1px 2px rgb(22 16 8 / 0.04), 0 8px 32px -12px rgb(22 16 8 / 0.1);
+  --shadow-glow: 0 8px 32px -8px rgb(198 161 91 / 0.35);
 }
 
 :root {

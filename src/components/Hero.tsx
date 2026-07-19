@@ -1,9 +1,56 @@
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useEffect, useRef, useState } from "react";
 import heroImage from "@/assets/hero-bg2.webp";
 import { Play, Search } from "lucide-react";
+import { gsap, prefersReducedMotion } from "@/hooks/use-gsap";
 
 export function Hero() {
   const [heroQuery, setHeroQuery] = useState("");
+  const rootRef = useRef<HTMLElement | null>(null);
+  const bgRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const el = rootRef.current;
+    if (!el || prefersReducedMotion()) return;
+
+    const ctx = gsap.context(() => {
+      // Entrance timeline
+      const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+      tl.from("[data-hero-eyebrow]", { opacity: 0, y: 16, duration: 0.7 })
+        .from(
+          "[data-hero-title] > *",
+          { opacity: 0, y: 40, duration: 1.0, stagger: 0.12 },
+          "-=0.4",
+        )
+        .from("[data-hero-lede]", { opacity: 0, y: 24, duration: 0.8 }, "-=0.6")
+        .from("[data-hero-search]", { opacity: 0, y: 20, duration: 0.7 }, "-=0.5")
+        .from(
+          "[data-hero-chip]",
+          { opacity: 0, y: 12, duration: 0.5, stagger: 0.06 },
+          "-=0.4",
+        )
+        .from(
+          "[data-hero-cta]",
+          { opacity: 0, y: 20, duration: 0.6, stagger: 0.1 },
+          "-=0.3",
+        );
+
+      // Parallax background
+      if (bgRef.current) {
+        gsap.to(bgRef.current, {
+          yPercent: 15,
+          ease: "none",
+          scrollTrigger: {
+            trigger: el,
+            start: "top top",
+            end: "bottom top",
+            scrub: true,
+          },
+        });
+      }
+    }, el);
+
+    return () => ctx.revert();
+  }, []);
 
   const applyDirectorySearch = (term: string) => {
     const query = term.trim();
@@ -43,16 +90,19 @@ export function Hero() {
   };
 
   return (
-    <section className="relative min-h-[90vh] flex items-center pt-24 pb-20 overflow-hidden bg-black">
+    <section
+      ref={rootRef}
+      className="relative min-h-[90vh] flex items-center pt-24 pb-20 overflow-hidden bg-black"
+    >
       {/* Background Image (Immersive) */}
-      <div className="absolute inset-0 w-full h-full z-0">
+      <div ref={bgRef} className="absolute inset-0 w-full h-full z-0 will-change-transform">
         <img
           src={heroImage}
           alt=""
           aria-hidden="true"
           decoding="async"
           fetchPriority="high"
-          className="w-full h-full object-cover object-center scale-105 animate-[pulse_20s_ease-in-out_infinite] opacity-90"
+          className="w-full h-full object-cover object-center scale-110 opacity-90"
         />
         {/* Dark Gradients tailored for text readability preserving original image color */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/90 via-black/70 to-black/30 md:bg-gradient-to-r md:from-black/90 md:via-black/50 md:to-transparent w-full md:w-[70%]" />
@@ -62,31 +112,42 @@ export function Hero() {
 
       {/* TEXT CONTENT (Left) */}
       <div className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-12">
-        <div className="max-w-2xl animate-reveal flex flex-col justify-center">
-          <span className="inline-flex items-center gap-3 font-mono text-[10px] md:text-xs uppercase tracking-[0.3em] text-white/80 mb-8 bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/20 shadow-sm w-fit">
+        <div className="max-w-2xl flex flex-col justify-center">
+          <span
+            data-hero-eyebrow
+            className="inline-flex items-center gap-3 font-mono text-[10px] md:text-xs uppercase tracking-[0.3em] text-white/80 mb-8 bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/20 shadow-sm w-fit"
+          >
             <span className="size-1.5 rounded-full bg-white animate-pulse" />
             Rede oficial Instituto LIZ
           </span>
 
-          <h1 className="font-display text-4xl sm:text-5xl md:text-7xl lg:text-[5rem] leading-[1.05] mb-6 md:mb-8 text-balance text-white drop-shadow-lg">
-            A Maior Rede de{" "}
-            <em
-              className="italic text-primary-light not-italic font-normal"
-              style={{ color: "#F1DFD1" }}
-            >
-              Psicogenealogistas
-            </em>{" "}
-            <br className="md:hidden" />
-            do Mundo
+          <h1
+            data-hero-title
+            className="font-display text-4xl sm:text-5xl md:text-7xl lg:text-[5rem] leading-[1.05] mb-6 md:mb-8 text-balance text-white drop-shadow-lg"
+          >
+            <span className="block">A Maior Rede de</span>
+            <span className="block">
+              <em
+                className="italic not-italic font-normal hero-shimmer"
+                style={{ color: "#F1DFD1" }}
+              >
+                Psicogenealogistas
+              </em>
+            </span>
+            <span className="block">do Mundo</span>
           </h1>
 
-          <p className="text-lg md:text-xl text-white/80 mb-10 leading-relaxed text-pretty font-light max-w-[45ch]">
+          <p
+            data-hero-lede
+            className="text-lg md:text-xl text-white/80 mb-10 leading-relaxed text-pretty font-light max-w-[45ch]"
+          >
             Encontre profissionais indicados pelo Instituto LIZ para atendimentos online ou
             presenciais — comprometidos com a ética, o estudo contínuo e a excelência no
             acolhimento.
           </p>
 
           <form
+            data-hero-search
             onSubmit={handleSubmit}
             className="mb-5 max-w-2xl rounded-2xl border border-white/20 bg-white/95 p-2 shadow-2xl shadow-black/30 backdrop-blur-md"
           >
@@ -118,6 +179,7 @@ export function Hero() {
             {["Online", "São Paulo", "Portugal"].map((term) => (
               <button
                 key={term}
+                data-hero-chip
                 type="button"
                 onClick={() => {
                   setHeroQuery(term);
@@ -132,12 +194,14 @@ export function Hero() {
 
           <div className="flex flex-col sm:flex-row flex-wrap gap-4">
             <a
+              data-hero-cta
               href="#diretorio"
               className="flex min-h-12 items-center justify-center px-6 md:px-8 py-3.5 md:py-4 bg-white text-black rounded-full text-sm md:text-base font-medium hover:bg-white/90 transition-all duration-300 shadow-xl"
             >
               Encontrar Profissional
             </a>
             <a
+              data-hero-cta
               href="#indicado"
               className="flex min-h-12 items-center justify-center gap-2 px-6 md:px-8 py-3.5 md:py-4 bg-black/30 border border-white/30 text-white rounded-full text-sm md:text-base font-medium hover:bg-white/10 transition-all duration-300 backdrop-blur-sm"
             >

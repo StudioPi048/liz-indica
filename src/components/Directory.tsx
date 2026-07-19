@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { ProfessionalCard } from "./ProfessionalCard";
 import { fetchProfessionals, type Professional } from "@/lib/professionals-api";
 import { Search, SlidersHorizontal, X } from "lucide-react";
 import rootsBg from "@/assets/roots-soft.webp";
+import { gsap, prefersReducedMotion } from "@/hooks/use-gsap";
 
 type Modality = "all" | "online" | "in_person";
 
@@ -329,6 +330,41 @@ export function Directory() {
     [filtered, visibleCount],
   );
   const remainingProfessionals = Math.max(filtered.length - visibleProfessionals.length, 0);
+
+  const gridRef = useRef<HTMLDivElement | null>(null);
+  const prevVisibleCountRef = useRef(0);
+
+  useEffect(() => {
+    const grid = gridRef.current;
+    if (!grid) return;
+    if (prefersReducedMotion()) {
+      prevVisibleCountRef.current = visibleProfessionals.length;
+      return;
+    }
+
+    const cards = grid.querySelectorAll<HTMLElement>("[data-pro-card]");
+    if (!cards.length) return;
+
+    const prevCount = prevVisibleCountRef.current;
+    // Animate new (or all) cards
+    const targets = prevCount === 0 ? Array.from(cards) : Array.from(cards).slice(prevCount);
+
+    if (targets.length) {
+      gsap.from(targets, {
+        opacity: 0,
+        y: 32,
+        duration: 0.7,
+        ease: "power3.out",
+        stagger: 0.06,
+        scrollTrigger: prevCount === 0
+          ? { trigger: grid, start: "top 85%" }
+          : undefined,
+      });
+    }
+
+    prevVisibleCountRef.current = visibleProfessionals.length;
+  }, [visibleProfessionals]);
+
 
   const activeFilters = [
     query
@@ -663,13 +699,16 @@ export function Directory() {
             ) : (
               <>
                 <div
+                  ref={gridRef}
                   className="grid gap-6"
                   style={{
                     gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 350px), 1fr))",
                   }}
                 >
                   {visibleProfessionals.map((professional) => (
-                    <ProfessionalCard key={professional.id} pro={professional} />
+                    <div key={professional.id} data-pro-card>
+                      <ProfessionalCard pro={professional} />
+                    </div>
                   ))}
                 </div>
 

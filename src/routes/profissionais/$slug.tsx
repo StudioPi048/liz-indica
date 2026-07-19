@@ -357,7 +357,7 @@ function ProfessionalProfilePage() {
                 </div>
                 {professional.bio ? (
                   <div className="space-y-4 text-[15px] leading-relaxed text-foreground/78">
-                    {professional.bio.split("\n").map((paragraph, index) => (
+                    {professional.bio.split("\n").map((paragraph: string, index: number) => (
                       <p key={`${professional.id}-bio-${index}`}>{paragraph}</p>
                     ))}
                   </div>
@@ -375,7 +375,7 @@ function ProfessionalProfilePage() {
                     <h2 className="font-display text-3xl text-primary-deep">Especialidades</h2>
                   </div>
                   <div className="flex flex-wrap gap-2.5">
-                    {professional.specialties.map((specialty) => (
+                    {professional.specialties.map((specialty: string) => (
                       <span
                         key={specialty}
                         className="rounded-xl border border-primary/15 bg-primary/10 px-4 py-2 text-sm font-medium text-primary-deep"

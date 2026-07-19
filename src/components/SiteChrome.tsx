@@ -1,16 +1,40 @@
+import { useEffect, useRef, useState } from "react";
 import logoLiz from "@/assets/logo-liz-mark.webp";
 
 export function SiteHeader() {
+  const [scrolled, setScrolled] = useState(false);
+  const headerRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
-    <header className="sticky top-0 z-50 bg-[#0A0A0A]/95 backdrop-blur-md border-b border-white/10 shadow-sm">
-      <div className="max-w-7xl mx-auto px-6 h-24 flex items-center justify-between">
+    <header
+      ref={headerRef}
+      className={`sticky top-0 z-50 backdrop-blur-md border-b transition-all duration-500 ${
+        scrolled
+          ? "bg-[#0A0A0A]/95 border-white/10 shadow-md"
+          : "bg-[#0A0A0A]/70 border-transparent shadow-none"
+      }`}
+    >
+      <div
+        className={`max-w-7xl mx-auto px-6 flex items-center justify-between transition-all duration-500 ${
+          scrolled ? "h-16 md:h-20" : "h-24"
+        }`}
+      >
         <a href="/" className="flex items-center gap-4" aria-label="Ir para a página inicial">
           <img
             src={logoLiz}
             alt="Instituto LIZ"
             width={64}
             height={64}
-            className="size-14 md:size-16 object-contain drop-shadow-md"
+            className={`object-contain drop-shadow-md transition-all duration-500 ${
+              scrolled ? "size-10 md:size-12" : "size-14 md:size-16"
+            }`}
           />
           <span className="flex flex-col md:flex-row md:items-baseline gap-0.5 md:gap-2">
             <span className="font-display text-2xl md:text-3xl font-bold tracking-wide text-white">

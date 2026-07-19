@@ -162,6 +162,40 @@
   animation: reveal-up 0.8s cubic-bezier(0.19, 1, 0.22, 1) both;
 }
 
+@keyframes hero-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.hero-shimmer {
+  background: linear-gradient(
+    100deg,
+    #f1dfd1 0%,
+    #f1dfd1 40%,
+    #ffffff 50%,
+    #f1dfd1 60%,
+    #f1dfd1 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: hero-shimmer 6s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-shimmer {
+    animation: none;
+    background: none;
+    color: #f1dfd1;
+    -webkit-text-fill-color: #f1dfd1;
+  }
+}
+
 .input {
   width: 100%;
   height: 2.75rem;

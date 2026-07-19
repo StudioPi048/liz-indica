@@ -137,13 +137,17 @@ export function Hero() {
             <span className="block">do Mundo</span>
           </h1>
 
-          <p className="text-lg md:text-xl text-white/80 mb-10 leading-relaxed text-pretty font-light max-w-[45ch]">
+          <p
+            data-hero-lede
+            className="text-lg md:text-xl text-white/80 mb-10 leading-relaxed text-pretty font-light max-w-[45ch]"
+          >
             Encontre profissionais indicados pelo Instituto LIZ para atendimentos online ou
             presenciais — comprometidos com a ética, o estudo contínuo e a excelência no
             acolhimento.
           </p>
 
           <form
+            data-hero-search
             onSubmit={handleSubmit}
             className="mb-5 max-w-2xl rounded-2xl border border-white/20 bg-white/95 p-2 shadow-2xl shadow-black/30 backdrop-blur-md"
           >
@@ -175,6 +179,7 @@ export function Hero() {
             {["Online", "São Paulo", "Portugal"].map((term) => (
               <button
                 key={term}
+                data-hero-chip
                 type="button"
                 onClick={() => {
                   setHeroQuery(term);
@@ -189,12 +194,14 @@ export function Hero() {
 
           <div className="flex flex-col sm:flex-row flex-wrap gap-4">
             <a
+              data-hero-cta
               href="#diretorio"
               className="flex min-h-12 items-center justify-center px-6 md:px-8 py-3.5 md:py-4 bg-white text-black rounded-full text-sm md:text-base font-medium hover:bg-white/90 transition-all duration-300 shadow-xl"
             >
               Encontrar Profissional
             </a>
             <a
+              data-hero-cta
               href="#indicado"
               className="flex min-h-12 items-center justify-center gap-2 px-6 md:px-8 py-3.5 md:py-4 bg-black/30 border border-white/30 text-white rounded-full text-sm md:text-base font-medium hover:bg-white/10 transition-all duration-300 backdrop-blur-sm"
             >

@@ -32,7 +32,9 @@ export function SiteHeader() {
             alt="Instituto LIZ"
             width={64}
             height={64}
-            className="size-14 md:size-16 object-contain drop-shadow-md"
+            className={`object-contain drop-shadow-md transition-all duration-500 ${
+              scrolled ? "size-10 md:size-12" : "size-14 md:size-16"
+            }`}
           />
           <span className="flex flex-col md:flex-row md:items-baseline gap-0.5 md:gap-2">
             <span className="font-display text-2xl md:text-3xl font-bold tracking-wide text-white">

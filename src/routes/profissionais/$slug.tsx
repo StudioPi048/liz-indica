@@ -2,17 +2,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import {
   ArrowLeft,
-  BadgeCheck,
-  Copy,
   ExternalLink,
-  Globe2,
-  Languages,
-  MapPin,
   MessageCircle,
   Share2,
-  ShieldCheck,
-  Sparkles,
-  UserRoundCheck,
 } from "lucide-react";
 import { SiteFooter, SiteHeader } from "@/components/SiteChrome";
 import {
@@ -95,6 +87,37 @@ function getReturnFallback() {
   return "/#diretorio";
 }
 
+/**
+ * Split a bio into paragraph blocks.
+ * We ONLY assign chapter titles when the bio has 3+ substantial paragraphs
+ * (structure is clearly present). Otherwise we return a single block —
+ * never fabricating structure or content.
+ */
+function splitBioIntoChapters(bio: string | null): Array<{ title: string | null; text: string }> {
+  if (!bio) return [];
+  const raw = bio
+    .split(/\n\s*\n|\r\n\s*\r\n/)
+    .map((p) => p.trim())
+    .filter(Boolean);
+  const paragraphs = raw.length >= 2
+    ? raw
+    : bio
+        .split(/\n/)
+        .map((p) => p.trim())
+        .filter((p) => p.length > 40);
+
+  const substantial = paragraphs.filter((p) => p.length > 40);
+  if (substantial.length >= 3) {
+    const titles = ["Trajetória", "Formação", "Como atende"];
+    return substantial.map((text, i) => ({
+      title: titles[i] ?? "Continuação",
+      text,
+    }));
+  }
+
+  return [{ title: null, text: bio.trim() }];
+}
+
 function getJsonLd(professional: Professional, profileUrl: string) {
   const links = parseExternalLinks(professional.social_media).map((link) => link.href);
   const location = getProfessionalLocation(professional);
@@ -146,7 +169,7 @@ function getJsonLd(professional: Professional, profileUrl: string) {
 
 function ProfileNotFound() {
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-[var(--color-parchment)] text-[var(--color-sepia)]">
       <SiteHeader />
       <main
         id="conteudo-principal"
@@ -154,19 +177,14 @@ function ProfileNotFound() {
         className="grid min-h-[70vh] place-items-center px-6 py-24"
       >
         <div className="max-w-lg text-center">
-          <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-primary">
-            Perfil indisponível
-          </span>
-          <h1 className="mt-3 font-display text-4xl text-primary-deep">
+          <span className="label-mono">Perfil indisponível</span>
+          <h1 className="mt-3 font-display text-4xl text-[var(--color-ink)]">
             Este profissional não foi encontrado
           </h1>
-          <p className="mt-4 text-muted-foreground">
+          <p className="mt-4 text-[var(--color-sepia)]">
             O perfil pode ter sido removido, estar em revisão ou ainda não estar publicado.
           </p>
-          <a
-            href="/#diretorio"
-            className="mt-8 inline-flex min-h-11 items-center justify-center rounded-xl bg-primary px-6 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-deep"
-          >
+          <a href="/#diretorio" className="btn-primary mt-8">
             Voltar ao diretório
           </a>
         </div>
@@ -196,32 +214,41 @@ function ProfessionalProfilePage() {
     [professional, profileUrl],
   );
 
+  const chapters = useMemo(
+    () => (professional ? splitBioIntoChapters(professional.bio) : []),
+    [professional],
+  );
+
   if (!professional) return <ProfileNotFound />;
 
-  const copyProfileLink = async () => {
+  const shareProfile = async () => {
     try {
+      if (navigator.share) {
+        await navigator.share({
+          title: `${professional.name} — LIZ INDICA`,
+          text: getProfessionalDescription(professional),
+          url: profileUrl,
+        });
+        return;
+      }
       await navigator.clipboard.writeText(profileUrl);
       setCopied(true);
       window.setTimeout(() => setCopied(false), 1800);
     } catch {
-      setCopied(false);
+      /* no-op */
     }
   };
 
-  const shareProfile = async () => {
-    if (navigator.share) {
-      await navigator.share({
-        title: `${professional.name} — LIZ INDICA`,
-        text: getProfessionalDescription(professional),
-        url: profileUrl,
-      });
-      return;
-    }
-    await copyProfileLink();
-  };
+  const hasModality = professional.online || professional.in_person;
+  const modalityLabel = hasModality ? getModalityLabel(professional) : null;
+
+  // Lead: first sentence of bio (never modified). Rest goes into chapters below.
+  const lead = professional.bio
+    ? (professional.bio.match(/^[^.!?\n]+[.!?]?/)?.[0] ?? "").trim()
+    : "";
 
   return (
-    <div className="min-h-screen bg-background pb-24 text-foreground selection:bg-primary/20 md:pb-0">
+    <div className="min-h-screen bg-[var(--color-parchment)] pb-24 text-[var(--color-sepia)] selection:bg-[var(--color-gold)]/30 md:pb-0">
       <SiteHeader />
       {jsonLd && (
         <script
@@ -231,88 +258,101 @@ function ProfessionalProfilePage() {
       )}
 
       <main id="conteudo-principal" tabIndex={-1}>
-        <section className="relative overflow-hidden bg-[var(--color-ink)] px-6 pb-14 pt-28 text-white sm:px-8 lg:px-12">
-          <div className="absolute inset-0 bg-noise opacity-30 mix-blend-overlay"></div>
-          <div className="absolute inset-x-0 bottom-0 h-px bg-[var(--color-gold)]/75"></div>
+        {/* CABEÇALHO — dossiê em fundo ink */}
+        <section className="relative overflow-hidden bg-[var(--color-ink)] px-6 pb-20 pt-28 text-[var(--color-parchment)] sm:px-8 lg:px-12">
+          <div className="absolute inset-0 bg-noise opacity-30 mix-blend-overlay" aria-hidden="true" />
 
-          <div className="relative z-10 mx-auto max-w-7xl">
+          <div className="relative z-10 mx-auto max-w-6xl">
             <a
               href={returnHref}
-              className="mb-8 inline-flex min-h-11 items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 text-sm font-medium text-white/85 backdrop-blur-md transition-colors hover:bg-white/15"
+              className="mb-10 inline-flex min-h-11 items-center gap-2 text-sm text-[var(--color-parchment)]/75 transition-colors hover:text-[var(--color-gold)]"
             >
               <ArrowLeft className="size-4" />
               Voltar ao diretório
             </a>
 
-            <div className="grid gap-8 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.35fr)] lg:items-end">
-              <div className="relative mx-auto w-full max-w-md lg:mx-0">
-                <div className="aspect-[4/5] overflow-hidden rounded-[1.5rem] border border-white/10 bg-white/5 shadow-2xl shadow-black/30">
+            <div className="grid gap-12 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.3fr)] lg:items-center">
+              {/* Retrato em ARCO com selo de cera */}
+              <div className="relative mx-auto w-full max-w-[320px] lg:mx-0">
+                <div className="arch-frame aspect-[3/4]">
                   {professional.photo_url ? (
                     <img
                       {...getResponsivePhotoAttrs(
                         professional.photo_url,
-                        "(min-width: 1024px) 420px, 92vw",
+                        "(min-width: 1024px) 320px, 80vw",
                       )}
                       alt={professional.name}
                       className="photo-sepia h-full w-full object-cover"
                       decoding="async"
                     />
                   ) : (
-                    <div className="grid h-full w-full place-items-center bg-white/5 font-display text-8xl text-white">
+                    <div className="grid h-full w-full place-items-center font-display text-7xl text-[var(--color-parchment)]">
                       {getInitials(professional.name)}
                     </div>
                   )}
                 </div>
-                <div className="absolute -bottom-5 left-5 right-5 rounded-2xl border border-white/10 bg-white/95 p-4 text-primary-deep shadow-xl">
-                  <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em]">
-                    <ShieldCheck className="size-4 text-primary" />
-                    Indicado Instituto LIZ
-                  </div>
+
+                <div
+                  className="wax-seal -bottom-6 -right-3 sm:-right-6"
+                  aria-label="Selo — Indicado pelo Instituto LIZ"
+                >
+                  <span>
+                    Indicado(a)
+                    <br />
+                    Instituto
+                    <br />
+                    LIZ
+                  </span>
                 </div>
               </div>
 
-              <div className="pt-8 lg:pt-0">
-                <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 font-mono text-[10px] uppercase tracking-[0.22em] text-white/80 backdrop-blur-md">
-                  <BadgeCheck className="size-3.5" />
-                  Perfil público oficial
+              {/* Ficha à direita */}
+              <div>
+                <span className="label-mono text-[var(--color-gold-soft)]">
+                  Dossiê · Diretório Oficial
                 </span>
 
-                <h1 className="mt-6 max-w-4xl text-balance font-display text-5xl leading-[0.98] text-white sm:text-6xl lg:text-7xl">
+                <h1 className="mt-4 font-display text-5xl leading-[1.02] text-[var(--color-parchment)] sm:text-6xl lg:text-[4.25rem]">
                   {professional.name}
                 </h1>
 
-                <div className="mt-6 flex flex-wrap gap-3 text-sm text-white/78">
-                  {location && (
-                    <span className="inline-flex min-h-10 items-center gap-2 rounded-full bg-white/10 px-4 backdrop-blur-md">
-                      <MapPin className="size-4" />
-                      {location}
-                    </span>
-                  )}
-                  <span className="inline-flex min-h-10 items-center gap-2 rounded-full bg-white/10 px-4 backdrop-blur-md">
-                    <Globe2 className="size-4" />
-                    {getModalityLabel(professional)}
-                  </span>
-                  {professional.languages.length > 0 && (
-                    <span className="inline-flex min-h-10 items-center gap-2 rounded-full bg-white/10 px-4 backdrop-blur-md">
-                      <Languages className="size-4" />
-                      {professional.languages.join(", ")}
-                    </span>
-                  )}
-                </div>
+                {(modalityLabel || location) && (
+                  <div className="mt-5 flex flex-wrap gap-2">
+                    {modalityLabel && (
+                      <span className="chip !border-white/20 !bg-white/10 !text-[var(--color-parchment)]/85">
+                        {modalityLabel}
+                      </span>
+                    )}
+                    {location && (
+                      <span className="chip !border-white/20 !bg-white/10 !text-[var(--color-parchment)]/85">
+                        {location}
+                      </span>
+                    )}
+                    {professional.languages.slice(0, 2).map((lang) => (
+                      <span
+                        key={lang}
+                        className="chip !border-white/20 !bg-white/10 !text-[var(--color-parchment)]/85"
+                      >
+                        {lang}
+                      </span>
+                    ))}
+                  </div>
+                )}
 
-                <p className="mt-7 max-w-2xl text-lg leading-relaxed text-white/76">
-                  {professional.bio ||
-                    "Perfil em atualização pela equipe LIZ. As informações públicas serão ampliadas em breve."}
-                </p>
+                {lead && (
+                  <p className="mt-8 max-w-reading font-display text-2xl leading-snug text-[var(--color-parchment)]/95 sm:text-[1.65rem]">
+                    {lead}
+                  </p>
+                )}
 
-                <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                <div className="mt-10 flex flex-wrap gap-3">
                   {hasContact && (
                     <a
                       href={contactHref}
                       target="_blank"
                       rel="noopener noreferrer"
+                      className="btn-primary"
                       aria-label={`Entrar em contato com ${professional.name}`}
-                      className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-primary px-6 text-sm font-bold text-primary-foreground shadow-xl shadow-black/20 transition-colors hover:bg-primary-deep"
                     >
                       <MessageCircle className="size-4" />
                       Entrar em contato
@@ -322,59 +362,109 @@ function ProfessionalProfilePage() {
                   <button
                     type="button"
                     onClick={shareProfile}
-                    className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/10 px-6 text-sm font-semibold text-white backdrop-blur-md transition-colors hover:bg-white/15"
+                    className="btn-ghost-gold !text-[var(--color-parchment)] hover:!bg-white/10"
                   >
                     <Share2 className="size-4" />
-                    Compartilhar perfil
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={copyProfileLink}
-                    className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/10 px-6 text-sm font-semibold text-white backdrop-blur-md transition-colors hover:bg-white/15"
-                  >
-                    <Copy className="size-4" />
-                    {copied ? "Link copiado" : "Copiar link"}
+                    {copied ? "Link copiado" : "Compartilhar perfil"}
                   </button>
                 </div>
               </div>
             </div>
           </div>
+
+          <div className="hairline absolute inset-x-0 bottom-0" aria-hidden="true" />
         </section>
 
-        <section className="px-6 py-12 sm:px-8 lg:px-12 lg:py-16">
-          <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[minmax(0,1fr)_360px]">
-            <div className="space-y-8">
-              <section className="rounded-2xl border border-border/60 bg-card p-6 shadow-sm md:p-8">
-                <div className="mb-5 flex items-center gap-3">
-                  <Sparkles className="size-5 text-primary" />
-                  <h2 className="font-display text-3xl text-primary-deep">Sobre o atendimento</h2>
+        {/* CORPO — parchment em duas colunas */}
+        <section className="px-6 py-16 sm:px-8 lg:px-12 lg:py-24">
+          <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[minmax(0,1fr)_320px]">
+            {/* Coluna principal — capítulos com fio dourado */}
+            <div>
+              {chapters.length > 0 ? (
+                <div className="space-y-10">
+                  {chapters.map((chapter, index) => (
+                    <article
+                      key={`${professional.id}-chapter-${index}`}
+                      className={chapter.title ? "chapter-thread" : ""}
+                    >
+                      {chapter.title && (
+                        <>
+                          <span className="chapter-knot" aria-hidden="true" />
+                          <span className="label-mono block">Capítulo {index + 1}</span>
+                          <h2 className="mt-2 font-display text-3xl text-[var(--color-ink)] md:text-4xl">
+                            {chapter.title}
+                          </h2>
+                        </>
+                      )}
+                      <div
+                        className={`${chapter.title ? "mt-5" : ""} max-w-reading space-y-4 text-[15px] leading-[1.75] text-[var(--color-sepia)]`}
+                      >
+                        {chapter.text.split(/\n/).map((line, i) =>
+                          line.trim() ? (
+                            <p key={`c${index}-p${i}`}>{line.trim()}</p>
+                          ) : null,
+                        )}
+                      </div>
+                    </article>
+                  ))}
                 </div>
-                {professional.bio ? (
-                  <div className="space-y-4 text-[15px] leading-relaxed text-foreground/78">
-                    {professional.bio.split("\n").map((paragraph: string, index: number) => (
-                      <p key={`${professional.id}-bio-${index}`}>{paragraph}</p>
-                    ))}
+              ) : (
+                <p className="max-w-reading text-[15px] leading-[1.75] text-[var(--color-sepia)]">
+                  Perfil em atualização pela equipe LIZ.
+                </p>
+              )}
+            </div>
+
+            {/* Sidebar — cards */}
+            <aside className="space-y-5 lg:sticky lg:top-24 lg:self-start">
+              <section className="card-linhagem p-6">
+                <span className="label-mono">Resumo</span>
+                <dl className="mt-4 space-y-4 text-sm">
+                  {modalityLabel && (
+                    <div>
+                      <dt className="text-xs uppercase tracking-wider text-[var(--color-sepia-soft)]">
+                        Atendimento
+                      </dt>
+                      <dd className="mt-1 font-medium text-[var(--color-ink)]">
+                        {modalityLabel}
+                      </dd>
+                    </div>
+                  )}
+                  {location && (
+                    <div>
+                      <dt className="text-xs uppercase tracking-wider text-[var(--color-sepia-soft)]">
+                        Localização
+                      </dt>
+                      <dd className="mt-1 font-medium text-[var(--color-ink)]">{location}</dd>
+                    </div>
+                  )}
+                  {professional.languages.length > 0 && (
+                    <div>
+                      <dt className="text-xs uppercase tracking-wider text-[var(--color-sepia-soft)]">
+                        Idiomas
+                      </dt>
+                      <dd className="mt-1 font-medium text-[var(--color-ink)]">
+                        {professional.languages.join(", ")}
+                      </dd>
+                    </div>
+                  )}
+                  <div>
+                    <dt className="text-xs uppercase tracking-wider text-[var(--color-sepia-soft)]">
+                      Vínculo
+                    </dt>
+                    <dd className="mt-1 font-medium text-[var(--color-ink)]">
+                      Profissional indicado pelo Instituto LIZ
+                    </dd>
                   </div>
-                ) : (
-                  <p className="text-muted-foreground">
-                    Este perfil ainda não recebeu uma descrição completa.
-                  </p>
-                )}
+                </dl>
               </section>
 
               {professional.specialties.length > 0 && (
-                <section className="rounded-2xl border border-border/60 bg-card p-6 shadow-sm md:p-8">
-                  <div className="mb-5 flex items-center gap-3">
-                    <UserRoundCheck className="size-5 text-primary" />
-                    <h2 className="font-display text-3xl text-primary-deep">Especialidades</h2>
-                  </div>
-                  <div className="flex flex-wrap gap-2.5">
+                <section className="card-linhagem p-6">
+                  <span className="label-mono">Especialidades</span>
+                  <div className="mt-4 flex flex-wrap gap-2">
                     {professional.specialties.map((specialty: string) => (
-                      <span
-                        key={specialty}
-                        className="rounded-xl border border-primary/15 bg-primary/10 px-4 py-2 text-sm font-medium text-primary-deep"
-                      >
+                      <span key={specialty} className="chip-terracotta">
                         {specialty}
                       </span>
                     ))}
@@ -382,83 +472,9 @@ function ProfessionalProfilePage() {
                 </section>
               )}
 
-              <section className="rounded-2xl border border-border/60 bg-card p-6 shadow-sm md:p-8">
-                <div className="mb-5 flex items-center gap-3">
-                  <ShieldCheck className="size-5 text-primary" />
-                  <h2 className="font-display text-3xl text-primary-deep">Vínculo com a LIZ</h2>
-                </div>
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <div className="rounded-xl border border-border/60 bg-muted/30 p-4">
-                    <span className="text-xs font-bold uppercase tracking-[0.16em] text-muted-foreground">
-                      Rede
-                    </span>
-                    <p className="mt-2 text-sm font-semibold text-foreground">
-                      Profissional indicado pelo Instituto LIZ
-                    </p>
-                  </div>
-                  <div className="rounded-xl border border-border/60 bg-muted/30 p-4">
-                    <span className="text-xs font-bold uppercase tracking-[0.16em] text-muted-foreground">
-                      Perfil
-                    </span>
-                    <p className="mt-2 text-sm font-semibold text-foreground">
-                      Informações públicas mantidas pela plataforma LIZ INDICA
-                    </p>
-                  </div>
-                </div>
-              </section>
-            </div>
-
-            <aside className="space-y-5 lg:sticky lg:top-24 lg:self-start">
-              <section className="rounded-2xl border border-border/60 bg-card p-6 shadow-sm">
-                <h2 className="font-display text-2xl text-primary-deep">Resumo</h2>
-                <dl className="mt-5 space-y-4 text-sm">
-                  <div>
-                    <dt className="text-xs font-bold uppercase tracking-[0.16em] text-muted-foreground">
-                      Atendimento
-                    </dt>
-                    <dd className="mt-1 font-medium text-foreground">
-                      {getModalityLabel(professional)}
-                    </dd>
-                  </div>
-                  {location && (
-                    <div>
-                      <dt className="text-xs font-bold uppercase tracking-[0.16em] text-muted-foreground">
-                        Localização
-                      </dt>
-                      <dd className="mt-1 font-medium text-foreground">{location}</dd>
-                    </div>
-                  )}
-                  {professional.languages.length > 0 && (
-                    <div>
-                      <dt className="text-xs font-bold uppercase tracking-[0.16em] text-muted-foreground">
-                        Idiomas
-                      </dt>
-                      <dd className="mt-1 font-medium text-foreground">
-                        {professional.languages.join(", ")}
-                      </dd>
-                    </div>
-                  )}
-                </dl>
-
-                {hasContact && (
-                  <div className="mt-6 border-t border-border/50 pt-5">
-                    <a
-                      href={contactHref}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={`Entrar em contato com ${professional.name}`}
-                      className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 text-sm font-bold text-primary-foreground transition-colors hover:bg-primary-deep"
-                    >
-                      <MessageCircle className="size-4" />
-                      Entrar em contato
-                    </a>
-                  </div>
-                )}
-              </section>
-
               {externalLinks.length > 0 && (
-                <section className="rounded-2xl border border-border/60 bg-card p-6 shadow-sm">
-                  <h2 className="font-display text-2xl text-primary-deep">Links</h2>
+                <section className="card-linhagem p-6">
+                  <span className="label-mono">Links</span>
                   <div className="mt-4 space-y-2">
                     {externalLinks.map((link) => (
                       <a
@@ -466,14 +482,27 @@ function ProfessionalProfilePage() {
                         href={link.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex min-h-11 items-center justify-between gap-3 rounded-xl border border-border/60 bg-muted/30 px-4 text-sm font-medium text-foreground transition-colors hover:border-primary/40 hover:bg-primary/5"
+                        className="flex min-h-11 items-center justify-between gap-3 rounded-xl border border-[var(--color-sepia)]/15 bg-[var(--color-parchment)]/60 px-4 text-sm text-[var(--color-ink)] transition-colors hover:border-[var(--color-gold)]/55"
                       >
                         <span className="min-w-0 truncate">{link.label}</span>
-                        <ExternalLink className="size-4 shrink-0 text-primary" />
+                        <ExternalLink className="size-4 shrink-0 text-[var(--color-terracotta)]" />
                       </a>
                     ))}
                   </div>
                 </section>
+              )}
+
+              {hasContact && (
+                <a
+                  href={contactHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Entrar em contato com ${professional.name}`}
+                  className="btn-primary w-full"
+                >
+                  <MessageCircle className="size-4" />
+                  Entrar em contato
+                </a>
               )}
             </aside>
           </div>
@@ -481,13 +510,13 @@ function ProfessionalProfilePage() {
       </main>
 
       {hasContact && (
-        <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border/70 bg-background/95 p-3 shadow-2xl backdrop-blur-md md:hidden">
+        <div className="fixed inset-x-0 bottom-0 z-40 border-t border-[var(--color-gold)]/40 bg-[var(--color-parchment)]/95 p-3 shadow-2xl backdrop-blur md:hidden">
           <a
             href={contactHref}
             target="_blank"
             rel="noopener noreferrer"
             aria-label={`Entrar em contato com ${professional.name}`}
-            className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 text-sm font-bold text-primary-foreground"
+            className="btn-primary w-full"
           >
             <MessageCircle className="size-4" />
             Entrar em contato

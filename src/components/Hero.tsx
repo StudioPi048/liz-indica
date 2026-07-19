@@ -1,6 +1,7 @@
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useEffect, useRef, useState } from "react";
 import heroImage from "@/assets/hero-bg2.webp";
 import { Play, Search } from "lucide-react";
+import { gsap, prefersReducedMotion } from "@/hooks/use-gsap";
 
 export function Hero() {
   const [heroQuery, setHeroQuery] = useState("");

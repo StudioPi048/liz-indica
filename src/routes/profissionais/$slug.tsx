@@ -254,7 +254,7 @@ function ProfessionalProfilePage() {
                         "(min-width: 1024px) 420px, 92vw",
                       )}
                       alt={professional.name}
-                      className="h-full w-full object-cover"
+                      className="photo-sepia h-full w-full object-cover"
                       decoding="async"
                     />
                   ) : (

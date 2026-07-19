@@ -440,8 +440,8 @@ function ProfessionalProfilePage() {
                   )}
                 </dl>
 
-                <div className="mt-6 border-t border-border/50 pt-5">
-                  {hasContact ? (
+                {hasContact && (
+                  <div className="mt-6 border-t border-border/50 pt-5">
                     <a
                       href={contactHref}
                       target="_blank"
@@ -452,12 +452,8 @@ function ProfessionalProfilePage() {
                       <MessageCircle className="size-4" />
                       Entrar em contato
                     </a>
-                  ) : (
-                    <div className="rounded-xl border border-border/60 bg-muted/50 px-5 py-3 text-center text-sm text-muted-foreground">
-                      Contato ainda não informado pela equipe LIZ.
-                    </div>
-                  )}
-                </div>
+                  </div>
+                )}
               </section>
 
               {externalLinks.length > 0 && (

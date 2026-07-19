@@ -22,9 +22,10 @@ export function ProfessionalCard({ pro }: { pro: Professional }) {
   const hasContact = Boolean(contactHref);
   const profilePath = getProfessionalProfilePath(pro);
   const location = getProfessionalLocation(pro);
+  const hasModality = pro.online || pro.in_person;
 
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-[1.25rem] border border-border/60 bg-card shadow-sm transition-all duration-500 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/5">
+    <article className="group flex h-full flex-col overflow-hidden rounded-[1.25rem] border border-border/60 bg-card shadow-sm transition-all duration-500 hover:-translate-y-1 hover:border-[var(--color-gold)]/55 hover:shadow-xl hover:shadow-[var(--color-ink)]/10">
       <div className="relative aspect-square w-full overflow-hidden bg-muted">
         <a
           href={profilePath}
@@ -39,7 +40,7 @@ export function ProfessionalCard({ pro }: { pro: Professional }) {
                 "(min-width: 1280px) 360px, (min-width: 768px) 45vw, 100vw",
               )}
               alt={pro.name}
-              className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+              className="photo-sepia h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
               decoding="async"
               loading="lazy"
             />
@@ -58,9 +59,11 @@ export function ProfessionalCard({ pro }: { pro: Professional }) {
           Instituto LIZ
         </div>
 
-        <div className="absolute bottom-4 left-4 rounded-full bg-black/65 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm backdrop-blur-md">
-          {getModalityLabel(pro)}
-        </div>
+        {hasModality && (
+          <div className="absolute bottom-4 left-4 rounded-full bg-black/65 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm backdrop-blur-md">
+            {getModalityLabel(pro)}
+          </div>
+        )}
       </div>
 
       <div className="flex flex-1 flex-col bg-card p-6 md:p-8">
@@ -70,25 +73,23 @@ export function ProfessionalCard({ pro }: { pro: Professional }) {
           </h3>
         </a>
 
-        <div className="mb-4 flex flex-col gap-2 text-[11px] uppercase tracking-wide text-muted-foreground">
-          {location ? (
-            <span className="flex items-center gap-1.5">
-              <MapPin className="size-3 shrink-0" aria-hidden="true" />
-              {location}
-            </span>
-          ) : (
-            <span className="font-mono text-[9px] tracking-[0.2em] text-muted-foreground/80">
-              Localização em revisão
-            </span>
-          )}
+        {(location || pro.languages.length > 0) && (
+          <div className="mb-4 flex flex-col gap-2 text-[11px] uppercase tracking-wide text-muted-foreground">
+            {location && (
+              <span className="flex items-center gap-1.5">
+                <MapPin className="size-3 shrink-0" aria-hidden="true" />
+                {location}
+              </span>
+            )}
 
-          {pro.languages.length > 0 && (
-            <span className="flex items-center gap-1.5">
-              <Languages className="size-3 shrink-0" aria-hidden="true" />
-              {pro.languages.slice(0, 3).join(", ")}
-            </span>
-          )}
-        </div>
+            {pro.languages.length > 0 && (
+              <span className="flex items-center gap-1.5">
+                <Languages className="size-3 shrink-0" aria-hidden="true" />
+                {pro.languages.slice(0, 3).join(", ")}
+              </span>
+            )}
+          </div>
+        )}
 
         {pro.specialties.length > 0 && (
           <div className="mb-6 flex flex-wrap gap-2">
@@ -113,7 +114,7 @@ export function ProfessionalCard({ pro }: { pro: Professional }) {
         )}
 
         <div className="mt-auto flex flex-col gap-3 border-t border-border/40 pt-5">
-          {hasContact ? (
+          {hasContact && (
             <a
               href={contactHref}
               target="_blank"
@@ -126,17 +127,9 @@ export function ProfessionalCard({ pro }: { pro: Professional }) {
               <MessageCircle className="size-4" />
               Entrar em contato
             </a>
-          ) : (
-            <button
-              type="button"
-              disabled
-              className="flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-xl border border-border/60 bg-muted/70 py-3.5 text-sm font-semibold text-muted-foreground"
-              title="Contato ainda não informado"
-            >
-              <MessageCircle className="size-4" />
-              Contato em revisão
-            </button>
           )}
+
+
 
           <a
             href={profilePath}

@@ -231,9 +231,9 @@ function ProfessionalProfilePage() {
       )}
 
       <main id="conteudo-principal" tabIndex={-1}>
-        <section className="relative overflow-hidden bg-[#15120f] px-6 pb-14 pt-28 text-white sm:px-8 lg:px-12">
+        <section className="relative overflow-hidden bg-[var(--color-ink)] px-6 pb-14 pt-28 text-white sm:px-8 lg:px-12">
           <div className="absolute inset-0 bg-noise opacity-30 mix-blend-overlay"></div>
-          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-background to-transparent"></div>
+          <div className="absolute inset-x-0 bottom-0 h-px bg-[var(--color-gold)]/75"></div>
 
           <div className="relative z-10 mx-auto max-w-7xl">
             <a
@@ -254,7 +254,7 @@ function ProfessionalProfilePage() {
                         "(min-width: 1024px) 420px, 92vw",
                       )}
                       alt={professional.name}
-                      className="h-full w-full object-cover"
+                      className="photo-sepia h-full w-full object-cover"
                       decoding="async"
                     />
                   ) : (
@@ -306,7 +306,7 @@ function ProfessionalProfilePage() {
                 </p>
 
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                  {hasContact ? (
+                  {hasContact && (
                     <a
                       href={contactHref}
                       target="_blank"
@@ -317,11 +317,6 @@ function ProfessionalProfilePage() {
                       <MessageCircle className="size-4" />
                       Entrar em contato
                     </a>
-                  ) : (
-                    <span className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/10 px-6 text-sm font-semibold text-white/75">
-                      <MessageCircle className="size-4" />
-                      Contato em revisão
-                    </span>
                   )}
 
                   <button
@@ -445,8 +440,8 @@ function ProfessionalProfilePage() {
                   )}
                 </dl>
 
-                <div className="mt-6 border-t border-border/50 pt-5">
-                  {hasContact ? (
+                {hasContact && (
+                  <div className="mt-6 border-t border-border/50 pt-5">
                     <a
                       href={contactHref}
                       target="_blank"
@@ -457,12 +452,8 @@ function ProfessionalProfilePage() {
                       <MessageCircle className="size-4" />
                       Entrar em contato
                     </a>
-                  ) : (
-                    <div className="rounded-xl border border-border/60 bg-muted/50 px-5 py-3 text-center text-sm text-muted-foreground">
-                      Contato ainda não informado pela equipe LIZ.
-                    </div>
-                  )}
-                </div>
+                  </div>
+                )}
               </section>
 
               {externalLinks.length > 0 && (

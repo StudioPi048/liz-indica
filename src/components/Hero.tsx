@@ -92,7 +92,7 @@ export function Hero() {
   return (
     <section
       ref={rootRef}
-      className="relative min-h-[90vh] flex items-center pt-24 pb-20 overflow-hidden bg-black"
+      className="relative min-h-[90vh] flex items-center pt-24 pb-20 overflow-hidden bg-[var(--color-ink)] border-b border-[var(--color-gold)]/70"
     >
       {/* Background Image (Immersive) */}
       <div ref={bgRef} className="absolute inset-0 w-full h-full z-0 will-change-transform">

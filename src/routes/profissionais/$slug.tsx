@@ -109,13 +109,18 @@ function splitBioIntoChapters(bio: string | null): Array<{ title: string | null;
   const substantial = paragraphs.filter((p) => p.length > 40);
   if (substantial.length >= 3) {
     const titles = ["Trajetória", "Formação", "Como atende"];
-    return substantial.map((text, i) => ({
-      title: titles[i] ?? "Continuação",
-      text,
-    }));
+    // Collapse paragraphs beyond the 3rd into the last chapter — never spawn "Continuação" blocks.
+    const first = substantial.slice(0, 2);
+    const rest = substantial.slice(2).join("\n\n");
+    return [
+      { title: titles[0], text: first[0] },
+      { title: titles[1], text: first[1] },
+      { title: titles[2], text: rest },
+    ];
   }
 
   return [{ title: null, text: bio.trim() }];
+
 }
 
 function getJsonLd(professional: Professional, profileUrl: string) {

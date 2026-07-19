@@ -699,13 +699,16 @@ export function Directory() {
             ) : (
               <>
                 <div
+                  ref={gridRef}
                   className="grid gap-6"
                   style={{
                     gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 350px), 1fr))",
                   }}
                 >
                   {visibleProfessionals.map((professional) => (
-                    <ProfessionalCard key={professional.id} pro={professional} />
+                    <div key={professional.id} data-pro-card>
+                      <ProfessionalCard pro={professional} />
+                    </div>
                   ))}
                 </div>
 

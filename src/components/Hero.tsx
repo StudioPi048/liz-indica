@@ -5,6 +5,52 @@ import { gsap, prefersReducedMotion } from "@/hooks/use-gsap";
 
 export function Hero() {
   const [heroQuery, setHeroQuery] = useState("");
+  const rootRef = useRef<HTMLElement | null>(null);
+  const bgRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const el = rootRef.current;
+    if (!el || prefersReducedMotion()) return;
+
+    const ctx = gsap.context(() => {
+      // Entrance timeline
+      const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+      tl.from("[data-hero-eyebrow]", { opacity: 0, y: 16, duration: 0.7 })
+        .from(
+          "[data-hero-title] > *",
+          { opacity: 0, y: 40, duration: 1.0, stagger: 0.12 },
+          "-=0.4",
+        )
+        .from("[data-hero-lede]", { opacity: 0, y: 24, duration: 0.8 }, "-=0.6")
+        .from("[data-hero-search]", { opacity: 0, y: 20, duration: 0.7 }, "-=0.5")
+        .from(
+          "[data-hero-chip]",
+          { opacity: 0, y: 12, duration: 0.5, stagger: 0.06 },
+          "-=0.4",
+        )
+        .from(
+          "[data-hero-cta]",
+          { opacity: 0, y: 20, duration: 0.6, stagger: 0.1 },
+          "-=0.3",
+        );
+
+      // Parallax background
+      if (bgRef.current) {
+        gsap.to(bgRef.current, {
+          yPercent: 15,
+          ease: "none",
+          scrollTrigger: {
+            trigger: el,
+            start: "top top",
+            end: "bottom top",
+            scrub: true,
+          },
+        });
+      }
+    }, el);
+
+    return () => ctx.revert();
+  }, []);
 
   const applyDirectorySearch = (term: string) => {
     const query = term.trim();

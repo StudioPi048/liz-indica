@@ -1,15 +1,13 @@
 export function About() {
   return (
-    <section className="py-32 px-6 bg-foreground text-background">
-      <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-16 items-start">
+    <section className="relative border-y border-[var(--color-gold)]/45 bg-[var(--color-ink)] px-6 py-32 text-[var(--color-parchment)]">
+      <div className="mx-auto grid max-w-7xl items-start gap-16 md:grid-cols-2">
         <div>
-          <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-primary-soft/70">
-            O Instituto LIZ
-          </span>
-          <h2 className="font-display text-4xl md:text-5xl mt-3 mb-8 leading-tight">
+          <span className="label-mono text-[var(--color-gold-soft)]">O Instituto LIZ</span>
+          <h2 className="mt-3 mb-8 font-display text-4xl leading-tight md:text-5xl">
             A autoridade por trás de cada indicação
           </h2>
-          <p className="text-lg text-background/70 leading-relaxed">
+          <p className="max-w-reading text-lg leading-relaxed text-[var(--color-parchment)]/80">
             O Instituto LIZ é referência mundial em formação de psicogenealogistas. Unimos rigor
             acadêmico, metodologia própria e sensibilidade humana para capacitar profissionais em
             mais de oito países.
@@ -36,14 +34,16 @@ export function About() {
           ].map((item) => (
             <li
               key={item.t}
-              className="flex gap-5 items-start border-b border-background/10 pb-6 last:border-0"
+              className="flex items-start gap-5 border-b border-[var(--color-gold)]/20 pb-6 last:border-0"
             >
-              <span className="size-7 rounded-full bg-primary/20 text-primary-soft flex items-center justify-center text-xs shrink-0 mt-0.5">
+              <span className="mt-0.5 grid size-7 shrink-0 place-items-center rounded-full border border-[var(--color-gold)]/50 text-[11px] text-[var(--color-gold)]">
                 ✓
               </span>
               <div>
-                <h4 className="font-semibold mb-1">{item.t}</h4>
-                <p className="text-sm text-background/60 leading-relaxed">{item.d}</p>
+                <h4 className="mb-1 font-display text-xl text-[var(--color-parchment)]">
+                  {item.t}
+                </h4>
+                <p className="text-sm leading-relaxed text-[var(--color-parchment)]/65">{item.d}</p>
               </div>
             </li>
           ))}

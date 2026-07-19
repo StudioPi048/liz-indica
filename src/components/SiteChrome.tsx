@@ -78,7 +78,7 @@ export function SiteHeader() {
 
 export function SiteFooter() {
   return (
-    <footer className="py-12 px-6 border-t border-border bg-background">
+    <footer className="border-t border-[var(--color-gold)]/45 bg-background py-12 px-6">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
         <div className="flex items-center gap-3">
           <img

@@ -414,7 +414,7 @@ export function Directory() {
   return (
     <section
       id="diretorio"
-      className="relative py-12 md:py-20 px-6 sm:px-8 lg:px-12 bg-background/50 min-h-screen scroll-mt-20 overflow-hidden"
+      className="relative border-t border-[var(--color-gold)]/45 py-12 md:py-20 px-6 sm:px-8 lg:px-12 bg-background/50 min-h-screen scroll-mt-20 overflow-hidden"
     >
       <div className="absolute inset-0 bg-noise opacity-30 mix-blend-overlay pointer-events-none z-0"></div>
       <img

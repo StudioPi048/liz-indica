@@ -474,7 +474,18 @@ h4 {
   box-shadow: 0 0 0 3px var(--color-parchment);
 }
 
-
+/* Fio da linhagem — nós dourados posicionados via JS */
+.lineage-knot {
+  position: absolute;
+  left: 50%;
+  width: 0.5rem;
+  height: 0.5rem;
+  transform: translate(-50%, -50%);
+  border-radius: 9999px;
+  background: var(--color-gold);
+  opacity: 0.85;
+  box-shadow: 0 0 0 3px rgb(22 16 8 / 0.04);
+}
 
 @media (prefers-reduced-motion: reduce) {
   *,

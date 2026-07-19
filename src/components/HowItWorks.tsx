@@ -26,13 +26,11 @@ export function HowItWorks() {
   });
 
   return (
-    <section className="py-24 px-6 bg-primary-soft">
+    <section className="border-t border-[var(--color-gold)]/45 bg-[var(--color-parchment)] px-6 py-24">
       <div className="max-w-7xl mx-auto">
         <header className="mb-16 max-w-2xl">
-          <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-primary">
-            Como funciona
-          </span>
-          <h2 className="font-display text-4xl md:text-5xl mt-3 text-balance">
+          <span className="label-mono">Como funciona</span>
+          <h2 className="font-display text-4xl md:text-5xl mt-3 text-balance text-[var(--color-ink)]">
             Três passos até seu psicogenealogista
           </h2>
         </header>
@@ -41,11 +39,11 @@ export function HowItWorks() {
             <div
               key={s.n}
               data-step-card
-              className="bg-card border border-border rounded-2xl p-8 transition-all duration-500 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/10 hover:border-primary/30"
+              className="card-linhagem p-8"
             >
-              <div className="font-mono text-xs text-primary mb-6">{s.n}</div>
-              <h3 className="font-display text-2xl mb-3">{s.title}</h3>
-              <p className="text-muted-foreground leading-relaxed text-sm">{s.text}</p>
+              <div className="label-mono mb-6 text-[var(--color-terracotta)]">{s.n}</div>
+              <h3 className="font-display text-2xl mb-3 text-[var(--color-ink)]">{s.title}</h3>
+              <p className="text-[var(--color-sepia)] leading-relaxed text-sm">{s.text}</p>
             </div>
           ))}
         </div>

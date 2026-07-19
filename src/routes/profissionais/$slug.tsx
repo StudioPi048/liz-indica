@@ -306,7 +306,7 @@ function ProfessionalProfilePage() {
                 </p>
 
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                  {hasContact ? (
+                  {hasContact && (
                     <a
                       href={contactHref}
                       target="_blank"
@@ -317,11 +317,6 @@ function ProfessionalProfilePage() {
                       <MessageCircle className="size-4" />
                       Entrar em contato
                     </a>
-                  ) : (
-                    <span className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/10 px-6 text-sm font-semibold text-white/75">
-                      <MessageCircle className="size-4" />
-                      Contato em revisão
-                    </span>
                   )}
 
                   <button

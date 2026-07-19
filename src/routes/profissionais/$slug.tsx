@@ -357,7 +357,7 @@ function ProfessionalProfilePage() {
                 </div>
                 {professional.bio ? (
                   <div className="space-y-4 text-[15px] leading-relaxed text-foreground/78">
-                    {professional.bio.split("\n").map((paragraph, index) => (
+                    {professional.bio.split("\n").map((paragraph: string, index: number) => (
                       <p key={`${professional.id}-bio-${index}`}>{paragraph}</p>
                     ))}
                   </div>

@@ -1,7 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { ProfessionalCard } from "./ProfessionalCard";
-import { fetchProfessionals, type Professional } from "@/lib/professionals-api";
+import {
+  fetchProfessionals,
+  getProfessionalLocation,
+  getProfessionalLocationParts,
+  type Professional,
+} from "@/lib/professionals-api";
 import { Search, SlidersHorizontal, X } from "lucide-react";
 import rootsBg from "@/assets/roots-soft.webp";
 import { gsap, prefersReducedMotion } from "@/hooks/use-gsap";
@@ -119,7 +124,8 @@ function uniqueSorted(values: Array<string | null | undefined>) {
 function hasCityInCountry(professionals: Professional[], nextCountry: string, currentCity: string) {
   if (!nextCountry || !currentCity) return true;
   return professionals.some((professional) => {
-    return professional.country === nextCountry && professional.city === currentCity;
+    const location = getProfessionalLocationParts(professional);
+    return location?.country === nextCountry && location.city === currentCity;
   });
 }
 
@@ -203,14 +209,19 @@ export function Directory() {
   }, [professionals]);
 
   const allCountries = useMemo(() => {
-    return uniqueSorted(uniqueProfessionals.map((professional) => professional.country));
+    return uniqueSorted(
+      uniqueProfessionals.map((professional) => getProfessionalLocationParts(professional)?.country),
+    );
   }, [uniqueProfessionals]);
 
   const allCities = useMemo(() => {
     return uniqueSorted(
       uniqueProfessionals
-        .filter((professional) => !country || professional.country === country)
-        .map((professional) => professional.city),
+        .filter((professional) => {
+          const location = getProfessionalLocationParts(professional);
+          return !country || location?.country === country;
+        })
+        .map((professional) => getProfessionalLocationParts(professional)?.city),
     );
   }, [country, uniqueProfessionals]);
 
@@ -282,11 +293,20 @@ export function Directory() {
     const q = normalize(query.trim());
 
     return uniqueProfessionals.filter((professional) => {
+      const location = getProfessionalLocationParts(professional);
+      const locationLabel = getProfessionalLocation(professional);
       const searchableText = [
         professional.name,
         professional.city,
         professional.country,
+        locationLabel,
+        location?.city,
+        location?.state,
+        location?.country,
+        ...(location?.searchTerms ?? []),
         professional.bio,
+        professional.contact_url,
+        professional.social_media,
         ...(professional.specialties ?? []),
         ...(professional.languages ?? []),
       ]
@@ -300,8 +320,8 @@ export function Directory() {
           : modality === "online"
             ? professional.online
             : professional.in_person;
-      const matchesCountry = !country || professional.country === country;
-      const matchesCity = !city || professional.city === city;
+      const matchesCountry = !country || location?.country === country;
+      const matchesCity = !city || location?.city === city;
       const matchesLanguage = !language || (professional.languages ?? []).includes(language);
       const matchesSpecialty =
         selectedSpecialties.size === 0
@@ -479,7 +499,7 @@ export function Directory() {
                   type="search"
                   value={query}
                   onChange={(event) => handleQueryChange(event.target.value)}
-                  placeholder="Nome, cidade, idioma…"
+                  placeholder="Nome, cidade, estado…"
                   className="w-full h-12 pl-10 pr-4 bg-card border border-border rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-sm shadow-sm"
                 />
               </div>

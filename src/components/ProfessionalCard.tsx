@@ -54,6 +54,13 @@ export function ProfessionalCard({ pro }: { pro: Professional }) {
         <span className="label-mono absolute left-4 top-4 rounded-full bg-[var(--color-parchment)]/95 px-3 py-1.5 text-[var(--color-ink)] shadow-sm backdrop-blur">
           Instituto LIZ
         </span>
+
+        {location && (
+          <span className="absolute bottom-4 left-4 right-4 inline-flex min-h-10 items-center gap-1.5 rounded-full bg-[var(--color-ink)]/78 px-3 py-2 text-xs font-medium text-[var(--color-parchment)] shadow-lg backdrop-blur">
+            <MapPin className="size-3.5 shrink-0" aria-hidden="true" />
+            <span className="truncate">{location}</span>
+          </span>
+        )}
       </div>
 
       <div className="flex flex-1 flex-col bg-white p-6 md:p-7">

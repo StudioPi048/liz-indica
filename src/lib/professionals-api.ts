@@ -46,8 +46,134 @@ export function getProfessionalProfilePath(professional: Pick<Professional, "id"
   return `/profissionais/${getProfessionalSlug(professional)}`;
 }
 
-export function getProfessionalLocation(professional: Pick<Professional, "city" | "country">) {
-  return [professional.city, professional.country].filter(Boolean).join(" · ");
+type LocationParts = {
+  city: string;
+  state?: string;
+  country: string;
+  searchTerms: string[];
+};
+
+const BRAZIL_DDD_LOCATIONS: Record<string, Omit<LocationParts, "country" | "searchTerms">> = {
+  "11": { city: "São Paulo", state: "SP" },
+  "12": { city: "Vale do Paraíba", state: "SP" },
+  "13": { city: "Baixada Santista", state: "SP" },
+  "14": { city: "Bauru", state: "SP" },
+  "15": { city: "Sorocaba", state: "SP" },
+  "16": { city: "Ribeirão Preto", state: "SP" },
+  "17": { city: "São José do Rio Preto", state: "SP" },
+  "18": { city: "Presidente Prudente", state: "SP" },
+  "19": { city: "Campinas", state: "SP" },
+  "21": { city: "Rio de Janeiro", state: "RJ" },
+  "22": { city: "Campos dos Goytacazes", state: "RJ" },
+  "24": { city: "Volta Redonda", state: "RJ" },
+  "27": { city: "Vitória", state: "ES" },
+  "28": { city: "Cachoeiro de Itapemirim", state: "ES" },
+  "31": { city: "Belo Horizonte", state: "MG" },
+  "32": { city: "Juiz de Fora", state: "MG" },
+  "33": { city: "Governador Valadares", state: "MG" },
+  "34": { city: "Uberlândia", state: "MG" },
+  "35": { city: "Poços de Caldas", state: "MG" },
+  "37": { city: "Divinópolis", state: "MG" },
+  "38": { city: "Montes Claros", state: "MG" },
+  "41": { city: "Curitiba", state: "PR" },
+  "42": { city: "Ponta Grossa", state: "PR" },
+  "43": { city: "Londrina", state: "PR" },
+  "44": { city: "Maringá", state: "PR" },
+  "45": { city: "Foz do Iguaçu", state: "PR" },
+  "46": { city: "Pato Branco", state: "PR" },
+  "47": { city: "Joinville", state: "SC" },
+  "48": { city: "Florianópolis", state: "SC" },
+  "49": { city: "Chapecó", state: "SC" },
+  "51": { city: "Porto Alegre", state: "RS" },
+  "53": { city: "Pelotas", state: "RS" },
+  "54": { city: "Caxias do Sul", state: "RS" },
+  "55": { city: "Santa Maria", state: "RS" },
+  "61": { city: "Brasília", state: "DF" },
+  "62": { city: "Goiânia", state: "GO" },
+  "63": { city: "Palmas", state: "TO" },
+  "64": { city: "Rio Verde", state: "GO" },
+  "65": { city: "Cuiabá", state: "MT" },
+  "66": { city: "Rondonópolis", state: "MT" },
+  "67": { city: "Campo Grande", state: "MS" },
+  "68": { city: "Rio Branco", state: "AC" },
+  "69": { city: "Porto Velho", state: "RO" },
+  "71": { city: "Salvador", state: "BA" },
+  "73": { city: "Ilhéus", state: "BA" },
+  "74": { city: "Juazeiro", state: "BA" },
+  "75": { city: "Feira de Santana", state: "BA" },
+  "77": { city: "Vitória da Conquista", state: "BA" },
+  "79": { city: "Aracaju", state: "SE" },
+  "81": { city: "Recife", state: "PE" },
+  "82": { city: "Maceió", state: "AL" },
+  "83": { city: "João Pessoa", state: "PB" },
+  "84": { city: "Natal", state: "RN" },
+  "85": { city: "Fortaleza", state: "CE" },
+  "86": { city: "Teresina", state: "PI" },
+  "87": { city: "Petrolina", state: "PE" },
+  "88": { city: "Juazeiro do Norte", state: "CE" },
+  "89": { city: "Picos", state: "PI" },
+  "91": { city: "Belém", state: "PA" },
+  "92": { city: "Manaus", state: "AM" },
+  "93": { city: "Santarém", state: "PA" },
+  "94": { city: "Marabá", state: "PA" },
+  "95": { city: "Boa Vista", state: "RR" },
+  "96": { city: "Macapá", state: "AP" },
+  "97": { city: "Tefé", state: "AM" },
+  "98": { city: "São Luís", state: "MA" },
+  "99": { city: "Imperatriz", state: "MA" },
+};
+
+function getDigits(value: string | null | undefined) {
+  return value?.replace(/\D/g, "") ?? "";
+}
+
+function getLocationFromPhone(value: string | null | undefined): LocationParts | null {
+  const digits = getDigits(value);
+  if (!digits) return null;
+
+  if (digits.startsWith("351") || /^9\d{8}$/.test(digits)) {
+    return {
+      city: "Portugal",
+      country: "Portugal",
+      searchTerms: ["Portugal"],
+    };
+  }
+
+  const brazilNumber = digits.startsWith("55") ? digits.slice(2) : digits;
+  const ddd = brazilNumber.slice(0, 2);
+  const location = BRAZIL_DDD_LOCATIONS[ddd];
+  if (!location) return null;
+
+  return {
+    ...location,
+    country: "Brasil",
+    searchTerms: [location.city, location.state, "Brasil"].filter(Boolean) as string[],
+  };
+}
+
+export function getProfessionalLocationParts(
+  professional: Pick<Professional, "city" | "country" | "contact_url" | "social_media">,
+): LocationParts | null {
+  if (professional.city || professional.country) {
+    return {
+      city: professional.city ?? professional.country ?? "",
+      country: professional.country ?? "",
+      searchTerms: [professional.city, professional.country].filter(Boolean) as string[],
+    };
+  }
+
+  return (
+    getLocationFromPhone(professional.contact_url) ??
+    getLocationFromPhone(professional.social_media)
+  );
+}
+
+export function getProfessionalLocation(
+  professional: Pick<Professional, "city" | "country" | "contact_url" | "social_media">,
+) {
+  const location = getProfessionalLocationParts(professional);
+  if (!location) return "";
+  return [location.city, location.state, location.country].filter(Boolean).join(" · ");
 }
 
 export function getModalityLabel(professional: Pick<Professional, "online" | "in_person">) {

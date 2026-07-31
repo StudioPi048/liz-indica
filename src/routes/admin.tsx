@@ -410,6 +410,45 @@ function ApplicationsPanel({
   );
 }
 
+type ApplicationDraft = {
+  full_name: string;
+  email: string;
+  phone: string;
+  city: string;
+  country: string;
+  formation: string;
+  bio: string;
+  specialties: string;
+  languages: string;
+  links: string;
+  online: boolean;
+  in_person: boolean;
+};
+
+function toDraft(application: ProfessionalApplication): ApplicationDraft {
+  return {
+    full_name: application.full_name ?? "",
+    email: application.email ?? "",
+    phone: application.phone ?? "",
+    city: application.city ?? "",
+    country: application.country ?? "",
+    formation: application.formation ?? "",
+    bio: application.bio ?? "",
+    specialties: (application.specialties ?? []).join(", "),
+    languages: (application.languages ?? []).join(", "),
+    links: application.links ?? "",
+    online: application.online,
+    in_person: application.in_person,
+  };
+}
+
+function splitTags(value: string) {
+  return value
+    .split(/[,;\n]/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
 function ApplicationCard({
   application,
   onRefresh,
@@ -418,11 +457,20 @@ function ApplicationCard({
   onRefresh: () => void;
 }) {
   const [notes, setNotes] = useState(application.admin_notes ?? "");
-  const [savingAction, setSavingAction] = useState<ApplicationStatus | "approve" | null>(null);
+  const [savingAction, setSavingAction] = useState<
+    ApplicationStatus | "approve" | "edit" | null
+  >(null);
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState<ApplicationDraft>(() => toDraft(application));
 
   useEffect(() => {
     setNotes(application.admin_notes ?? "");
-  }, [application.admin_notes, application.id]);
+    setDraft(toDraft(application));
+    setEditing(false);
+  }, [application]);
+
+  const setField = <K extends keyof ApplicationDraft>(key: K, value: ApplicationDraft[K]) =>
+    setDraft((current) => ({ ...current, [key]: value }));
 
   const changeStatus = async (status: ApplicationStatus) => {
     setSavingAction(status);
@@ -439,7 +487,41 @@ function ApplicationCard({
     }
   };
 
+  const saveEdits = async () => {
+    if (draft.full_name.trim().length < 3) {
+      alert("Informe o nome completo.");
+      return;
+    }
+    setSavingAction("edit");
+    try {
+      await updateProfessionalApplication(application.id, {
+        full_name: draft.full_name.trim(),
+        email: draft.email.trim(),
+        phone: draft.phone.trim() || null,
+        city: draft.city.trim() || null,
+        country: draft.country.trim() || null,
+        formation: draft.formation.trim(),
+        bio: draft.bio.trim() || null,
+        links: draft.links.trim() || null,
+        specialties: splitTags(draft.specialties),
+        languages: splitTags(draft.languages),
+        online: draft.online,
+        in_person: draft.in_person,
+      });
+      setEditing(false);
+      onRefresh();
+    } catch (error) {
+      alert(error instanceof Error ? error.message : "Erro ao salvar alterações");
+    } finally {
+      setSavingAction(null);
+    }
+  };
+
   const approve = async () => {
+    if (editing) {
+      alert("Salve ou cancele as alterações antes de aprovar.");
+      return;
+    }
     if (
       !confirm(
         "Aprovar esta solicitação e criar um perfil oculto para revisão antes da publicação?",
@@ -484,6 +566,26 @@ function ApplicationCard({
 
         <div className="flex flex-wrap gap-2">
           <ActionButton
+            onClick={() => (editing ? saveEdits() : setEditing(true))}
+            disabled={saving}
+            loading={savingAction === "edit"}
+          >
+            <FilePenLine className="size-4" />
+            {editing ? "Salvar alterações" : "Editar dados"}
+          </ActionButton>
+          {editing && (
+            <ActionButton
+              onClick={() => {
+                setDraft(toDraft(application));
+                setEditing(false);
+              }}
+              disabled={saving}
+            >
+              <XCircle className="size-4" />
+              Cancelar
+            </ActionButton>
+          )}
+          <ActionButton
             onClick={() => changeStatus("reviewing")}
             disabled={saving || application.status === "reviewing"}
             loading={savingAction === "reviewing"}
@@ -524,49 +626,131 @@ function ApplicationCard({
       </div>
 
       <div className="mt-5 grid gap-4 lg:grid-cols-[1fr_320px]">
-        <div className="space-y-4">
+        {editing ? (
           <div className="grid gap-3 sm:grid-cols-2">
-            <InfoItem icon={<Mail className="size-4" />} label="E-mail" value={application.email} />
-            <InfoItem
-              icon={<Phone className="size-4" />}
+            <EditField
+              label="Nome completo"
+              value={draft.full_name}
+              onChange={(value) => setField("full_name", value)}
+            />
+            <EditField
+              label="E-mail"
+              value={draft.email}
+              onChange={(value) => setField("email", value)}
+            />
+            <EditField
               label="Telefone"
-              value={application.phone}
+              value={draft.phone}
+              onChange={(value) => setField("phone", value)}
             />
-            <InfoItem
-              icon={<MapPin className="size-4" />}
-              label="Localização"
-              value={[application.city, application.country].filter(Boolean).join(" · ")}
+            <EditField
+              label="Cidade"
+              value={draft.city}
+              onChange={(value) => setField("city", value)}
             />
-            <InfoItem
-              icon={<CheckCircle2 className="size-4" />}
+            <EditField
+              label="País"
+              value={draft.country}
+              onChange={(value) => setField("country", value)}
+            />
+            <EditField
               label="Formação"
-              value={application.formation}
+              value={draft.formation}
+              onChange={(value) => setField("formation", value)}
             />
-          </div>
-
-          {application.bio && (
-            <div>
-              <h4 className="text-xs font-bold uppercase tracking-[0.16em] text-muted-foreground">
-                Resumo
-              </h4>
-              <p className="mt-2 text-sm leading-relaxed text-foreground/78">{application.bio}</p>
+            <EditField
+              label="Especialidades (separe por vírgula)"
+              value={draft.specialties}
+              onChange={(value) => setField("specialties", value)}
+              className="sm:col-span-2"
+            />
+            <EditField
+              label="Idiomas (separe por vírgula)"
+              value={draft.languages}
+              onChange={(value) => setField("languages", value)}
+              className="sm:col-span-2"
+            />
+            <EditField
+              label="Resumo"
+              value={draft.bio}
+              onChange={(value) => setField("bio", value)}
+              multiline
+              className="sm:col-span-2"
+            />
+            <EditField
+              label="Links"
+              value={draft.links}
+              onChange={(value) => setField("links", value)}
+              className="sm:col-span-2"
+            />
+            <div className="flex flex-wrap gap-4 sm:col-span-2">
+              <label className="flex items-center gap-2 text-sm text-foreground/80">
+                <input
+                  type="checkbox"
+                  checked={draft.online}
+                  onChange={(event) => setField("online", event.target.checked)}
+                />
+                Atende online
+              </label>
+              <label className="flex items-center gap-2 text-sm text-foreground/80">
+                <input
+                  type="checkbox"
+                  checked={draft.in_person}
+                  onChange={(event) => setField("in_person", event.target.checked)}
+                />
+                Atende presencialmente
+              </label>
             </div>
-          )}
-
-          <div className="grid gap-4 sm:grid-cols-2">
-            <TagGroup label="Especialidades" values={application.specialties} />
-            <TagGroup label="Idiomas" values={application.languages} />
           </div>
-
-          {application.links && (
-            <div>
-              <h4 className="text-xs font-bold uppercase tracking-[0.16em] text-muted-foreground">
-                Links
-              </h4>
-              <p className="mt-2 break-words text-sm text-foreground/78">{application.links}</p>
+        ) : (
+          <div className="space-y-4">
+            <div className="grid gap-3 sm:grid-cols-2">
+              <InfoItem
+                icon={<Mail className="size-4" />}
+                label="E-mail"
+                value={application.email}
+              />
+              <InfoItem
+                icon={<Phone className="size-4" />}
+                label="Telefone"
+                value={application.phone}
+              />
+              <InfoItem
+                icon={<MapPin className="size-4" />}
+                label="Localização"
+                value={[application.city, application.country].filter(Boolean).join(" · ")}
+              />
+              <InfoItem
+                icon={<CheckCircle2 className="size-4" />}
+                label="Formação"
+                value={application.formation}
+              />
             </div>
-          )}
-        </div>
+
+            {application.bio && (
+              <div>
+                <h4 className="text-xs font-bold uppercase tracking-[0.16em] text-muted-foreground">
+                  Resumo
+                </h4>
+                <p className="mt-2 text-sm leading-relaxed text-foreground/78">{application.bio}</p>
+              </div>
+            )}
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              <TagGroup label="Especialidades" values={application.specialties} />
+              <TagGroup label="Idiomas" values={application.languages} />
+            </div>
+
+            {application.links && (
+              <div>
+                <h4 className="text-xs font-bold uppercase tracking-[0.16em] text-muted-foreground">
+                  Links
+                </h4>
+                <p className="mt-2 break-words text-sm text-foreground/78">{application.links}</p>
+              </div>
+            )}
+          </div>
+        )}
 
         <div className="rounded-xl border border-border/70 bg-muted/25 p-4">
           <label
@@ -596,6 +780,44 @@ function ApplicationCard({
     </article>
   );
 }
+
+function EditField({
+  label,
+  value,
+  onChange,
+  multiline,
+  className,
+}: {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  multiline?: boolean;
+  className?: string;
+}) {
+  return (
+    <label className={`block ${className ?? ""}`}>
+      <span className="text-xs font-bold uppercase tracking-[0.16em] text-muted-foreground">
+        {label}
+      </span>
+      {multiline ? (
+        <textarea
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+          rows={6}
+          className="input mt-2"
+        />
+      ) : (
+        <input
+          type="text"
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+          className="input mt-2"
+        />
+      )}
+    </label>
+  );
+}
+
 
 const profileStatusOrder: Array<ProfileChangeStatus | "all"> = [
   "all",

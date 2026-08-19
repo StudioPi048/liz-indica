@@ -188,11 +188,25 @@ export function getContactHref(contactUrl: string | null) {
   if (!trimmed) return "";
   if (trimmed.startsWith("@")) return `https://instagram.com/${trimmed.substring(1)}`;
   if (/^(https?:\/\/|mailto:|tel:|whatsapp:)/i.test(trimmed)) return trimmed;
-  if (/^(?:www\.|wa\.me\/|api\.whatsapp\.com\/|[\w.-]+\.[a-z]{2,}\/?)/i.test(trimmed)) {
+  if (/^(?:www\.|wa\.me\/|api\.whatsapp\.com\/|[\w.-]+\.[a-z]{2,}(?:\/\S*)?)$/i.test(trimmed)) {
     return `https://${trimmed}`;
   }
-  return trimmed;
+
+  // Free-text values (e.g. "email@x.com e whatsapp (PT 00351)961787286").
+  const url = trimmed.match(/(?:https?:\/\/|www\.)[^\s,;]+/i)?.[0];
+  if (url) return url.toLowerCase().startsWith("www.") ? `https://${url}` : url;
+
+  const instagram = trimmed.match(/@([\w.]+)/)?.[1];
+  const email = trimmed.match(/[\w.+-]+@[\w-]+\.[\w.-]+/)?.[0];
+  if (email) return `mailto:${email}`;
+  if (instagram) return `https://instagram.com/${instagram}`;
+
+  const digits = trimmed.replace(/\D/g, "").replace(/^0+/, "");
+  if (digits.length >= 8) return `https://wa.me/${digits}`;
+
+  return "";
 }
+
 
 export function getResponsivePhotoAttrs(photoUrl: string | null, sizes: string) {
   if (!photoUrl) return {};

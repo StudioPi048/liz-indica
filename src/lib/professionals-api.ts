@@ -188,7 +188,7 @@ export function getContactHref(contactUrl: string | null) {
   if (!trimmed) return "";
   if (trimmed.startsWith("@")) return `https://instagram.com/${trimmed.substring(1)}`;
   if (/^(https?:\/\/|mailto:|tel:|whatsapp:)/i.test(trimmed)) return trimmed;
-  if (/^(?:www\.|wa\.me\/|api\.whatsapp\.com\/|[\w.-]+\.[a-z]{2,}\/?)$/i.test(trimmed)) {
+  if (/^(?:www\.|wa\.me\/|api\.whatsapp\.com\/|[\w.-]+\.[a-z]{2,}(?:\/\S*)?)$/i.test(trimmed)) {
     return `https://${trimmed}`;
   }
 

@@ -221,7 +221,7 @@ export function BecomeIndicated({ sectionId = "indicado" }: BecomeIndicatedProps
                   value={form.specialties}
                   onChange={(event) => set("specialties", event.target.value)}
                   className="input"
-                  placeholder="Psicogenealogia, Cabalá, Constelação..."
+                  placeholder="Psicogenealogia, Cabalá, autoconhecimento..."
                 />
               </Field>
 

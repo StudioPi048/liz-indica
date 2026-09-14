@@ -85,7 +85,6 @@ function extractSpecialties(bio) {
   if (!bio) return [];
   const categories = {
     Psicogenealogia: ["psicogenealog", "genossociograma"],
-    "Constelação Familiar": ["constela", "sistemica", "sistêmica", "sistêmico", "sistemico"],
     "Terapias Manuais": [
       "fisioterap",
       "microfisioterapia",

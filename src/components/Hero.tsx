@@ -100,31 +100,28 @@ export function Hero() {
     <section
       ref={rootRef}
       aria-labelledby="acolhida-titulo"
-      className="relative z-10 overflow-hidden bg-[var(--color-parchment)] px-5 pb-12 pt-8 sm:px-8 md:pb-20 md:pt-14 lg:px-12"
+      className="relative z-10 overflow-hidden bg-[var(--color-parchment)] pb-12 pt-7 md:pb-16 md:pt-12"
     >
-      <div className="mx-auto grid max-w-7xl gap-5 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-x-14 lg:gap-y-0">
+      <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
         <h1
           id="acolhida-titulo"
           data-hero-in
-          className="font-display text-[2.1rem] leading-[1.08] text-[var(--color-ink)] text-balance sm:text-5xl lg:col-start-1 lg:row-start-1 lg:self-end lg:text-[3.6rem]"
+          className="max-w-[22ch] font-display text-[2rem] leading-[1.08] text-[var(--color-ink)] text-balance sm:text-5xl lg:max-w-none lg:text-[3.3rem]"
         >
           Encontre um profissional para o seu{" "}
           <em className="font-normal italic text-[var(--color-terracotta)]">próximo passo.</em>
         </h1>
+      </div>
 
-        {/* Carrossel com todas as pessoas do diretório (mesmo conjunto deduplicado) */}
-        <HeroCarousel people={listed} className="lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-center" />
+      {/* Faixa contínua com todas as pessoas do diretório (mesmo conjunto deduplicado) */}
+      <div data-hero-in className="mt-6 md:mt-8">
+        <HeroCarousel people={listed} />
+      </div>
 
-        {/* Região 1 — acolhida e escolha */}
-        <div className="flex min-w-0 flex-col lg:col-start-1 lg:row-start-2">
-          {/* No mobile o parágrafo integral desce para o fim da acolhida (order-last). */}
-          <p data-hero-in className="order-last mt-6 max-w-[48ch] text-base leading-relaxed text-[var(--color-sepia)] lg:order-none lg:mt-4 lg:text-lg">
-            Encontre profissionais indicados pelo Instituto LIZ para atendimentos online ou
-            presenciais — comprometidos com a ética, o estudo contínuo e a excelência no
-            acolhimento.
-          </p>
-
-          <p data-hero-in className="font-display text-lg text-[var(--color-ink)] lg:mt-6">
+      <div className="mx-auto mt-7 max-w-7xl px-5 sm:px-8 md:mt-9 lg:px-12">
+        <div className="grid gap-x-12 gap-y-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
+        <div className="min-w-0">
+          <p data-hero-in className="font-display text-lg text-[var(--color-ink)]">
             Como você prefere ser atendido(a)?
           </p>
           <div data-hero-in className="mt-3 grid gap-3 sm:grid-cols-2" role="group" aria-label="Escolha a modalidade">
@@ -236,8 +233,10 @@ export function Hero() {
               </div>
             </div>
           )}
+        </div>
 
-          <form data-hero-in onSubmit={handleSearch} role="search" className="mt-6">
+        <div className="min-w-0 lg:pt-9">
+          <form data-hero-in onSubmit={handleSearch} role="search">
             <label htmlFor="hero-directory-search" className="mb-1.5 block text-sm text-[var(--color-sepia)]">
               Já sabe quem procura? Busque pelo nome ou local.
             </label>
@@ -279,8 +278,14 @@ export function Hero() {
             </a>
             <span className="text-[var(--color-sepia)]">Rede oficial Instituto LIZ</span>
           </div>
-        </div>
 
+          <p data-hero-in className="mt-5 max-w-[52ch] text-base leading-relaxed text-[var(--color-sepia)]">
+            Encontre profissionais indicados pelo Instituto LIZ para atendimentos online ou
+            presenciais — comprometidos com a ética, o estudo contínuo e a excelência no
+            acolhimento.
+          </p>
+        </div>
+        </div>
       </div>
     </section>
   );

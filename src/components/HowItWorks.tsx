@@ -43,7 +43,7 @@ export function HowItWorks() {
           <h2 id="como-funciona-titulo" className="font-display text-3xl text-balance md:text-4xl">
             Três passos até seu psicogenealogista
           </h2>
-          <p className="mt-2 text-sm text-[var(--color-gold-soft)]">Como funciona o diretório</p>
+          <p className="mt-2 text-sm text-[var(--color-gold-soft)]">Como funciona</p>
           <ol className="mt-8 grid gap-6 sm:grid-cols-3">
             {steps.map((s) => (
               <li key={s.n} className="border-t border-[var(--color-gold)]/40 pt-4">

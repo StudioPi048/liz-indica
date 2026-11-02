@@ -2,6 +2,7 @@ import { type FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowRight, MapPin, Monitor, Search } from "lucide-react";
 import { gsap, prefersReducedMotion } from "@/hooks/use-gsap";
+import { HeroCarousel } from "@/components/HeroCarousel";
 import {
   dedupeForDirectory,
   fetchProfessionals,
@@ -63,8 +64,6 @@ export function Hero() {
   });
   const listed = useMemo(() => dedupeForDirectory(professionals), [professionals]);
 
-  // First 3 profiles with a photo, in the existing directory order (no ranking).
-  const portraits = useMemo(() => listed.filter((p) => p.photo_url).slice(0, 3), [listed]);
 
   const inPerson = useMemo(() => listed.filter((p) => p.in_person), [listed]);
   const countries = useMemo(
@@ -86,7 +85,6 @@ export function Hero() {
     if (!el || prefersReducedMotion()) return;
     const ctx = gsap.context(() => {
       gsap.from("[data-hero-in]", { opacity: 0, y: 18, duration: 0.7, ease: "power2.out", stagger: 0.08 });
-      gsap.from("[data-hero-portrait]", { opacity: 0, y: 28, duration: 0.9, ease: "power2.out", stagger: 0.12, delay: 0.15 });
     }, el);
     return () => ctx.revert();
   }, []);
@@ -107,17 +105,21 @@ export function Hero() {
       aria-labelledby="acolhida-titulo"
       className="relative z-10 overflow-hidden bg-[var(--color-parchment)] px-5 pb-12 pt-8 sm:px-8 md:pb-20 md:pt-14 lg:px-12"
     >
-      <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:items-center lg:gap-14">
+      <div className="mx-auto grid max-w-7xl gap-5 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-x-14 lg:gap-y-0">
+        <h1
+          id="acolhida-titulo"
+          data-hero-in
+          className="font-display text-[2.1rem] leading-[1.08] text-[var(--color-ink)] text-balance sm:text-5xl lg:col-start-1 lg:row-start-1 lg:self-end lg:text-[3.6rem]"
+        >
+          Encontre um profissional para o seu{" "}
+          <em className="font-normal italic text-[var(--color-terracotta)]">próximo passo.</em>
+        </h1>
+
+        {/* Carrossel com todas as pessoas do diretório (mesmo conjunto deduplicado) */}
+        <HeroCarousel people={listed} className="lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-center" />
+
         {/* Região 1 — acolhida e escolha */}
-        <div className="flex min-w-0 flex-col justify-center">
-          <h1
-            id="acolhida-titulo"
-            data-hero-in
-            className="font-display text-[2.1rem] leading-[1.08] text-[var(--color-ink)] text-balance sm:text-5xl lg:text-[3.6rem]"
-          >
-            Encontre um profissional para o seu{" "}
-            <em className="font-normal italic text-[var(--color-terracotta)]">próximo passo.</em>
-          </h1>
+        <div className="flex min-w-0 flex-col lg:col-start-1 lg:row-start-2">
           {/* No mobile o parágrafo integral desce para o fim da acolhida (order-last). */}
           <p data-hero-in className="order-last mt-6 max-w-[48ch] text-base leading-relaxed text-[var(--color-sepia)] lg:order-none lg:mt-4 lg:text-lg">
             Encontre profissionais indicados pelo Instituto LIZ para atendimentos online ou
@@ -125,35 +127,7 @@ export function Hero() {
             acolhimento.
           </p>
 
-          {/* Mobile: presença fotográfica já na abertura */}
-          {portraits[0] && (
-            <a
-              data-hero-in
-              href={getProfessionalProfilePath(portraits[0])}
-              className="mt-5 flex items-end gap-4 lg:hidden"
-            >
-              <img
-                {...getResponsivePhotoAttrs(portraits[0].photo_url, "180px")}
-                alt={`Foto de ${portraits[0].name}`}
-                className="block h-[220px] w-auto max-w-[58vw] rounded-2xl border border-[var(--color-sepia)]/15 object-contain"
-                fetchPriority="high"
-                decoding="async"
-              />
-              <span className="min-w-0 pb-1">
-                <span className="block text-xs text-[var(--color-sepia)]">Uma das pessoas da rede</span>
-                <span className="mt-1 block font-display text-lg leading-snug text-[var(--color-ink)]">
-                  {portraits[0].name}
-                </span>
-                {getProfessionalLocation(portraits[0]) && (
-                  <span className="mt-0.5 block text-xs text-[var(--color-sepia)]">
-                    {getProfessionalLocation(portraits[0])}
-                  </span>
-                )}
-              </span>
-            </a>
-          )}
-
-          <p data-hero-in className="mt-5 font-display text-lg text-[var(--color-ink)] lg:mt-6">
+          <p data-hero-in className="font-display text-lg text-[var(--color-ink)] lg:mt-6">
             Como você prefere ser atendido(a)?
           </p>
           <div data-hero-in className="mt-3 grid gap-3 sm:grid-cols-2" role="group" aria-label="Escolha a modalidade">
@@ -310,53 +284,6 @@ export function Hero() {
           </div>
         </div>
 
-        {/* Região 2 — pessoas reais da rede, ordem existente do diretório; fotos na proporção natural */}
-        {portraits.length > 0 && (
-          <div aria-labelledby="acolhida-pessoas" className="min-w-0">
-            <h2 id="acolhida-pessoas" className="mb-3 text-sm text-[var(--color-sepia)]">
-              Algumas pessoas da rede
-            </h2>
-            <ul className="flex snap-x gap-3 overflow-x-auto pb-2 lg:grid lg:grid-cols-[1.45fr_1fr] lg:items-start lg:gap-4 lg:overflow-visible">
-              {portraits.map((p, i) => (
-                <li
-                  key={p.id}
-                  data-hero-portrait
-                  className={`shrink-0 snap-start ${i === 0 ? "hidden lg:row-span-2 lg:block" : "lg:block"}`}
-                >
-                  <a
-                    href={getProfessionalProfilePath(p)}
-                    className="group flex w-min max-w-full flex-col lg:w-fit overflow-hidden rounded-2xl border border-[var(--color-sepia)]/15 bg-card focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-terracotta)]"
-                  >
-                    <img
-                      {...getResponsivePhotoAttrs(
-                        p.photo_url,
-                        i === 0 ? "(min-width: 1024px) 360px, 1px" : "(min-width: 1024px) 240px, 200px",
-                      )}
-                      alt={`Foto de ${p.name}`}
-                      className={
-                        i === 0
-                          ? "block h-auto max-h-[600px] w-auto max-w-full"
-                          : "block h-[240px] w-auto max-w-[75vw] lg:h-auto lg:max-h-[290px] lg:max-w-full"
-                      }
-                      decoding="async"
-                      loading={i === 0 ? "eager" : "lazy"}
-                    />
-                    <div className="px-4 py-3">
-                      <span className="block font-display text-lg leading-snug text-[var(--color-ink)] group-hover:text-[var(--color-terracotta)]">
-                        {p.name}
-                      </span>
-                      {getProfessionalLocation(p) && (
-                        <span className="mt-0.5 block text-xs text-[var(--color-sepia)]">
-                          {getProfessionalLocation(p)}
-                        </span>
-                      )}
-                    </div>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
       </div>
     </section>
   );

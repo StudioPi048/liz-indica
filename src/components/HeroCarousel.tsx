@@ -219,8 +219,7 @@ export function HeroCarousel({ people }: { people: Professional[] }) {
               key={`clone-${p.id}`}
               data-strip-clone={i === 0 ? "" : undefined}
               aria-hidden="true"
-              // @ts-expect-error inert is a valid boolean attribute in React 19 DOM
-              inert=""
+              inert
               className="w-[164px] shrink-0 md:w-[216px]"
             >
               <Portrait person={p} />

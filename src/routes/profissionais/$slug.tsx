@@ -536,8 +536,11 @@ function ProfessionalProfilePage() {
       </main>
 
       {contact && (
-        <div className="fixed inset-x-0 bottom-0 z-40 border-t border-[var(--color-gold)]/40 bg-[var(--color-parchment)]/95 px-3 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] shadow-2xl backdrop-blur md:hidden">
-          <ContactButton contact={contact} name={professional.name} className="w-full" />
+        <div className="fixed inset-x-0 bottom-0 z-40 flex items-center gap-3 border-t border-[var(--color-gold)]/40 bg-[var(--color-parchment)]/95 px-3 pt-2.5 pb-[max(0.625rem,env(safe-area-inset-bottom))] shadow-2xl backdrop-blur md:hidden">
+          <span className="min-w-0 flex-1 truncate text-sm font-medium text-[var(--color-ink)]">
+            {professional.name.split(" ")[0]}
+          </span>
+          <ContactButton contact={contact} name={professional.name} className="shrink-0 !min-h-11" />
         </div>
       )}
 

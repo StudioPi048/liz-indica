@@ -601,6 +601,7 @@ export function Directory() {
           </p>
         </header>
           {/* Raízes: narrativa visual da linhagem, ao lado do título, nunca sob texto/controles */}
+          <div aria-hidden="true" className="isolate w-24 shrink-0 bg-[var(--color-parchment)] sm:w-36 md:w-56">
           <img
             src={rootsImage}
             alt=""
@@ -609,8 +610,9 @@ export function Directory() {
             height={640}
             loading="lazy"
             decoding="async"
-            className="w-24 shrink-0 mix-blend-multiply sm:w-36 md:w-56"
+            className="block w-full mix-blend-multiply"
           />
+          </div>
         </div>
 
         {/* Primary controls — always visible on every viewport */}

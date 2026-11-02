@@ -46,6 +46,7 @@ export function HeroCarousel({ people }: { people: Professional[] }) {
 
   const [clones, setClones] = useState(8);
   const [userPaused, setUserPaused] = useState(false);
+  const [reduced, setReduced] = useState(false);
   const [hover, setHover] = useState(false);
   const [focusWithin, setFocusWithin] = useState(false);
   const [touching, setTouching] = useState(false);
@@ -73,7 +74,7 @@ export function HeroCarousel({ people }: { people: Professional[] }) {
   useEffect(() => {
     if (startedRef.current || size === 0) return;
     startedRef.current = true;
-    if (prefersReducedMotion()) setUserPaused(true);
+    if (prefersReducedMotion()) setReduced(true);
     const track = trackRef.current;
     const start = Math.floor(Math.random() * size);
     const item = track?.querySelectorAll<HTMLElement>("[data-strip-item]")[start];
@@ -114,7 +115,14 @@ export function HeroCarousel({ people }: { people: Professional[] }) {
     }
   };
 
-  const active = isAutoplayActive({ userPaused, hover, focusWithin, touching, offscreen, tabHidden, size });
+  // Ends a temporary touch pause on up, cancel (native scroll) or lost capture.
+  const endTouch = (e: { pointerType: string }) => {
+    if (e.pointerType === "mouse") return;
+    window.clearTimeout(touchTimer.current);
+    touchTimer.current = window.setTimeout(() => setTouching(false), 2500);
+  };
+
+  const active = !reduced && isAutoplayActive({ userPaused, hover, focusWithin, touching, offscreen, tabHidden, size });
 
   useEffect(() => {
     if (!active) return;
@@ -152,16 +160,27 @@ export function HeroCarousel({ people }: { people: Professional[] }) {
         <h2 id="rede-titulo" className="font-display text-lg text-[var(--color-ink)]">
           Conheça a rede LIZ
         </h2>
+        {reduced ? (
+          <span className="text-sm text-[var(--color-sepia)]">
+            Movimento automático desligado pelo seu dispositivo. Role para o lado ou use as setas.
+          </span>
+        ) : (
         <button
           type="button"
-          onClick={() => setUserPaused((v) => !v)}
+          onClick={() => {
+            // Explicit control: also clears any temporary touch pause so Retomar really resumes.
+            window.clearTimeout(touchTimer.current);
+            setTouching(false);
+            setUserPaused((v) => !v);
+          }}
           aria-pressed={userPaused}
           className="inline-flex min-h-9 items-center gap-1.5 rounded-full px-3 text-sm text-[var(--color-sepia)] underline-offset-4 hover:text-[var(--color-ink)] hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-terracotta)]"
         >
           {userPaused ? <Play className="size-3.5" aria-hidden="true" /> : <Pause className="size-3.5" aria-hidden="true" />}
           {userPaused ? "Retomar" : "Pausar"}
         </button>
-        <span className="hidden text-sm text-[var(--color-sepia)] md:inline">
+        )}
+        <span className={`hidden text-sm text-[var(--color-sepia)] ${reduced ? "" : "md:inline"}`}>
           Passe o cursor ou use as setas para conhecer cada pessoa.
         </span>
       </div>
@@ -178,11 +197,9 @@ export function HeroCarousel({ people }: { people: Professional[] }) {
           window.clearTimeout(touchTimer.current);
           setTouching(true);
         }}
-        onPointerUp={(e) => {
-          if (e.pointerType === "mouse") return;
-          window.clearTimeout(touchTimer.current);
-          touchTimer.current = window.setTimeout(() => setTouching(false), 2500);
-        }}
+        onPointerUp={endTouch}
+        onPointerCancel={endTouch}
+        onLostPointerCapture={endTouch}
         onFocus={() => setFocusWithin(true)}
         onBlur={(e) => {
           if (!e.currentTarget.contains(e.relatedTarget as Node)) setFocusWithin(false);

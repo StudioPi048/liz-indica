@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { ProfessionalCard } from "./ProfessionalCard";
 import {
+  dedupeForDirectory,
   fetchProfessionals,
   getProfessionalLocation,
   getProfessionalLocationParts,
@@ -216,20 +217,7 @@ export function Directory() {
     };
   }, []);
 
-  const uniqueProfessionals = useMemo(() => {
-    const list: Professional[] = [];
-    const seen = new Set<string>();
-
-    for (const professional of professionals) {
-      const key = `${normalize(professional.name)}-${professional.photo_url || ""}`;
-      if (!seen.has(key)) {
-        seen.add(key);
-        list.push(professional);
-      }
-    }
-
-    return list;
-  }, [professionals]);
+  const uniqueProfessionals = useMemo(() => dedupeForDirectory(professionals), [professionals]);
 
   const allCountries = useMemo(() => {
     return uniqueSorted(

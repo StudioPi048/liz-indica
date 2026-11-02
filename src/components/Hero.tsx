@@ -1,224 +1,336 @@
-import { type FormEvent, useEffect, useRef, useState } from "react";
-import heroImage from "@/assets/hero-bg2.webp";
-import { Play, Search } from "lucide-react";
+import { type FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { ArrowRight, MapPin, Monitor, Search } from "lucide-react";
 import { gsap, prefersReducedMotion } from "@/hooks/use-gsap";
+import {
+  dedupeForDirectory,
+  fetchProfessionals,
+  getProfessionalLocation,
+  getProfessionalLocationParts,
+  getProfessionalProfilePath,
+  getResponsivePhotoAttrs,
+} from "@/lib/professionals-api";
+
+type Mode = "all" | "online" | "in_person";
+
+export type DirectorySearchDetail = {
+  query?: string;
+  modality?: Mode;
+  country?: string;
+  city?: string;
+  resetFilters?: boolean;
+};
+
+/** Sends criteria to the directory, updates the URL and scrolls to the results. */
+export function goToDirectory(detail: DirectorySearchDetail) {
+  const params = new URLSearchParams(window.location.search);
+  ["q", "modalidade", "mode", "pais", "country", "cidade", "city", "idioma", "language", "especialidade", "specialty", "specialties"].forEach(
+    (key) => params.delete(key),
+  );
+  if (detail.query?.trim()) params.set("q", detail.query.trim());
+  if (detail.modality === "online") params.set("modalidade", "online");
+  if (detail.modality === "in_person") params.set("modalidade", "presencial");
+  if (detail.country) params.set("pais", detail.country);
+  if (detail.city) params.set("cidade", detail.city);
+  const search = params.toString();
+  window.history.replaceState(null, "", `${window.location.pathname}${search ? `?${search}` : ""}#diretorio`);
+  window.dispatchEvent(
+    new CustomEvent("liz-directory-search", { detail: { ...detail, resetFilters: true } }),
+  );
+  document
+    .getElementById("diretorio")
+    ?.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth", block: "start" });
+  window.setTimeout(() => document.getElementById("directory-results")?.focus({ preventScroll: true }), 400);
+}
+
+function uniqueSorted(values: Array<string | undefined>) {
+  return Array.from(new Set(values.map((v) => v?.trim()).filter((v): v is string => Boolean(v)))).sort(
+    (a, b) => a.localeCompare(b, "pt-BR"),
+  );
+}
 
 export function Hero() {
-  const [heroQuery, setHeroQuery] = useState("");
-  const [heroModality, setHeroModality] = useState<"all" | "online" | "in_person">("all");
+  const [query, setQuery] = useState("");
+  const [presencialOpen, setPresencialOpen] = useState(false);
+  const [country, setCountry] = useState("");
+  const [city, setCity] = useState("");
   const rootRef = useRef<HTMLElement | null>(null);
+
+  const { data: professionals = [] } = useQuery({
+    queryKey: ["professionals", "public"],
+    queryFn: () => fetchProfessionals(),
+    staleTime: 1000 * 60 * 5,
+  });
+  const listed = useMemo(() => dedupeForDirectory(professionals), [professionals]);
+
+  // First 3 profiles with a photo, in the existing directory order (no ranking).
+  const portraits = useMemo(() => listed.filter((p) => p.photo_url).slice(0, 3), [listed]);
+
+  const inPerson = useMemo(() => listed.filter((p) => p.in_person), [listed]);
+  const countries = useMemo(
+    () => uniqueSorted(inPerson.map((p) => getProfessionalLocationParts(p)?.country)),
+    [inPerson],
+  );
+  const cities = useMemo(
+    () =>
+      uniqueSorted(
+        inPerson
+          .filter((p) => !country || getProfessionalLocationParts(p)?.country === country)
+          .map((p) => getProfessionalLocationParts(p)?.city),
+      ),
+    [inPerson, country],
+  );
 
   useEffect(() => {
     const el = rootRef.current;
     if (!el || prefersReducedMotion()) return;
-
     const ctx = gsap.context(() => {
-      // Entrance timeline — sober, single ease/duration scale.
-      const tl = gsap.timeline({ defaults: { ease: "power2.out", duration: 0.7 } });
-      tl.from("[data-hero-eyebrow]", { opacity: 0, y: 12 })
-        .from(
-          "[data-hero-title] > *",
-          { opacity: 0, y: 24, duration: 0.8, stagger: 0.08 },
-          "-=0.3",
-        )
-        .from("[data-hero-lede]", { opacity: 0, y: 16 }, "-=0.5")
-        .from("[data-hero-search]", { opacity: 0, y: 12 }, "-=0.4")
-        .from("[data-hero-chip]", { opacity: 0, y: 8, duration: 0.4, stagger: 0.05 }, "-=0.4")
-        .from("[data-hero-cta]", { opacity: 0, y: 12, stagger: 0.08 }, "-=0.3");
+      gsap.from("[data-hero-in]", { opacity: 0, y: 18, duration: 0.7, ease: "power2.out", stagger: 0.08 });
+      gsap.from("[data-hero-portrait]", { opacity: 0, y: 28, duration: 0.9, ease: "power2.out", stagger: 0.12, delay: 0.15 });
     }, el);
-
     return () => ctx.revert();
   }, []);
 
-  const applyDirectorySearch = (term: string, mode: "all" | "online" | "in_person" = heroModality) => {
-    const query = term.trim();
-    const params = new URLSearchParams(window.location.search);
-    [
-      "modalidade",
-      "mode",
-      "pais",
-      "country",
-      "cidade",
-      "city",
-      "idioma",
-      "language",
-      "especialidade",
-      "specialty",
-      "specialties",
-    ].forEach((key) => params.delete(key));
-
-    if (query) params.set("q", query);
-    else params.delete("q");
-    if (mode === "online") params.set("modalidade", "online");
-    if (mode === "in_person") params.set("modalidade", "presencial");
-
-    const search = params.toString();
-    window.history.replaceState(
-      null,
-      "",
-      `${window.location.pathname}${search ? `?${search}` : ""}#diretorio`,
-    );
-    window.dispatchEvent(
-      new CustomEvent("liz-directory-search", { detail: { query, modality: mode, resetFilters: true } }),
-    );
-    const target = document.getElementById("diretorio");
-    target?.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth", block: "start" });
-    window.setTimeout(() => document.getElementById("directory-search")?.focus({ preventScroll: true }), 50);
-  };
-
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSearch = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    applyDirectorySearch(heroQuery);
+    goToDirectory({ query });
   };
+
+  const choiceBase =
+    "group flex w-full items-start gap-4 rounded-2xl border p-5 text-left transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-terracotta)]";
+  const selectClass =
+    "h-12 w-full rounded-xl border border-[var(--color-sepia)]/25 bg-[var(--color-parchment)] px-3 text-base text-[var(--color-ink)] outline-none focus:border-[var(--color-terracotta)] focus:ring-2 focus:ring-[var(--color-terracotta)]/20";
 
   return (
     <section
       ref={rootRef}
-      className="relative z-10 md:min-h-[90vh] flex items-center pt-24 pb-12 md:pb-20 overflow-hidden bg-[var(--color-ink)] border-b border-[var(--color-gold)]/70"
+      aria-labelledby="acolhida-titulo"
+      className="relative z-10 overflow-hidden bg-[var(--color-parchment)] px-5 pb-12 pt-8 sm:px-8 md:pb-20 md:pt-14 lg:px-12"
     >
-      {/* Background Image (Immersive) — parallax removed for calmer feel */}
-      <div className="absolute inset-0 w-full h-full z-0">
-        <img
-          src={heroImage}
-          alt=""
-          aria-hidden="true"
-          decoding="async"
-          fetchPriority="high"
-          className="w-full h-full object-cover object-center opacity-90"
-        />
-        {/* Dark Gradients tailored for text readability preserving original image color */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/90 via-black/70 to-black/30 md:bg-gradient-to-r md:from-black/90 md:via-black/50 md:to-transparent w-full md:w-[70%]" />
-
-        <div className="absolute inset-0 bg-noise mix-blend-overlay opacity-30" />
-      </div>
-
-      {/* TEXT CONTENT (Left) */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-12">
-        <div className="max-w-2xl flex flex-col justify-center">
-          <span
-            data-hero-eyebrow
-            className="inline-flex items-center gap-3 font-mono text-[10px] md:text-xs uppercase tracking-[0.3em] text-white/80 mb-5 md:mb-8 bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/20 shadow-sm w-fit"
-          >
-            <span className="size-1.5 rounded-full bg-white motion-safe:animate-pulse" />
+      <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-14">
+        {/* Região 1 — acolhida e escolha */}
+        <div className="flex flex-col justify-center">
+          <span data-hero-in className="label-mono text-[var(--color-terracotta)]">
             Rede oficial Instituto LIZ
           </span>
-
           <h1
-            data-hero-title
-            className="font-display text-[2.1rem] sm:text-5xl md:text-7xl lg:text-[5rem] leading-[1.05] mb-4 md:mb-8 text-balance text-white drop-shadow-lg"
+            id="acolhida-titulo"
+            data-hero-in
+            className="mt-3 font-display text-[2.1rem] leading-[1.08] text-[var(--color-ink)] text-balance sm:text-5xl lg:text-[3.6rem]"
           >
-            <span className="block">A Maior Rede de</span>
-            <span className="block">
-              <em className="italic font-normal" style={{ color: "var(--color-gold-soft)" }}>
-                Psicogenealogistas
-              </em>
-            </span>
-            <span className="block">do Mundo</span>
+            Encontre um profissional para o seu{" "}
+            <em className="font-normal italic text-[var(--color-terracotta)]">próximo passo.</em>
           </h1>
-
-          <p
-            data-hero-lede
-            className="order-last md:order-none text-base md:text-xl text-white/80 mt-6 md:mt-0 mb-0 md:mb-10 leading-relaxed text-pretty font-light max-w-[45ch]"
-          >
+          <p data-hero-in className="mt-4 max-w-[48ch] text-base leading-relaxed text-[var(--color-sepia)] md:text-lg">
             Encontre profissionais indicados pelo Instituto LIZ para atendimentos online ou
             presenciais — comprometidos com a ética, o estudo contínuo e a excelência no
             acolhimento.
           </p>
 
-          <form
-            data-hero-search
-            onSubmit={handleSubmit}
-            className="mb-5 max-w-2xl rounded-2xl border border-white/20 bg-white/95 p-2 shadow-2xl shadow-black/30 backdrop-blur-md"
-          >
-            <p className="px-2 pb-2 pt-1 font-display text-lg text-[var(--color-ink)]" id="hero-search-title">
-              Encontre um(a) psicogenealogista
-            </p>
-            <label htmlFor="hero-directory-search" className="sr-only">
-              Buscar psicogenealogista por nome, cidade ou país
+          <p data-hero-in className="mt-6 font-display text-lg text-[var(--color-ink)]">
+            Como você prefere ser atendido(a)?
+          </p>
+          <div data-hero-in className="mt-3 grid gap-3 sm:grid-cols-2" role="group" aria-label="Escolha a modalidade">
+            <button
+              type="button"
+              onClick={() => {
+                setPresencialOpen(false);
+                goToDirectory({ modality: "online" });
+              }}
+              className={`${choiceBase} border-[var(--color-sepia)]/20 bg-card hover:border-[var(--color-terracotta)]/60`}
+            >
+              <Monitor className="mt-1 size-5 shrink-0 text-[var(--color-terracotta)]" aria-hidden="true" />
+              <span>
+                <span className="block font-display text-xl text-[var(--color-ink)]">Online</span>
+                <span className="mt-1 block text-sm leading-relaxed text-[var(--color-sepia)]">
+                  Por vídeo, de onde você estiver. Mostra quem atende online.
+                </span>
+              </span>
+            </button>
+            <button
+              type="button"
+              aria-expanded={presencialOpen}
+              aria-controls="presencial-etapa"
+              onClick={() => setPresencialOpen((v) => !v)}
+              className={`${choiceBase} ${
+                presencialOpen
+                  ? "border-[var(--color-ink)] bg-[var(--color-ink)] text-[var(--color-parchment)]"
+                  : "border-[var(--color-sepia)]/20 bg-card hover:border-[var(--color-terracotta)]/60"
+              }`}
+            >
+              <MapPin
+                className={`mt-1 size-5 shrink-0 ${presencialOpen ? "text-[var(--color-gold)]" : "text-[var(--color-terracotta)]"}`}
+                aria-hidden="true"
+              />
+              <span>
+                <span className={`block font-display text-xl ${presencialOpen ? "" : "text-[var(--color-ink)]"}`}>
+                  Presencial
+                </span>
+                <span
+                  className={`mt-1 block text-sm leading-relaxed ${presencialOpen ? "text-[var(--color-parchment)]/85" : "text-[var(--color-sepia)]"}`}
+                >
+                  Em consultório. Escolha país e cidade, se quiser.
+                </span>
+              </span>
+            </button>
+          </div>
+
+          {presencialOpen && (
+            <div
+              id="presencial-etapa"
+              className="mt-3 rounded-2xl border border-[var(--color-ink)]/15 bg-card p-4 sm:p-5"
+            >
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div>
+                  <label htmlFor="hero-pais" className="mb-1.5 block text-sm font-medium text-[var(--color-ink)]">
+                    País <span className="font-normal text-[var(--color-sepia)]">(opcional)</span>
+                  </label>
+                  <select
+                    id="hero-pais"
+                    value={country}
+                    onChange={(e) => {
+                      setCountry(e.target.value);
+                      setCity("");
+                    }}
+                    className={selectClass}
+                  >
+                    <option value="">Qualquer país</option>
+                    {countries.map((c) => (
+                      <option key={c} value={c}>
+                        {c}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label htmlFor="hero-cidade" className="mb-1.5 block text-sm font-medium text-[var(--color-ink)]">
+                    Cidade <span className="font-normal text-[var(--color-sepia)]">(opcional)</span>
+                  </label>
+                  <select id="hero-cidade" value={city} onChange={(e) => setCity(e.target.value)} className={selectClass}>
+                    <option value="">Qualquer cidade</option>
+                    {cities.map((c) => (
+                      <option key={c} value={c}>
+                        {c}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center">
+                <button
+                  type="button"
+                  onClick={() => goToDirectory({ modality: "in_person", country, city })}
+                  className="btn-primary min-h-12"
+                >
+                  Ver profissionais
+                  <ArrowRight className="size-4" aria-hidden="true" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setCountry("");
+                    setCity("");
+                    goToDirectory({ modality: "in_person" });
+                  }}
+                  className="min-h-12 rounded-full px-4 text-sm font-semibold text-[var(--color-terracotta)] underline-offset-4 hover:underline"
+                >
+                  Explorar sem escolher local
+                </button>
+              </div>
+            </div>
+          )}
+
+          <form data-hero-in onSubmit={handleSearch} role="search" className="mt-6">
+            <label htmlFor="hero-directory-search" className="mb-1.5 block text-sm text-[var(--color-sepia)]">
+              Já sabe quem procura? Busque pelo nome ou local.
             </label>
-            <div className="flex flex-col gap-2 sm:flex-row">
+            <div className="flex gap-2">
               <div className="relative flex-1">
-                <Search className="absolute left-4 top-1/2 size-5 -translate-y-1/2 text-primary" />
+                <Search className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-[var(--color-sepia)]" aria-hidden="true" />
                 <input
                   id="hero-directory-search"
                   type="search"
-                  value={heroQuery}
-                  onChange={(event) => setHeroQuery(event.target.value)}
-                  placeholder="Busque por nome, cidade ou país"
-                  className="h-13 w-full rounded-xl border border-transparent bg-transparent pl-12 pr-4 text-base text-foreground outline-none placeholder:text-muted-foreground focus:border-primary/30 focus:bg-background"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Nome, cidade ou país"
+                  className="h-12 w-full rounded-full border border-[var(--color-sepia)]/25 bg-card pl-10 pr-4 text-base text-[var(--color-ink)] outline-none placeholder:text-[var(--color-sepia-soft)] focus:border-[var(--color-terracotta)] focus:ring-2 focus:ring-[var(--color-terracotta)]/20"
                 />
               </div>
-              <button
-                type="submit"
-                className="h-13 min-h-12 rounded-xl bg-[var(--color-ink)] text-[var(--color-parchment)] px-6 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-deep focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-              >
+              <button type="submit" className="btn-primary min-h-12">
                 Buscar
               </button>
             </div>
-            <div
-              role="group"
-              aria-label="Modalidade de atendimento"
-              className="mt-2 grid grid-cols-3 gap-1 rounded-xl bg-muted/70 p-1"
-            >
-              {(
-                [
-                  ["all", "Todos"],
-                  ["online", "Online"],
-                  ["in_person", "Presencial"],
-                ] as const
-              ).map(([value, label]) => (
-                <button
-                  key={value}
-                  type="button"
-                  aria-pressed={heroModality === value}
-                  onClick={() => setHeroModality(value)}
-                  className={`min-h-11 rounded-lg text-sm font-medium transition-colors ${
-                    heroModality === value
-                      ? "bg-[var(--color-ink)] text-[var(--color-parchment)]"
-                      : "text-foreground/75 hover:text-foreground"
-                  }`}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
           </form>
 
-          <div className="mb-6 md:mb-8 flex flex-wrap gap-2">
-            {["Online", "São Paulo", "Portugal"].map((term) => (
-              <button
-                key={term}
-                data-hero-chip
-                type="button"
-                onClick={() => {
-                  setHeroQuery(term);
-                  applyDirectorySearch(term, "all");
-                }}
-                className="rounded-full border border-white/20 bg-white/10 min-h-11 px-4 py-2 text-sm font-medium text-white/90 backdrop-blur-sm transition-colors hover:bg-white/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-              >
-                {term}
-              </button>
-            ))}
-          </div>
-
-          <div className="flex flex-col sm:flex-row flex-wrap gap-4">
-            <a
-              data-hero-cta
-              href="#diretorio"
-              className="flex min-h-12 items-center justify-center px-6 md:px-8 py-3.5 md:py-4 bg-white text-black rounded-full text-sm md:text-base font-medium hover:bg-white/90 transition-all duration-300 shadow-xl"
+          <div data-hero-in className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
+            <button
+              type="button"
+              onClick={() => {
+                setPresencialOpen(false);
+                goToDirectory({});
+              }}
+              className="inline-flex min-h-11 items-center gap-1.5 font-semibold text-[var(--color-ink)] underline decoration-[var(--color-gold)] decoration-2 underline-offset-4"
             >
-              Encontrar Profissional
-            </a>
+              Explorar todos os profissionais
+              <ArrowRight className="size-4" aria-hidden="true" />
+            </button>
             <a
-              data-hero-cta
               href="#indicado"
-              className="flex min-h-12 items-center justify-center gap-2 px-6 md:px-8 py-3.5 md:py-4 bg-black/30 border border-white/30 text-white rounded-full text-sm md:text-base font-medium hover:bg-white/10 transition-all duration-300 backdrop-blur-sm"
+              className="inline-flex min-h-11 items-center text-[var(--color-sepia)] underline-offset-4 hover:underline"
             >
-              <Play className="size-4 fill-white" />
               Conhecer a Formação
             </a>
           </div>
         </div>
+
+        {/* Região 2 — pessoas reais da rede, ordem existente do diretório */}
+        {portraits.length > 0 && (
+          <div aria-labelledby="acolhida-pessoas" className="lg:pt-4">
+            <h2 id="acolhida-pessoas" className="label-mono mb-4">
+              Algumas pessoas da rede
+            </h2>
+            <ul className="flex snap-x gap-3 overflow-x-auto pb-2 lg:grid lg:grid-cols-2 lg:grid-rows-2 lg:gap-4 lg:overflow-visible">
+              {portraits.map((p, i) => (
+                <li
+                  key={p.id}
+                  data-hero-portrait
+                  className={`w-[62vw] max-w-[260px] shrink-0 snap-start lg:w-auto lg:max-w-none ${
+                    i === 0 ? "lg:row-span-2" : ""
+                  }`}
+                >
+                  <a
+                    href={getProfessionalProfilePath(p)}
+                    className="group flex h-full flex-col overflow-hidden rounded-2xl border border-[var(--color-sepia)]/15 bg-card focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-terracotta)]"
+                  >
+                    <div
+                      className={`flex items-center justify-center bg-[var(--color-ink)] ${
+                        i === 0 ? "h-[300px] lg:h-full lg:min-h-[460px]" : "h-[300px] lg:h-[210px]"
+                      }`}
+                    >
+                      <img
+                        {...getResponsivePhotoAttrs(p.photo_url, "(min-width: 1024px) 320px, 62vw")}
+                        alt={`Foto de ${p.name}`}
+                        className="h-full w-full object-contain"
+                        decoding="async"
+                        fetchPriority={i === 0 ? "high" : "auto"}
+                      />
+                    </div>
+                    <div className="px-4 py-3">
+                      <span className="block font-display text-lg leading-snug text-[var(--color-ink)] group-hover:text-[var(--color-terracotta)]">
+                        {p.name}
+                      </span>
+                      {getProfessionalLocation(p) && (
+                        <span className="mt-0.5 block text-xs text-[var(--color-sepia)]">
+                          {getProfessionalLocation(p)}
+                        </span>
+                      )}
+                    </div>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
     </section>
   );

@@ -59,7 +59,7 @@ export function HeroCarousel({ people }: { people: Professional[] }) {
     const first = track.querySelector<HTMLElement>("[data-strip-item]");
     const firstClone = track.querySelector<HTMLElement>("[data-strip-clone]");
     if (first) {
-      const pitch = first.offsetWidth + parseFloat(getComputedStyle(first.parentElement!).columnGap || "0");
+      const pitch = first.offsetWidth + (parseFloat(getComputedStyle(track.firstElementChild as Element).columnGap) || 0);
       setClones(cloneCount(track.clientWidth, pitch, size));
     }
     if (first && firstClone) setWidthRef.current = firstClone.offsetLeft - first.offsetLeft;

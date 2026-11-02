@@ -21,7 +21,7 @@ export function advanceOffset(pos: number, speedPxPerSec: number, dtMs: number, 
  * so the viewport is always filled at the loop seam. Never more than the set itself.
  */
 export function cloneCount(viewportWidth: number, pitch: number, size: number) {
-  if (size <= 0 || pitch <= 0) return 0;
+  if (size <= 0 || !(pitch > 0) || !(viewportWidth >= 0)) return Math.min(size, 1);
   return Math.min(size, Math.ceil(viewportWidth / pitch) + 1);
 }
 

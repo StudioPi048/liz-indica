@@ -253,3 +253,54 @@ export async function fetchProfessionalBySlug(slug: string): Promise<Professiona
     null
   );
 }
+
+export type ContactChannel = {
+  kind: "whatsapp" | "email" | "instagram" | "site" | "phone";
+  href: string;
+  label: string;
+};
+
+function channelFromHref(href: string): ContactChannel["kind"] {
+  if (/^mailto:/i.test(href)) return "email";
+  if (/^tel:/i.test(href)) return "phone";
+  if (/wa\.me|whatsapp/i.test(href)) return "whatsapp";
+  if (/instagram\.com/i.test(href)) return "instagram";
+  return "site";
+}
+
+const CHANNEL_LABEL: Record<ContactChannel["kind"], string> = {
+  whatsapp: "Conversar no WhatsApp",
+  email: "Enviar e-mail",
+  instagram: "Ver Instagram",
+  site: "Visitar site",
+  phone: "Ligar",
+};
+
+/**
+ * Primary contact channel derived ONLY from existing data:
+ * 1) the contact field (WhatsApp/e-mail/link as recorded);
+ * 2) otherwise the first site or Instagram found in the social field.
+ * Returns null when nothing real exists — never invents a channel.
+ */
+export function getPrimaryContact(
+  professional: Pick<Professional, "contact_url" | "social_media">,
+): ContactChannel | null {
+  const direct = getContactHref(professional.contact_url);
+  if (direct) {
+    const kind = channelFromHref(direct);
+    return { kind, href: direct, label: CHANNEL_LABEL[kind] };
+  }
+  const social = professional.social_media ?? "";
+  const site = social.match(/(?:https?:\/\/|www\.)[^\s,;]+/i)?.[0]?.replace(/[.)]+$/, "");
+  if (site) {
+    const href = site.toLowerCase().startsWith("www.") ? `https://${site}` : site;
+    const kind = channelFromHref(href);
+    return { kind, href, label: CHANNEL_LABEL[kind] };
+  }
+  const ig = social.match(/@([\w.]+)/)?.[1]?.replace(/\.+$/, "");
+  if (ig) {
+    const href = `https://instagram.com/${ig}`;
+    return { kind: "instagram", href, label: CHANNEL_LABEL.instagram };
+  }
+  return null;
+}

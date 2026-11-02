@@ -1,3 +1,4 @@
+import rootsImage from "@/assets/roots-soft.webp";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { ProfessionalCard } from "./ProfessionalCard";
@@ -583,7 +584,8 @@ export function Directory() {
       <div className="absolute inset-0 bg-noise opacity-30 mix-blend-overlay pointer-events-none z-0"></div>
 
       <div className="max-w-7xl mx-auto relative z-10">
-        <header className="mb-6 md:mb-10 max-w-3xl">
+        <div className="mb-6 flex items-start justify-between gap-6 md:mb-10">
+        <header className="max-w-3xl">
           <h2
             id="diretorio-titulo"
             className="font-display text-3xl md:text-5xl mb-4 text-balance text-[var(--color-ink)]"
@@ -598,6 +600,18 @@ export function Directory() {
             Diretório oficial · Mentorados do Instituto LIZ
           </p>
         </header>
+          {/* Raízes: narrativa visual da linhagem, ao lado do título, nunca sob texto/controles */}
+          <img
+            src={rootsImage}
+            alt=""
+            aria-hidden="true"
+            width={640}
+            height={640}
+            loading="lazy"
+            decoding="async"
+            className="w-24 shrink-0 mix-blend-multiply sm:w-36 md:w-56"
+          />
+        </div>
 
         {/* Primary controls — always visible on every viewport */}
         <div

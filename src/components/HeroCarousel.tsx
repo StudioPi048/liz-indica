@@ -33,7 +33,7 @@ function Portrait({ person, eager }: { person: Professional; eager?: boolean }) 
 /**
  * Continuous full-bleed strip with every listed person (same set as the directory).
  * Native horizontal scroller; GSAP ticker advances scrollLeft at constant speed.
- * Trailing clones (aria-hidden, inert, no links) only fill the viewport at the seam.
+ * Trailing clones (aria-hidden, tabIndex=-1 links to the same profile) only fill the viewport at the seam.
  */
 export function HeroCarousel({ people }: { people: Professional[] }) {
   const size = people.length;
@@ -236,11 +236,21 @@ export function HeroCarousel({ people }: { people: Professional[] }) {
               key={`clone-${p.id}`}
               data-strip-clone={i === 0 ? "first" : undefined}
               aria-hidden="true"
-              inert
               className="w-[168px] shrink-0 md:w-[224px]"
             >
-              <Portrait person={p} />
-              <span className="mt-2.5 block line-clamp-2 text-[0.95rem] leading-snug text-[var(--color-ink)]">{p.name}</span>
+              {/* Visual copy at the loop seam: clickable (same profile), but out of tab order and screen readers. */}
+              <Link
+                to="/profissionais/$slug"
+                params={{ slug: getProfessionalSlug(p) }}
+                tabIndex={-1}
+                draggable={false}
+                className="group block rounded-[16px]"
+              >
+                <Portrait person={p} />
+                <span className="mt-2.5 block line-clamp-2 text-[0.95rem] leading-snug text-[var(--color-ink)] group-hover:underline group-hover:decoration-[var(--color-gold)] group-hover:underline-offset-4">
+                  {p.name}
+                </span>
+              </Link>
             </div>
           ))}
         </div>

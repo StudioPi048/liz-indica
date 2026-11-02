@@ -5,3 +5,6 @@
 - Profile bios render in full, paragraph by paragraph, with no inferred headings (e.g. never label a paragraph "Formação").
 - Favorites live only in localStorage (`liz-favoritos`) via `useFavorites`; no login or backend.
 - Tests: `bunx vitest run` (src/lib/__tests__).
+- Home journey order is Hero (guided Online/Presencial choice) → HowItWorks strip → Directory → About → Stats → form; Hero talks to Directory only via `goToDirectory` (URL + `liz-directory-search` event). Why: one predictable path for criteria.
+- Portrait photos are always shown whole (`object-contain`) with no CSS filter. Why: owner requires original photos intact.
+- Product facts live in PRODUCT.md, visual system in DESIGN.md; keep them current when composition changes.

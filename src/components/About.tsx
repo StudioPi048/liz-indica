@@ -3,7 +3,6 @@ import instituteImage from "@/assets/hero-bg2.webp";
 export function About() {
   return (
     <section
-      id="instituto"
       aria-labelledby="instituto-titulo"
       className="relative z-10 border-y border-[var(--color-gold)]/45 bg-[var(--color-ink)] px-6 py-20 text-[var(--color-parchment)] md:py-28"
     >

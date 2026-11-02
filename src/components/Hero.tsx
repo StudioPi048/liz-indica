@@ -325,7 +325,7 @@ export function Hero() {
                 >
                   <a
                     href={getProfessionalProfilePath(p)}
-                    className="group flex w-fit max-w-full flex-col overflow-hidden rounded-2xl border border-[var(--color-sepia)]/15 bg-card focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-terracotta)]"
+                    className="group flex w-min max-w-full flex-col lg:w-fit overflow-hidden rounded-2xl border border-[var(--color-sepia)]/15 bg-card focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-terracotta)]"
                   >
                     <img
                       {...getResponsivePhotoAttrs(

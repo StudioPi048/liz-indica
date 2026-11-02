@@ -8,4 +8,4 @@
 - Home journey order is Hero (guided Online/Presencial choice) → HowItWorks strip → Directory → About → Stats → form; Hero talks to Directory only via `goToDirectory` (URL + `liz-directory-search` event). Why: one predictable path for criteria.
 - Portrait photos are always shown whole (`object-contain`) with no CSS filter. Why: owner requires original photos intact.
 - Product facts live in PRODUCT.md, visual system in DESIGN.md; keep them current when composition changes.
-- Hero people area is `HeroCarousel` fed with the full `dedupeForDirectory` list (no slice, no photo filter); cycle logic lives in pure `src/lib/carousel.ts` with tests. Why: no fixed highlights; every person rotates with equal timing.
+- Hero people area is `HeroCarousel` (a continuous full-bleed portrait strip, not paged cards) fed with the full `dedupeForDirectory` list (no slice, no photo filter); cycle logic lives in pure `src/lib/carousel.ts` with tests. Why: no fixed highlights; every person rotates with equal timing.

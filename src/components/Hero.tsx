@@ -109,7 +109,7 @@ export function Hero() {
     >
       <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-14">
         {/* Região 1 — acolhida e escolha */}
-        <div className="flex flex-col justify-center">
+        <div className="flex min-w-0 flex-col justify-center">
           <span data-hero-in className="label-mono text-[var(--color-terracotta)]">
             Rede oficial Instituto LIZ
           </span>
@@ -285,16 +285,16 @@ export function Hero() {
 
         {/* Região 2 — pessoas reais da rede, ordem existente do diretório */}
         {portraits.length > 0 && (
-          <div aria-labelledby="acolhida-pessoas" className="lg:pt-4">
+          <div aria-labelledby="acolhida-pessoas" className="min-w-0 lg:pt-4">
             <h2 id="acolhida-pessoas" className="label-mono mb-4">
               Algumas pessoas da rede
             </h2>
-            <ul className="flex snap-x gap-3 overflow-x-auto pb-2 lg:grid lg:grid-cols-2 lg:grid-rows-2 lg:gap-4 lg:overflow-visible">
+            <ul className="flex snap-x gap-3 overflow-x-auto pb-2 lg:grid lg:grid-cols-[1.5fr_1fr] lg:grid-rows-2 lg:gap-4 lg:overflow-visible">
               {portraits.map((p, i) => (
                 <li
                   key={p.id}
                   data-hero-portrait
-                  className={`w-[62vw] max-w-[260px] shrink-0 snap-start lg:w-auto lg:max-w-none ${
+                  className={`w-[68vw] max-w-[280px] shrink-0 snap-start lg:w-auto lg:max-w-none ${
                     i === 0 ? "lg:row-span-2" : ""
                   }`}
                 >
@@ -304,7 +304,7 @@ export function Hero() {
                   >
                     <div
                       className={`flex items-center justify-center bg-[var(--color-ink)] ${
-                        i === 0 ? "h-[300px] lg:h-full lg:min-h-[460px]" : "h-[300px] lg:h-[210px]"
+                        i === 0 ? "h-[260px] lg:h-auto lg:min-h-[420px] lg:flex-1" : "h-[260px] lg:h-[230px]"
                       }`}
                     >
                       <img

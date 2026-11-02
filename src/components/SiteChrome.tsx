@@ -18,7 +18,7 @@ export function SiteHeader() {
       className={`sticky top-0 z-50 backdrop-blur-md border-b transition-all duration-500 ${
         scrolled
           ? "bg-[var(--color-ink)]/95 border-[var(--color-gold)]/40 shadow-md"
-          : "bg-[var(--color-ink)]/70 border-transparent shadow-none"
+          : "bg-[var(--color-ink)] border-transparent shadow-none"
       }`}
     >
       <div

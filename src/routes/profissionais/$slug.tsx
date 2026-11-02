@@ -352,7 +352,8 @@ function ProfessionalProfilePage() {
                     className="btn-ghost-gold min-h-11 flex-1 sm:flex-none"
                   >
                     <Heart className={`size-4 ${isFavorite ? "fill-current text-[var(--color-terracotta)]" : ""}`} aria-hidden="true" />
-                    {isFavorite ? "Salvo nos favoritos" : "Salvar nos favoritos"}
+                    <span className="sm:hidden">{isFavorite ? "Salvo" : "Favoritar"}</span>
+                    <span className="hidden sm:inline">{isFavorite ? "Salvo nos favoritos" : "Salvar nos favoritos"}</span>
                   </button>
                 </div>
 

@@ -842,7 +842,7 @@ export function Directory() {
                       onClick={() => setVisibleCount((count) => count + LOAD_MORE_COUNT)}
                       className="min-h-12 rounded-full border border-border bg-card px-6 text-sm font-semibold text-primary-deep shadow-sm transition-colors hover:bg-muted"
                     >
-                      Mostrar mais {Math.min(LOAD_MORE_COUNT, remainingProfessionals)} mentorados
+                      Ver mais {Math.min(LOAD_MORE_COUNT, remainingProfessionals)} profissionais
                     </button>
                   </div>
                 )}

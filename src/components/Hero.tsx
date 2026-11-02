@@ -107,27 +107,53 @@ export function Hero() {
       aria-labelledby="acolhida-titulo"
       className="relative z-10 overflow-hidden bg-[var(--color-parchment)] px-5 pb-12 pt-8 sm:px-8 md:pb-20 md:pt-14 lg:px-12"
     >
-      <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-14">
+      <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:items-center lg:gap-14">
         {/* Região 1 — acolhida e escolha */}
         <div className="flex min-w-0 flex-col justify-center">
-          <span data-hero-in className="label-mono text-[var(--color-terracotta)]">
-            Rede oficial Instituto LIZ
-          </span>
           <h1
             id="acolhida-titulo"
             data-hero-in
-            className="mt-3 font-display text-[2.1rem] leading-[1.08] text-[var(--color-ink)] text-balance sm:text-5xl lg:text-[3.6rem]"
+            className="font-display text-[2.1rem] leading-[1.08] text-[var(--color-ink)] text-balance sm:text-5xl lg:text-[3.6rem]"
           >
             Encontre um profissional para o seu{" "}
             <em className="font-normal italic text-[var(--color-terracotta)]">próximo passo.</em>
           </h1>
-          <p data-hero-in className="mt-4 max-w-[48ch] text-base leading-relaxed text-[var(--color-sepia)] md:text-lg">
+          {/* No mobile o parágrafo integral desce para o fim da acolhida (order-last). */}
+          <p data-hero-in className="order-last mt-6 max-w-[48ch] text-base leading-relaxed text-[var(--color-sepia)] lg:order-none lg:mt-4 lg:text-lg">
             Encontre profissionais indicados pelo Instituto LIZ para atendimentos online ou
             presenciais — comprometidos com a ética, o estudo contínuo e a excelência no
             acolhimento.
           </p>
 
-          <p data-hero-in className="mt-6 font-display text-lg text-[var(--color-ink)]">
+          {/* Mobile: presença fotográfica já na abertura */}
+          {portraits[0] && (
+            <a
+              data-hero-in
+              href={getProfessionalProfilePath(portraits[0])}
+              className="mt-5 flex items-end gap-4 lg:hidden"
+            >
+              <img
+                {...getResponsivePhotoAttrs(portraits[0].photo_url, "180px")}
+                alt={`Foto de ${portraits[0].name}`}
+                className="block h-[220px] w-auto max-w-[58vw] rounded-2xl border border-[var(--color-sepia)]/15 object-contain"
+                fetchPriority="high"
+                decoding="async"
+              />
+              <span className="min-w-0 pb-1">
+                <span className="block text-xs text-[var(--color-sepia)]">Uma das pessoas da rede</span>
+                <span className="mt-1 block font-display text-lg leading-snug text-[var(--color-ink)]">
+                  {portraits[0].name}
+                </span>
+                {getProfessionalLocation(portraits[0]) && (
+                  <span className="mt-0.5 block text-xs text-[var(--color-sepia)]">
+                    {getProfessionalLocation(portraits[0])}
+                  </span>
+                )}
+              </span>
+            </a>
+          )}
+
+          <p data-hero-in className="mt-5 font-display text-lg text-[var(--color-ink)] lg:mt-6">
             Como você prefere ser atendido(a)?
           </p>
           <div data-hero-in className="mt-3 grid gap-3 sm:grid-cols-2" role="group" aria-label="Escolha a modalidade">

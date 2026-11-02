@@ -1,6 +1,13 @@
 export function About() {
   return (
-    <section className="relative z-10 border-y border-[var(--color-gold)]/45 bg-[var(--color-ink)] px-6 py-32 text-[var(--color-parchment)]">
+    <section className="relative z-10 border-y border-[var(--color-gold)]/45 bg-[var(--color-ink)] px-6 py-20 text-[var(--color-parchment)] md:py-28">
+      <div className="mx-auto mb-14 max-w-7xl border-b border-[var(--color-gold)]/25 pb-12 md:mb-20 md:pb-16">
+        <p className="font-display text-3xl leading-[1.1] text-balance md:text-5xl">
+          A Maior Rede de{" "}
+          <em className="font-normal italic text-[var(--color-gold-soft)]">Psicogenealogistas</em> do
+          Mundo
+        </p>
+      </div>
       <div className="mx-auto grid max-w-7xl items-start gap-16 md:grid-cols-2">
         <div>
           <span className="label-mono text-[var(--color-gold-soft)]">O Instituto LIZ</span>

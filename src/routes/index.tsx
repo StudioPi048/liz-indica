@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { lazy } from "react";
-import heroImage from "@/assets/hero-bg2.webp";
 import { SiteFooter, SiteHeader } from "@/components/SiteChrome";
 import { Hero } from "@/components/Hero";
 import { Stats } from "@/components/Stats";
@@ -8,7 +7,6 @@ import { HowItWorks } from "@/components/HowItWorks";
 import { Directory } from "@/components/Directory";
 import { About } from "@/components/About";
 import { LazyOnVisible } from "@/components/LazyOnVisible";
-import { LineageThread } from "@/components/LineageThread";
 import { SITE_URL } from "@/lib/professionals-api";
 
 const LazyBecomeIndicated = lazy(() =>
@@ -45,10 +43,7 @@ export const Route = createFileRoute("/")({
       },
       { name: "twitter:image", content: `${SITE_URL}/og-liz-indica.svg` },
     ],
-    links: [
-      { rel: "canonical", href: `${SITE_URL}/` },
-      { rel: "preload", href: heroImage, as: "image" },
-    ],
+    links: [{ rel: "canonical", href: `${SITE_URL}/` }],
   }),
   component: Index,
 });
@@ -67,6 +62,10 @@ const homeJsonLd = {
   },
 };
 
+/**
+ * Journey: welcome + guided choice (Hero) → short orientation (HowItWorks) →
+ * people of the network (Directory) → institute narrative (About) → reach numbers (Stats) → form.
+ */
 function Index() {
   return (
     <div className="min-h-screen bg-background text-foreground selection:bg-primary/20">
@@ -76,20 +75,13 @@ function Index() {
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(homeJsonLd).replace(/</g, "\\u003c") }}
         />
-        <LineageThread />
-        <span data-thread-anchor aria-hidden="true" />
         <Hero />
-        <span data-thread-anchor aria-hidden="true" />
-        <Stats />
-        <span data-thread-anchor aria-hidden="true" />
-        <Directory />
-        <span data-thread-anchor aria-hidden="true" />
         <HowItWorks />
-        <span data-thread-anchor aria-hidden="true" />
+        <Directory />
         <section id="instituto">
           <About />
         </section>
-        <span data-thread-anchor aria-hidden="true" />
+        <Stats />
         <LazyOnVisible
           id="indicado"
           label="Carregando formulário de indicação"
@@ -99,7 +91,6 @@ function Index() {
         >
           <LazyBecomeIndicated sectionId={null} />
         </LazyOnVisible>
-        <span data-thread-anchor aria-hidden="true" />
       </main>
       <SiteFooter />
     </div>

@@ -71,7 +71,7 @@ export function Stats() {
       className="relative z-10 border-y border-[var(--color-gold)]/45 bg-[var(--color-parchment)] py-14"
     >
       <div className="max-w-7xl mx-auto px-6">
-        <h2 className="label-mono mb-6 text-center md:text-left">
+        <h2 className="mb-6 text-center font-display text-xl text-[var(--color-ink)] md:text-left">
           Alcance institucional do Instituto LIZ
         </h2>
       </div>

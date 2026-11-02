@@ -305,12 +305,9 @@ function ProfessionalProfilePage() {
             <div className="grid gap-6 lg:grid-cols-[minmax(0,440px)_minmax(0,1fr)] lg:items-center lg:gap-14">
               {/* Identidade — primeiro no mobile */}
               <div className="order-1 min-w-0 lg:order-2">
-                <span className="label-mono text-[var(--color-terracotta)]">
-                  Diretório Oficial · Instituto LIZ
-                </span>
                 <h1
                   id="perfil-nome"
-                  className="mt-2 font-display text-[2rem] leading-[1.08] text-[var(--color-ink)] [overflow-wrap:anywhere] sm:text-5xl lg:text-[3.4rem]"
+                  className="font-display text-[2rem] leading-[1.08] text-[var(--color-ink)] [overflow-wrap:anywhere] sm:text-5xl lg:text-[3.4rem]"
                 >
                   {professional.name}
                 </h1>

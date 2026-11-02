@@ -97,7 +97,7 @@ export function Hero() {
   };
 
   const choiceBase =
-    "group flex w-full items-start gap-4 rounded-2xl border p-5 text-left transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-terracotta)]";
+    "group flex w-full items-start gap-4 rounded-2xl border p-4 text-left sm:p-5 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-terracotta)]";
   const selectClass =
     "h-12 w-full rounded-xl border border-[var(--color-sepia)]/25 bg-[var(--color-parchment)] px-3 text-base text-[var(--color-ink)] outline-none focus:border-[var(--color-terracotta)] focus:ring-2 focus:ring-[var(--color-terracotta)]/20";
 
@@ -306,41 +306,41 @@ export function Hero() {
             >
               Conhecer a Formação
             </a>
+            <span className="text-[var(--color-sepia)]">Rede oficial Instituto LIZ</span>
           </div>
         </div>
 
-        {/* Região 2 — pessoas reais da rede, ordem existente do diretório */}
+        {/* Região 2 — pessoas reais da rede, ordem existente do diretório; fotos na proporção natural */}
         {portraits.length > 0 && (
-          <div aria-labelledby="acolhida-pessoas" className="min-w-0 lg:pt-4">
-            <h2 id="acolhida-pessoas" className="label-mono mb-4">
+          <div aria-labelledby="acolhida-pessoas" className="min-w-0">
+            <h2 id="acolhida-pessoas" className="mb-3 text-sm text-[var(--color-sepia)]">
               Algumas pessoas da rede
             </h2>
-            <ul className="flex snap-x gap-3 overflow-x-auto pb-2 lg:grid lg:grid-cols-[1.5fr_1fr] lg:grid-rows-2 lg:gap-4 lg:overflow-visible">
+            <ul className="flex snap-x gap-3 overflow-x-auto pb-2 lg:grid lg:grid-cols-[1.45fr_1fr] lg:items-start lg:gap-4 lg:overflow-visible">
               {portraits.map((p, i) => (
                 <li
                   key={p.id}
                   data-hero-portrait
-                  className={`w-[68vw] max-w-[280px] shrink-0 snap-start lg:w-auto lg:max-w-none ${
-                    i === 0 ? "lg:row-span-2" : ""
-                  }`}
+                  className={`shrink-0 snap-start ${i === 0 ? "hidden lg:row-span-2 lg:block" : "lg:block"}`}
                 >
                   <a
                     href={getProfessionalProfilePath(p)}
-                    className="group flex h-full flex-col overflow-hidden rounded-2xl border border-[var(--color-sepia)]/15 bg-card focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-terracotta)]"
+                    className="group flex w-fit max-w-full flex-col overflow-hidden rounded-2xl border border-[var(--color-sepia)]/15 bg-card focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-terracotta)]"
                   >
-                    <div
-                      className={`flex items-center justify-center bg-[var(--color-ink)] ${
-                        i === 0 ? "h-[260px] lg:h-auto lg:min-h-[420px] lg:flex-1" : "h-[260px] lg:h-[230px]"
-                      }`}
-                    >
-                      <img
-                        {...getResponsivePhotoAttrs(p.photo_url, "(min-width: 1024px) 320px, 62vw")}
-                        alt={`Foto de ${p.name}`}
-                        className="h-full w-full object-contain"
-                        decoding="async"
-                        fetchPriority={i === 0 ? "high" : "auto"}
-                      />
-                    </div>
+                    <img
+                      {...getResponsivePhotoAttrs(
+                        p.photo_url,
+                        i === 0 ? "(min-width: 1024px) 360px, 1px" : "(min-width: 1024px) 240px, 200px",
+                      )}
+                      alt={`Foto de ${p.name}`}
+                      className={
+                        i === 0
+                          ? "block h-auto max-h-[600px] w-auto max-w-full"
+                          : "block h-[240px] w-auto max-w-[75vw] lg:h-auto lg:max-h-[290px] lg:max-w-full"
+                      }
+                      decoding="async"
+                      loading={i === 0 ? "eager" : "lazy"}
+                    />
                     <div className="px-4 py-3">
                       <span className="block font-display text-lg leading-snug text-[var(--color-ink)] group-hover:text-[var(--color-terracotta)]">
                         {p.name}

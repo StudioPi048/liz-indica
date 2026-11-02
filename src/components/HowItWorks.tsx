@@ -40,10 +40,10 @@ export function HowItWorks() {
     >
       <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] lg:gap-16">
         <div>
-          <span className="label-mono text-[var(--color-gold-soft)]">Como funciona</span>
-          <h2 id="como-funciona-titulo" className="mt-3 font-display text-3xl text-balance md:text-4xl">
+          <h2 id="como-funciona-titulo" className="font-display text-3xl text-balance md:text-4xl">
             Três passos até seu psicogenealogista
           </h2>
+          <p className="mt-2 text-sm text-[var(--color-gold-soft)]">Como funciona o diretório</p>
           <ol className="mt-8 grid gap-6 sm:grid-cols-3">
             {steps.map((s) => (
               <li key={s.n} className="border-t border-[var(--color-gold)]/40 pt-4">

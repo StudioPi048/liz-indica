@@ -584,18 +584,18 @@ export function Directory() {
 
       <div className="max-w-7xl mx-auto relative z-10">
         <header className="mb-6 md:mb-10 max-w-3xl">
-          <span className="label-mono text-[var(--color-terracotta)]">
-            Diretório oficial · Mentorados do Instituto LIZ
-          </span>
           <h2
             id="diretorio-titulo"
-            className="font-display text-3xl md:text-5xl mt-3 mb-4 text-balance text-[var(--color-ink)]"
+            className="font-display text-3xl md:text-5xl mb-4 text-balance text-[var(--color-ink)]"
           >
             Conheça as pessoas da rede
           </h2>
           <p className="text-muted-foreground leading-relaxed">
             Todos os profissionais aqui presentes passaram pela formação do Instituto LIZ e integram
             nossa rede de especialistas comprometidos com a ética e a excelência.
+          </p>
+          <p className="mt-3 text-sm font-medium text-[var(--color-terracotta)]">
+            Diretório oficial · Mentorados do Instituto LIZ
           </p>
         </header>
 

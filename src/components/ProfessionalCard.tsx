@@ -6,7 +6,7 @@ import {
   getProfessionalProfilePath,
   getResponsivePhotoAttrs,
 } from "@/lib/professionals-api";
-import { ArrowUpRight, MapPin } from "lucide-react";
+import { ArrowRight, Heart, MapPin, Monitor } from "lucide-react";
 
 function rememberDirectoryReturn() {
   if (typeof window === "undefined") return;
@@ -16,85 +16,112 @@ function rememberDirectoryReturn() {
   );
 }
 
-export function ProfessionalCard({ pro }: { pro: Professional }) {
+const MAX_SPECIALTIES = 4;
+
+export function ProfessionalCard({
+  pro,
+  isFavorite = false,
+  onToggleFavorite,
+}: {
+  pro: Professional;
+  isFavorite?: boolean;
+  onToggleFavorite?: (id: string) => void;
+}) {
   const profilePath = getProfessionalProfilePath(pro);
   const location = getProfessionalLocation(pro);
-  const hasModality = pro.online || pro.in_person;
-  const modality = hasModality ? getModalityLabel(pro) : null;
-  const metaLine = [modality, location].filter(Boolean).join(" · ");
+  const modality = pro.online || pro.in_person ? getModalityLabel(pro) : null;
+  const extra = pro.specialties.length - MAX_SPECIALTIES;
 
   return (
-    <a
-      href={profilePath}
-      onClick={rememberDirectoryReturn}
-      aria-label={`Ver dossiê de ${pro.name}`}
-      className="card-linhagem group flex h-full flex-col overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-gold)]"
-    >
-      <div className="relative aspect-[4/5] w-full overflow-hidden bg-[var(--color-ink)]">
-        {pro.photo_url ? (
-          <img
-            {...getResponsivePhotoAttrs(
-              pro.photo_url,
-              "(min-width: 1280px) 320px, (min-width: 768px) 45vw, 100vw",
-            )}
-            alt={pro.name}
-            className="photo-sepia h-full w-full object-cover transition-transform duration-[900ms] group-hover:scale-[1.04]"
-            decoding="async"
-            loading="lazy"
-          />
-        ) : (
-          <div
-            className="grid h-full w-full place-items-center bg-[var(--color-ink)] font-display text-7xl text-[var(--color-parchment)]"
-            aria-hidden="true"
-          >
-            {getInitials(pro.name)}
-          </div>
-        )}
+    <article className="card-linhagem relative flex h-full gap-4 p-4 sm:p-5">
+      <a
+        href={profilePath}
+        onClick={rememberDirectoryReturn}
+        tabIndex={-1}
+        aria-hidden="true"
+        className="relative block w-24 shrink-0 self-start overflow-hidden rounded-xl bg-[var(--color-ink)] sm:w-28"
+      >
+        <div className="aspect-[4/5] w-full">
+          {pro.photo_url ? (
+            <img
+              {...getResponsivePhotoAttrs(pro.photo_url, "112px")}
+              alt=""
+              className="photo-sepia h-full w-full object-contain"
+              decoding="async"
+              loading="lazy"
+            />
+          ) : (
+            <div className="grid h-full w-full place-items-center font-display text-3xl text-[var(--color-parchment)]">
+              {getInitials(pro.name)}
+            </div>
+          )}
+        </div>
+      </a>
 
-        <span className="label-mono absolute left-4 top-4 rounded-full bg-[var(--color-parchment)]/95 px-3 py-1.5 text-[var(--color-ink)] shadow-sm backdrop-blur">
-          Instituto LIZ
-        </span>
+      <div className="flex min-w-0 flex-1 flex-col">
+        <div className="flex items-start gap-2">
+          <h3 className="min-w-0 flex-1 font-display text-lg leading-snug text-[var(--color-ink)] sm:text-xl">
+            {pro.name}
+          </h3>
+          {onToggleFavorite && (
+            <button
+              type="button"
+              onClick={() => onToggleFavorite(pro.id)}
+              aria-pressed={isFavorite}
+              aria-label={
+                isFavorite
+                  ? `Remover ${pro.name} dos favoritos`
+                  : `Salvar ${pro.name} nos favoritos`
+              }
+              className="-mr-2 -mt-2 grid size-11 shrink-0 place-items-center rounded-full text-[var(--color-terracotta)] transition-colors hover:bg-[var(--color-terracotta)]/10"
+            >
+              <Heart className={`size-5 ${isFavorite ? "fill-current" : ""}`} aria-hidden="true" />
+            </button>
+          )}
+        </div>
 
-        {location && (
-          <span className="absolute bottom-4 left-4 right-4 inline-flex min-h-10 items-center gap-1.5 rounded-full bg-[var(--color-ink)]/78 px-3 py-2 text-xs font-medium text-[var(--color-parchment)] shadow-lg backdrop-blur">
-            <MapPin className="size-3.5 shrink-0" aria-hidden="true" />
-            <span className="truncate">{location}</span>
-          </span>
-        )}
-      </div>
+        <span className="label-mono mt-1">Instituto LIZ</span>
 
-      <div className="flex flex-1 flex-col bg-white p-6 md:p-7">
-        <h3 className="font-display text-2xl leading-tight text-[var(--color-ink)] md:text-[1.6rem]">
-          {pro.name}
-        </h3>
-
-        {metaLine && (
-          <p className="mt-2 flex items-center gap-1.5 text-xs text-[var(--color-sepia-soft)]">
-            {location && <MapPin className="size-3 shrink-0" aria-hidden="true" />}
-            <span className="truncate">{metaLine}</span>
-          </p>
-        )}
+        <ul className="mt-2 space-y-1 text-sm text-[var(--color-sepia)]">
+          {modality && (
+            <li className="flex items-center gap-1.5">
+              <Monitor className="size-3.5 shrink-0" aria-hidden="true" />
+              <span>{modality}</span>
+            </li>
+          )}
+          {location && (
+            <li className="flex items-start gap-1.5">
+              <MapPin className="mt-0.5 size-3.5 shrink-0" aria-hidden="true" />
+              <span className="min-w-0">{location}</span>
+            </li>
+          )}
+        </ul>
 
         {pro.specialties.length > 0 && (
-          <div className="mt-4 flex flex-wrap gap-1.5">
-            {pro.specialties.slice(0, 3).map((specialty) => (
-              <span key={specialty} className="chip">
+          <ul className="mt-3 flex flex-wrap gap-1.5" aria-label="Especialidades">
+            {pro.specialties.slice(0, MAX_SPECIALTIES).map((specialty) => (
+              <li key={specialty} className="chip">
                 {specialty}
-              </span>
+              </li>
             ))}
-            {pro.specialties.length > 3 && (
-              <span className="chip text-[var(--color-sepia-soft)]">
-                +{pro.specialties.length - 3}
-              </span>
+            {extra > 0 && (
+              <li className="chip text-[var(--color-sepia)]">
+                +{extra} <span className="sr-only">especialidades</span>
+              </li>
             )}
-          </div>
+          </ul>
         )}
 
-        <span className="mt-auto flex items-center gap-1.5 pt-6 font-display text-sm italic text-[var(--color-terracotta)] transition-transform duration-300 group-hover:translate-x-1">
-          Ver dossiê completo
-          <ArrowUpRight className="size-4" aria-hidden="true" />
-        </span>
+        <a
+          href={profilePath}
+          onClick={rememberDirectoryReturn}
+          aria-label={`Ver perfil de ${pro.name}`}
+          className="mt-auto inline-flex min-h-11 items-center gap-1.5 self-start pt-3 text-sm font-semibold text-[var(--color-terracotta)] underline-offset-4 hover:underline"
+        >
+          Ver perfil
+          <ArrowRight className="size-4" aria-hidden="true" />
+        </a>
       </div>
-    </a>
+    </article>
   );
 }

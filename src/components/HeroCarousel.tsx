@@ -236,11 +236,21 @@ export function HeroCarousel({ people }: { people: Professional[] }) {
               key={`clone-${p.id}`}
               data-strip-clone={i === 0 ? "first" : undefined}
               aria-hidden="true"
-              inert
               className="w-[168px] shrink-0 md:w-[224px]"
             >
-              <Portrait person={p} />
-              <span className="mt-2.5 block line-clamp-2 text-[0.95rem] leading-snug text-[var(--color-ink)]">{p.name}</span>
+              {/* Visual copy at the loop seam: clickable (same profile), but out of tab order and screen readers. */}
+              <Link
+                to="/profissionais/$slug"
+                params={{ slug: getProfessionalSlug(p) }}
+                tabIndex={-1}
+                draggable={false}
+                className="group block rounded-[16px]"
+              >
+                <Portrait person={p} />
+                <span className="mt-2.5 block line-clamp-2 text-[0.95rem] leading-snug text-[var(--color-ink)] group-hover:underline group-hover:decoration-[var(--color-gold)] group-hover:underline-offset-4">
+                  {p.name}
+                </span>
+              </Link>
             </div>
           ))}
         </div>

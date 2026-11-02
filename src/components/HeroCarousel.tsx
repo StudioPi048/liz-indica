@@ -2,7 +2,7 @@ import { type KeyboardEvent, useCallback, useEffect, useLayoutEffect, useRef, us
 import { Link } from "@tanstack/react-router";
 import { Pause, Play } from "lucide-react";
 import { gsap, prefersReducedMotion } from "@/hooks/use-gsap";
-import { getResponsivePhotoAttrs, type Professional } from "@/lib/professionals-api";
+import { getProfessionalSlug, getResponsivePhotoAttrs, type Professional } from "@/lib/professionals-api";
 import { advanceOffset, cloneCount, initials, isAutoplayActive, wrapOffset } from "@/lib/carousel";
 
 const SPEED = 26; // px/s, constant
@@ -199,7 +199,7 @@ export function HeroCarousel({ people }: { people: Professional[] }) {
                     linkRefs.current[i] = el;
                   }}
                   to="/profissionais/$slug"
-                  params={{ slug: p.slug }}
+                  params={{ slug: getProfessionalSlug(p) }}
                   tabIndex={i === rovingIndex ? 0 : -1}
                   onFocus={() => setRovingIndex(i)}
                   onKeyDown={(e) => onKeyDown(e, i)}

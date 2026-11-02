@@ -18,7 +18,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { useFavorites } from "@/hooks/use-favorites";
-import rootsBg from "@/assets/roots-soft.webp";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { gsap, prefersReducedMotion } from "@/hooks/use-gsap";
 
 type Modality = "all" | "online" | "in_person";
@@ -39,11 +39,13 @@ type WritableDirectoryFilters = Omit<DirectoryFilters, "specialties"> & {
 type DirectorySearchEvent = CustomEvent<{
   query?: string;
   modality?: Modality;
+  country?: string;
+  city?: string;
   resetFilters?: boolean;
 }>;
 
-const INITIAL_VISIBLE_COUNT = 12;
-const LOAD_MORE_COUNT = 12;
+const INITIAL_VISIBLE_COUNT = 6;
+const LOAD_MORE_COUNT = 6;
 
 const emptyFilters: DirectoryFilters = {
   query: "",
@@ -157,6 +159,7 @@ export function Directory() {
 
   const [onlyFavorites, setOnlyFavorites] = useState(false);
   const favorites = useFavorites();
+  const isMobile = useIsMobile();
 
   const {
     data: professionals = [],
@@ -199,7 +202,10 @@ export function Directory() {
           ...emptyFilters,
           query: customEvent.detail.query ?? "",
           modality: customEvent.detail.modality ?? "all",
+          country: customEvent.detail.country ?? "",
+          city: customEvent.detail.city ?? "",
         });
+        setOnlyFavorites(false);
         return;
       }
 
@@ -572,26 +578,20 @@ export function Directory() {
     <section
       id="diretorio"
       aria-labelledby="diretorio-titulo"
-      className="relative z-10 border-t border-[var(--color-gold)]/45 py-12 md:py-20 px-4 sm:px-8 lg:px-12 bg-background/50 min-h-screen scroll-mt-20 overflow-hidden"
+      className="relative z-10 border-t border-[var(--color-gold)]/45 py-12 md:py-20 px-4 sm:px-8 lg:px-12 bg-[var(--color-parchment)] scroll-mt-20 overflow-hidden"
     >
       <div className="absolute inset-0 bg-noise opacity-30 mix-blend-overlay pointer-events-none z-0"></div>
-      <img
-        src={rootsBg}
-        alt=""
-        className="absolute top-0 right-[-10%] w-[800px] opacity-[0.08] mix-blend-multiply pointer-events-none rotate-[15deg] z-0"
-        aria-hidden="true"
-      />
 
-      <div className="max-w-[1400px] mx-auto relative z-10">
+      <div className="max-w-7xl mx-auto relative z-10">
         <header className="mb-6 md:mb-10 max-w-3xl">
-          <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-primary">
-            Diretório oficial
+          <span className="label-mono text-[var(--color-terracotta)]">
+            Diretório oficial · Mentorados do Instituto LIZ
           </span>
           <h2
             id="diretorio-titulo"
-            className="font-display text-3xl md:text-5xl mt-3 mb-4 text-balance text-primary-deep"
+            className="font-display text-3xl md:text-5xl mt-3 mb-4 text-balance text-[var(--color-ink)]"
           >
-            Mentorados do Instituto LIZ
+            Conheça as pessoas da rede
           </h2>
           <p className="text-muted-foreground leading-relaxed">
             Todos os profissionais aqui presentes passaram pela formação do Instituto LIZ e integram
@@ -603,7 +603,7 @@ export function Directory() {
         <div
           role="search"
           aria-label="Buscar no diretório"
-          className="mb-6 grid gap-3 rounded-2xl border border-border/70 bg-card/90 p-3 shadow-sm md:grid-cols-[minmax(0,1fr)_auto] md:items-end md:p-4"
+          className="mb-6 grid gap-3 rounded-2xl border border-border/70 bg-card/90 p-3 shadow-sm md:grid-cols-[minmax(0,1fr)_auto_auto] md:items-center md:p-4"
         >
           <div>
             <label htmlFor="directory-search" className="sr-only">
@@ -649,12 +649,12 @@ export function Directory() {
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-2 md:col-span-2">
+          <div className="flex flex-wrap gap-2">
             <button
               type="button"
               onClick={() => setFiltersOpen(true)}
               aria-haspopup="dialog"
-              className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl border border-border bg-background px-4 text-sm font-semibold text-primary-deep lg:hidden"
+              className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl border border-border bg-background px-4 text-sm font-semibold text-primary-deep "
             >
               <SlidersHorizontal className="size-4" aria-hidden="true" />
               Mais filtros
@@ -671,7 +671,7 @@ export function Directory() {
               aria-pressed={onlyFavorites}
               className={`inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl border px-4 text-sm font-semibold lg:flex-none ${
                 onlyFavorites
-                  ? "border-[var(--color-terracotta)] bg-[var(--color-terracotta)] text-white"
+                  ? "border-[var(--color-terracotta)] bg-[var(--color-terracotta)] text-[var(--color-parchment)]"
                   : "border-border bg-background text-primary-deep"
               }`}
             >
@@ -682,7 +682,7 @@ export function Directory() {
         </div>
 
         <Sheet open={filtersOpen} onOpenChange={setFiltersOpen}>
-          <SheetContent side="bottom" className="flex max-h-[88dvh] flex-col p-0 lg:hidden">
+          <SheetContent side={isMobile ? "bottom" : "right"} className={`flex flex-col p-0 ${isMobile ? "max-h-[88dvh]" : "w-full sm:max-w-md"}`}>
             <SheetHeader className="border-b border-border px-5 py-4 text-left">
               <SheetTitle>Mais filtros</SheetTitle>
               <SheetDescription>
@@ -709,18 +709,13 @@ export function Directory() {
           </SheetContent>
         </Sheet>
 
-        <div className="flex flex-col lg:flex-row gap-8">
-          <aside
-            aria-label="Filtros adicionais"
-            className="hidden lg:block lg:w-64 xl:w-72 shrink-0"
-          >
-            {renderSecondaryFilters("directory")}
-          </aside>
-
-          <div className="flex-1 min-w-0">
+        <div>
+          <div className="min-w-0">
             <div className="flex flex-col gap-3 mb-6 pb-4 border-b border-border/50">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <p
+                  id="directory-results"
+                  tabIndex={-1}
                   aria-live="polite"
                   aria-atomic="true"
                   className="text-lg font-display text-primary-deep"
@@ -779,14 +774,13 @@ export function Directory() {
 
             {isLoading ? (
               <div
-                className="grid gap-4"
-                style={{ gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 340px), 1fr))" }}
+                className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
                 aria-hidden="true"
               >
                 {[1, 2, 3, 4, 5, 6].map((item) => (
                   <div
                     key={item}
-                    className="h-[200px] bg-card rounded-2xl border border-border motion-safe:animate-pulse"
+                    className="h-[440px] bg-card rounded-2xl border border-border motion-safe:animate-pulse"
                   ></div>
                 ))}
               </div>
@@ -824,10 +818,7 @@ export function Directory() {
               <>
                 <ul
                   ref={gridRef}
-                  className="grid gap-4"
-                  style={{
-                    gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 340px), 1fr))",
-                  }}
+                  className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
                   aria-label="Profissionais"
                 >
                   {visibleProfessionals.map((professional) => (
@@ -851,7 +842,7 @@ export function Directory() {
                       onClick={() => setVisibleCount((count) => count + LOAD_MORE_COUNT)}
                       className="min-h-12 rounded-full border border-border bg-card px-6 text-sm font-semibold text-primary-deep shadow-sm transition-colors hover:bg-muted"
                     >
-                      Mostrar mais {Math.min(LOAD_MORE_COUNT, remainingProfessionals)} mentorados
+                      Ver mais {Math.min(LOAD_MORE_COUNT, remainingProfessionals)} profissionais
                     </button>
                   </div>
                 )}

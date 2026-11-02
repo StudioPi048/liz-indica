@@ -16,8 +16,9 @@ function rememberDirectoryReturn() {
   );
 }
 
-const MAX_SPECIALTIES = 4;
+const MAX_SPECIALTIES = 3;
 
+/** Large, portrait-first card. Photo shown whole (object-contain), no filter. */
 export function ProfessionalCard({
   pro,
   isFavorite = false,
@@ -33,66 +34,55 @@ export function ProfessionalCard({
   const extra = pro.specialties.length - MAX_SPECIALTIES;
 
   return (
-    <article className="card-linhagem relative flex h-full gap-4 p-4 sm:p-5">
+    <article className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-[var(--color-sepia)]/15 bg-card transition-shadow hover:shadow-lg">
       <a
         href={profilePath}
         onClick={rememberDirectoryReturn}
         tabIndex={-1}
         aria-hidden="true"
-        className="relative block w-24 shrink-0 self-start overflow-hidden rounded-xl bg-[var(--color-ink)] sm:w-28"
+        className="flex h-[260px] items-center justify-center bg-[var(--color-ink)] sm:h-[280px]"
       >
-        <div className="aspect-[4/5] w-full">
-          {pro.photo_url ? (
-            <img
-              {...getResponsivePhotoAttrs(pro.photo_url, "112px")}
-              alt=""
-              className="photo-sepia h-full w-full object-contain"
-              decoding="async"
-              loading="lazy"
-            />
-          ) : (
-            <div className="grid h-full w-full place-items-center font-display text-3xl text-[var(--color-parchment)]">
-              {getInitials(pro.name)}
-            </div>
-          )}
-        </div>
+        {pro.photo_url ? (
+          <img
+            {...getResponsivePhotoAttrs(pro.photo_url, "(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw")}
+            alt=""
+            className="h-full w-full object-contain"
+            decoding="async"
+            loading="lazy"
+          />
+        ) : (
+          <span className="font-display text-6xl text-[var(--color-gold-soft)]">{getInitials(pro.name)}</span>
+        )}
       </a>
 
-      <div className="flex min-w-0 flex-1 flex-col">
-        <div className="flex items-start gap-2">
-          <h3 className="min-w-0 flex-1 font-display text-lg leading-snug text-[var(--color-ink)] sm:text-xl">
-            {pro.name}
-          </h3>
-          {onToggleFavorite && (
-            <button
-              type="button"
-              onClick={() => onToggleFavorite(pro.id)}
-              aria-pressed={isFavorite}
-              aria-label={
-                isFavorite
-                  ? `Remover ${pro.name} dos favoritos`
-                  : `Salvar ${pro.name} nos favoritos`
-              }
-              className="-mr-2 -mt-2 grid size-11 shrink-0 place-items-center rounded-full text-[var(--color-terracotta)] transition-colors hover:bg-[var(--color-terracotta)]/10"
-            >
-              <Heart className={`size-5 ${isFavorite ? "fill-current" : ""}`} aria-hidden="true" />
-            </button>
-          )}
-        </div>
+      {onToggleFavorite && (
+        <button
+          type="button"
+          onClick={() => onToggleFavorite(pro.id)}
+          aria-pressed={isFavorite}
+          aria-label={isFavorite ? `Remover ${pro.name} dos favoritos` : `Salvar ${pro.name} nos favoritos`}
+          className="absolute right-3 top-3 grid size-11 place-items-center rounded-full bg-[var(--color-parchment)]/95 text-[var(--color-terracotta)] shadow-sm transition-colors hover:bg-[var(--color-parchment)]"
+        >
+          <Heart className={`size-5 ${isFavorite ? "fill-current" : ""}`} aria-hidden="true" />
+        </button>
+      )}
 
-        <span className="label-mono mt-1">Instituto LIZ</span>
+      <div className="flex flex-1 flex-col p-5">
+        <h3 className="font-display text-xl leading-snug text-[var(--color-ink)] [overflow-wrap:anywhere]">
+          {pro.name}
+        </h3>
 
         <ul className="mt-2 space-y-1 text-sm text-[var(--color-sepia)]">
-          {modality && (
-            <li className="flex items-center gap-1.5">
-              <Monitor className="size-3.5 shrink-0" aria-hidden="true" />
-              <span>{modality}</span>
-            </li>
-          )}
           {location && (
             <li className="flex items-start gap-1.5">
               <MapPin className="mt-0.5 size-3.5 shrink-0" aria-hidden="true" />
               <span className="min-w-0">{location}</span>
+            </li>
+          )}
+          {modality && (
+            <li className="flex items-center gap-1.5">
+              <Monitor className="size-3.5 shrink-0" aria-hidden="true" />
+              <span>{modality}</span>
             </li>
           )}
         </ul>
@@ -116,10 +106,10 @@ export function ProfessionalCard({
           href={profilePath}
           onClick={rememberDirectoryReturn}
           aria-label={`Ver perfil de ${pro.name}`}
-          className="mt-auto inline-flex min-h-11 items-center gap-1.5 self-start pt-3 text-sm font-semibold text-[var(--color-terracotta)] underline-offset-4 hover:underline"
+          className="mt-auto inline-flex min-h-11 items-center gap-1.5 self-start pt-4 text-sm font-semibold text-[var(--color-terracotta)] underline-offset-4 hover:underline"
         >
           Ver perfil
-          <ArrowRight className="size-4" aria-hidden="true" />
+          <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
         </a>
       </div>
     </article>

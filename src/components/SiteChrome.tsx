@@ -18,12 +18,12 @@ export function SiteHeader() {
       className={`sticky top-0 z-50 backdrop-blur-md border-b transition-all duration-500 ${
         scrolled
           ? "bg-[var(--color-ink)]/95 border-[var(--color-gold)]/40 shadow-md"
-          : "bg-[var(--color-ink)]/70 border-transparent shadow-none"
+          : "bg-[var(--color-ink)] border-transparent shadow-none"
       }`}
     >
       <div
         className={`max-w-7xl mx-auto px-6 flex items-center justify-between transition-all duration-500 ${
-          scrolled ? "h-16 md:h-20" : "h-24"
+          scrolled ? "h-16 md:h-20" : "h-16 md:h-24"
         }`}
       >
         <a href="/" className="flex items-center gap-4" aria-label="Ir para a página inicial">
@@ -33,7 +33,7 @@ export function SiteHeader() {
             width={64}
             height={64}
             className={`object-contain drop-shadow-md transition-all duration-500 ${
-              scrolled ? "size-10 md:size-12" : "size-14 md:size-16"
+              scrolled ? "size-10 md:size-12" : "size-11 md:size-16"
             }`}
           />
           <span className="flex flex-col md:flex-row md:items-baseline gap-0.5 md:gap-2">
@@ -46,30 +46,30 @@ export function SiteHeader() {
           </span>
         </a>
         <nav
-          className="hidden md:flex gap-8 text-sm font-medium items-center"
+          className="hidden md:flex gap-6 lg:gap-8 text-sm font-medium items-center"
           aria-label="Navegação principal"
         >
-          <a href="/#diretorio" className="text-white/80 hover:text-white transition-colors">
-            Diretório
-          </a>
           <a href="/#instituto" className="text-white/80 hover:text-white transition-colors">
             O Instituto
           </a>
           <a href="/profissional" className="text-white/80 hover:text-white transition-colors">
             Área do Profissional
           </a>
-          <a
-            href="/#indicado"
-            className="px-6 py-2.5 bg-white text-black rounded-full hover:bg-white/90 transition-all font-semibold"
-          >
+          <a href="/#indicado" className="text-white/80 hover:text-white transition-colors">
             Quero ser Indicado
+          </a>
+          <a
+            href="/#diretorio"
+            className="px-6 py-2.5 bg-[var(--color-parchment)] text-[var(--color-ink)] rounded-full hover:bg-[var(--color-gold-soft)] transition-colors font-semibold"
+          >
+            Encontrar profissional
           </a>
         </nav>
         <a
           href="/#diretorio"
-          className="inline-flex min-h-11 items-center rounded-full bg-white px-4 text-sm font-semibold text-black transition-colors hover:bg-white/90 md:hidden"
+          className="inline-flex min-h-11 items-center rounded-full bg-[var(--color-parchment)] px-4 text-sm font-semibold text-[var(--color-ink)] md:hidden"
         >
-          Buscar
+          Encontrar
         </a>
       </div>
     </header>

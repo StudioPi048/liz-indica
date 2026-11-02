@@ -611,6 +611,10 @@ export function Directory() {
             loading="lazy"
             decoding="async"
             className="block w-full mix-blend-multiply"
+            style={{
+              maskImage: "radial-gradient(closest-side, #000 62%, transparent 100%)",
+              WebkitMaskImage: "radial-gradient(closest-side, #000 62%, transparent 100%)",
+            }}
           />
           </div>
         </div>

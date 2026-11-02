@@ -6,12 +6,12 @@ import { getProfessionalSlug, getResponsivePhotoAttrs, type Professional } from 
 import { advanceOffset, cloneCount, initials, isAutoplayActive, wrapOffset } from "@/lib/carousel";
 
 const SPEED = 26; // px/s, constant
-const SIZES = "(min-width: 768px) 216px, 164px";
+const SIZES = "(min-width: 768px) 224px, 168px";
 
 function Portrait({ person, eager }: { person: Professional; eager?: boolean }) {
   const attrs = getResponsivePhotoAttrs(person.photo_url, SIZES);
   return (
-    <span className="flex h-[200px] w-[164px] items-center justify-center overflow-hidden rounded-[14px] bg-[var(--color-portrait)] md:h-[260px] md:w-[216px]">
+    <span className="flex h-[168px] w-[168px] items-center justify-center overflow-hidden rounded-[14px] bg-[var(--color-portrait)] md:h-[224px] md:w-[224px]">
       {attrs.src ? (
         <img
           {...attrs}
@@ -193,7 +193,7 @@ export function HeroCarousel({ people }: { people: Professional[] }) {
         <div className="flex w-max gap-3 px-5 sm:px-8 md:gap-4 lg:px-12">
           <ul className="contents">
             {people.map((p, i) => (
-              <li key={p.id} data-strip-item className="w-[164px] shrink-0 md:w-[216px]">
+              <li key={p.id} data-strip-item className="w-[168px] shrink-0 md:w-[224px]">
                 <Link
                   ref={(el) => {
                     linkRefs.current[i] = el;
@@ -220,7 +220,7 @@ export function HeroCarousel({ people }: { people: Professional[] }) {
               data-strip-clone={i === 0 ? "first" : undefined}
               aria-hidden="true"
               inert
-              className="w-[164px] shrink-0 md:w-[216px]"
+              className="w-[168px] shrink-0 md:w-[224px]"
             >
               <Portrait person={p} />
               <span className="mt-2.5 block line-clamp-2 text-[0.95rem] leading-snug text-[var(--color-ink)]">{p.name}</span>

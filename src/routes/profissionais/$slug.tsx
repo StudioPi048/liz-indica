@@ -288,23 +288,91 @@ function ProfessionalProfilePage() {
       )}
 
       <main id="conteudo-principal" tabIndex={-1}>
-        {/* CABEÇALHO — dossiê compacto em fundo ink */}
+        {/* APRESENTAÇÃO — retrato amplo + identidade */}
         <section
           aria-labelledby="perfil-nome"
-          className="relative overflow-hidden bg-[var(--color-ink)] px-4 pb-8 pt-[6.5rem] text-[var(--color-parchment)] sm:px-8 md:pb-16 md:pt-32 lg:px-12"
+          className="relative border-b border-[var(--color-gold)]/45 bg-[var(--color-parchment)] px-4 pb-10 pt-6 sm:px-8 md:pb-16 md:pt-10 lg:px-12"
         >
-          <div className="relative z-10 mx-auto max-w-6xl">
+          <div className="mx-auto max-w-6xl">
             <a
               href={returnHref}
-              className="mb-3 inline-flex min-h-11 items-center gap-2 text-sm text-[var(--color-parchment)]/85 transition-colors hover:text-[var(--color-gold)] md:mb-8"
+              className="mb-4 inline-flex min-h-11 items-center gap-2 text-sm text-[var(--color-sepia)] transition-colors hover:text-[var(--color-terracotta)] md:mb-8"
             >
               <ArrowLeft className="size-4" aria-hidden="true" />
               Voltar ao diretório
             </a>
 
-            <div className="grid grid-cols-[6.5rem_minmax(0,1fr)] items-start gap-4 sm:grid-cols-[10rem_minmax(0,1fr)] sm:gap-8 lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-12">
-              {/* Retrato em arco — imagem inteira, ampliável */}
-              <div className="relative">
+            <div className="grid gap-6 lg:grid-cols-[minmax(0,440px)_minmax(0,1fr)] lg:items-center lg:gap-14">
+              {/* Identidade — primeiro no mobile */}
+              <div className="order-1 min-w-0 lg:order-2">
+                <span className="label-mono text-[var(--color-terracotta)]">
+                  Diretório Oficial · Instituto LIZ
+                </span>
+                <h1
+                  id="perfil-nome"
+                  className="mt-2 font-display text-[2rem] leading-[1.08] text-[var(--color-ink)] [overflow-wrap:anywhere] sm:text-5xl lg:text-[3.4rem]"
+                >
+                  {professional.name}
+                </h1>
+
+                {(modalityLabel || location || professional.languages.length > 0) && (
+                  <ul className="mt-4 flex flex-wrap gap-2" aria-label="Atendimento e localização">
+                    {modalityLabel && <li className="chip">{modalityLabel}</li>}
+                    {location && <li className="chip">{location}</li>}
+                    {professional.languages.slice(0, 2).map((lang: string) => (
+                      <li key={lang} className="chip hidden sm:inline-flex">
+                        {lang}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+
+                {lead && (
+                  <p className="mt-6 hidden max-w-reading font-display text-xl leading-snug text-[var(--color-ink)]/90 lg:block">
+                    {lead}
+                  </p>
+                )}
+
+                <div className="mt-5 flex flex-wrap gap-2 sm:gap-3 md:mt-8">
+                  {contact && (
+                    <ContactButton contact={contact} name={professional.name} className="w-full sm:w-auto" />
+                  )}
+                  <button
+                    type="button"
+                    onClick={shareProfile}
+                    className="btn-ghost-gold min-h-11 flex-1 sm:flex-none"
+                  >
+                    <Share2 className="size-4" aria-hidden="true" />
+                    {copied ? "Link copiado" : "Compartilhar"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => favorites.toggle(professional.id)}
+                    aria-pressed={isFavorite}
+                    className="btn-ghost-gold min-h-11 flex-1 sm:flex-none"
+                  >
+                    <Heart className={`size-4 ${isFavorite ? "fill-current text-[var(--color-terracotta)]" : ""}`} aria-hidden="true" />
+                    {isFavorite ? "Salvo nos favoritos" : "Salvar nos favoritos"}
+                  </button>
+                </div>
+
+                {!contact && (
+                  <div
+                    role="note"
+                    className="mt-5 max-w-reading rounded-xl border border-[var(--color-gold)]/50 bg-card p-4 text-sm leading-relaxed text-[var(--color-sepia)]"
+                  >
+                    Este perfil ainda não informou um canal de contato público. Você pode salvá-lo nos
+                    favoritos e{" "}
+                    <a href={returnHref} className="font-semibold text-[var(--color-terracotta)] underline underline-offset-4">
+                      ver outros profissionais no diretório
+                    </a>
+                    .
+                  </div>
+                )}
+              </div>
+
+              {/* Retrato — imagem original inteira, ampliável */}
+              <div className="relative order-2 lg:order-1">
                 <button
                   type="button"
                   onClick={() => professional.photo_url && setPhotoOpen(true)}
@@ -314,38 +382,37 @@ function ProfessionalProfilePage() {
                       ? `Ampliar foto de ${professional.name}`
                       : `Sem foto de ${professional.name}`
                   }
-                  className="group block w-full rounded-[999px_999px_1rem_1rem] focus-visible:outline-[var(--color-gold)] disabled:cursor-default"
+                  className="group block w-full overflow-hidden rounded-[2rem] border border-[var(--color-gold)]/50 bg-[var(--color-ink)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--color-terracotta)] disabled:cursor-default"
                 >
-                  <div className="arch-frame aspect-[3/4]">
+                  <div className="flex h-[340px] items-center justify-center sm:h-[440px] lg:h-[540px]">
                     {professional.photo_url ? (
                       <img
                         {...getResponsivePhotoAttrs(
                           professional.photo_url,
-                          "(min-width: 1024px) 240px, (min-width: 640px) 160px, 104px",
+                          "(min-width: 1024px) 440px, 100vw",
                         )}
                         alt={professional.name}
-                        className="photo-sepia h-full w-full object-contain"
+                        className="h-full w-full object-contain"
                         decoding="async"
+                        fetchPriority="high"
                       />
                     ) : (
-                      <div
-                        className="grid h-full w-full place-items-center font-display text-3xl text-[var(--color-parchment)] sm:text-5xl"
-                        aria-hidden="true"
-                      >
+                      <span className="font-display text-7xl text-[var(--color-gold-soft)]" aria-hidden="true">
                         {getInitials(professional.name)}
-                      </div>
+                      </span>
                     )}
                   </div>
                   {professional.photo_url && (
-                    <span className="absolute bottom-2 left-2 grid size-8 place-items-center rounded-full bg-[var(--color-ink)]/85 text-[var(--color-parchment)] sm:size-9">
-                      <Maximize2 className="size-4" aria-hidden="true" />
+                    <span className="absolute bottom-3 left-3 inline-flex min-h-9 items-center gap-1.5 rounded-full bg-[var(--color-parchment)]/95 px-3 text-xs font-medium text-[var(--color-ink)]">
+                      <Maximize2 className="size-3.5" aria-hidden="true" />
+                      Ampliar foto
                     </span>
                   )}
                 </button>
 
                 <div
                   role="img"
-                  className="wax-seal -bottom-5 -right-5 hidden scale-75 sm:grid lg:scale-90"
+                  className="wax-seal -right-3 -top-3 scale-75 lg:-right-6 lg:scale-90"
                   aria-label="Selo — Indicado pelo Instituto LIZ"
                 >
                   <span aria-hidden="true">
@@ -357,106 +424,8 @@ function ProfessionalProfilePage() {
                   </span>
                 </div>
               </div>
-
-              {/* Ficha */}
-              <div className="min-w-0">
-                <span className="label-mono text-[var(--color-gold-soft)]">
-                  Dossiê · Diretório Oficial
-                </span>
-
-                <h1
-                  id="perfil-nome"
-                  className="mt-2 font-display text-[1.65rem] leading-[1.1] text-[var(--color-parchment)] [overflow-wrap:anywhere] sm:text-5xl lg:text-6xl"
-                >
-                  {professional.name}
-                </h1>
-
-                <p className="mt-2 inline-flex items-center rounded-full border border-[var(--color-gold)]/50 px-3 py-1 text-xs text-[var(--color-gold-soft)] sm:hidden">
-                  Indicado(a) Instituto LIZ
-                </p>
-
-                {(modalityLabel || location || professional.languages.length > 0) && (
-                  <ul className="mt-3 flex flex-wrap gap-2" aria-label="Atendimento e localização">
-                    {modalityLabel && <li className={chipDark}>{modalityLabel}</li>}
-                    {location && <li className={chipDark}>{location}</li>}
-                    {professional.languages.slice(0, 2).map((lang: string) => (
-                      <li key={lang} className={`${chipDark} hidden sm:inline-flex`}>
-                        {lang}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-
-                {lead && (
-                  <p className="mt-6 hidden max-w-reading font-display text-xl leading-snug text-[var(--color-parchment)]/95 lg:block">
-                    {lead}
-                  </p>
-                )}
-
-                <div className="mt-5 hidden flex-wrap gap-3 sm:flex md:mt-8">
-                  {contact && <ContactButton contact={contact} name={professional.name} />}
-                  <button
-                    type="button"
-                    onClick={shareProfile}
-                    className="btn-ghost-gold min-h-12 !text-[var(--color-parchment)] hover:!bg-white/10"
-                  >
-                    <Share2 className="size-4" aria-hidden="true" />
-                    {copied ? "Link copiado" : "Compartilhar perfil"}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => favorites.toggle(professional.id)}
-                    aria-pressed={isFavorite}
-                    className="btn-ghost-gold min-h-12 !text-[var(--color-parchment)] hover:!bg-white/10"
-                  >
-                    <Heart className={`size-4 ${isFavorite ? "fill-current" : ""}`} aria-hidden="true" />
-                    {isFavorite ? "Salvo nos favoritos" : "Salvar nos favoritos"}
-                  </button>
-                </div>
-              </div>
             </div>
-
-            {/* Mobile actions — full width under the identity block */}
-            <div className="mt-5 grid grid-cols-2 gap-2 sm:hidden">
-              {contact && (
-                <ContactButton contact={contact} name={professional.name} className="col-span-2 w-full" />
-              )}
-              <button
-                type="button"
-                onClick={shareProfile}
-                className="btn-ghost-gold min-h-11 !px-3 !text-[var(--color-parchment)]"
-              >
-                <Share2 className="size-4" aria-hidden="true" />
-                {copied ? "Copiado" : "Compartilhar"}
-              </button>
-              <button
-                type="button"
-                onClick={() => favorites.toggle(professional.id)}
-                aria-pressed={isFavorite}
-                aria-label={isFavorite ? "Remover dos favoritos" : "Salvar nos favoritos"}
-                className="btn-ghost-gold min-h-11 !px-3 !text-[var(--color-parchment)]"
-              >
-                <Heart className={`size-4 ${isFavorite ? "fill-current" : ""}`} aria-hidden="true" />
-                {isFavorite ? "Salvo" : "Favoritar"}
-              </button>
-            </div>
-
-            {!contact && (
-              <div
-                role="note"
-                className="mt-5 max-w-reading rounded-xl border border-[var(--color-gold)]/40 bg-white/5 p-4 text-sm leading-relaxed text-[var(--color-parchment)]/90"
-              >
-                Este perfil ainda não informou um canal de contato público. Você pode salvá-lo nos
-                favoritos e{" "}
-                <a href={returnHref} className="font-semibold text-[var(--color-gold-soft)] underline underline-offset-4">
-                  ver outros profissionais no diretório
-                </a>
-                .
-              </div>
-            )}
           </div>
-
-          <div className="hairline absolute inset-x-0 bottom-0" aria-hidden="true" />
         </section>
 
         {/* CORPO */}

@@ -33,7 +33,7 @@ function Portrait({ person, eager }: { person: Professional; eager?: boolean }) 
 /**
  * Continuous full-bleed strip with every listed person (same set as the directory).
  * Native horizontal scroller; GSAP ticker advances scrollLeft at constant speed.
- * Trailing clones (aria-hidden, inert, no links) only fill the viewport at the seam.
+ * Trailing clones (aria-hidden, tabIndex=-1 links to the same profile) only fill the viewport at the seam.
  */
 export function HeroCarousel({ people }: { people: Professional[] }) {
   const size = people.length;

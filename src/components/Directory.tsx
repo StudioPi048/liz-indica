@@ -779,8 +779,7 @@ export function Directory() {
 
             {isLoading ? (
               <div
-                className="grid gap-4"
-                style={{ gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 340px), 1fr))" }}
+                className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
                 aria-hidden="true"
               >
                 {[1, 2, 3, 4, 5, 6].map((item) => (

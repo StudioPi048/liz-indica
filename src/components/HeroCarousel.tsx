@@ -217,7 +217,7 @@ export function HeroCarousel({ people }: { people: Professional[] }) {
           {people.slice(0, clones).map((p, i) => (
             <div
               key={`clone-${p.id}`}
-              data-strip-clone={i === 0 ? "" : undefined}
+              data-strip-clone={i === 0 ? "first" : undefined}
               aria-hidden="true"
               inert
               className="w-[164px] shrink-0 md:w-[216px]"

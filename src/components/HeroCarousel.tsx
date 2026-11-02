@@ -132,7 +132,7 @@ export function HeroCarousel({ people, className = "" }: { people: Professional[
                   href={getProfessionalProfilePath(p)}
                   className="group flex flex-col overflow-hidden rounded-2xl border border-[var(--color-sepia)]/15 bg-card focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-terracotta)]"
                 >
-                  <div className="flex h-[220px] items-center justify-center lg:h-[240px]">
+                  <div className="flex h-[220px] items-center justify-center lg:h-[200px]">
                     {p.photo_url ? (
                       <img
                         key={p.id}
@@ -151,11 +151,11 @@ export function HeroCarousel({ people, className = "" }: { people: Professional[
                       </span>
                     )}
                   </div>
-                  <span className="hidden px-3 py-3 lg:block">
-                    <span className="block font-display text-base leading-snug text-[var(--color-ink)] group-hover:text-[var(--color-terracotta)]">
+                  <span className="hidden h-[88px] overflow-hidden px-3 py-3 lg:block">
+                    <span className="block line-clamp-2 font-display text-base leading-snug text-[var(--color-ink)] group-hover:text-[var(--color-terracotta)]">
                       {p.name}
                     </span>
-                    {location && <span className="mt-0.5 block text-xs text-[var(--color-sepia)]">{location}</span>}
+                    {location && <span className="mt-0.5 block truncate text-xs text-[var(--color-sepia)]">{location}</span>}
                   </span>
                 </a>
               </li>

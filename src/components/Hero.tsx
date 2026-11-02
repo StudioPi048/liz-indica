@@ -6,10 +6,7 @@ import { HeroCarousel } from "@/components/HeroCarousel";
 import {
   dedupeForDirectory,
   fetchProfessionals,
-  getProfessionalLocation,
   getProfessionalLocationParts,
-  getProfessionalProfilePath,
-  getResponsivePhotoAttrs,
 } from "@/lib/professionals-api";
 
 type Mode = "all" | "online" | "in_person";

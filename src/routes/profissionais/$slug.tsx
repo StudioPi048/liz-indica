@@ -291,12 +291,12 @@ function ProfessionalProfilePage() {
         {/* CABEÇALHO — dossiê compacto em fundo ink */}
         <section
           aria-labelledby="perfil-nome"
-          className="relative overflow-hidden bg-[var(--color-ink)] px-4 pb-8 pt-24 text-[var(--color-parchment)] sm:px-8 md:pb-16 md:pt-28 lg:px-12"
+          className="relative overflow-hidden bg-[var(--color-ink)] px-4 pb-8 pt-[6.5rem] text-[var(--color-parchment)] sm:px-8 md:pb-16 md:pt-32 lg:px-12"
         >
           <div className="relative z-10 mx-auto max-w-6xl">
             <a
               href={returnHref}
-              className="mb-5 inline-flex min-h-11 items-center gap-2 text-sm text-[var(--color-parchment)]/85 transition-colors hover:text-[var(--color-gold)] md:mb-8"
+              className="mb-3 inline-flex min-h-11 items-center gap-2 text-sm text-[var(--color-parchment)]/85 transition-colors hover:text-[var(--color-gold)] md:mb-8"
             >
               <ArrowLeft className="size-4" aria-hidden="true" />
               Voltar ao diretório

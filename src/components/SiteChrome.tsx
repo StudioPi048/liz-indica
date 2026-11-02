@@ -23,7 +23,7 @@ export function SiteHeader() {
     >
       <div
         className={`max-w-7xl mx-auto px-6 flex items-center justify-between transition-all duration-500 ${
-          scrolled ? "h-16 md:h-20" : "h-24"
+          scrolled ? "h-16 md:h-20" : "h-16 md:h-24"
         }`}
       >
         <a href="/" className="flex items-center gap-4" aria-label="Ir para a página inicial">
@@ -33,7 +33,7 @@ export function SiteHeader() {
             width={64}
             height={64}
             className={`object-contain drop-shadow-md transition-all duration-500 ${
-              scrolled ? "size-10 md:size-12" : "size-14 md:size-16"
+              scrolled ? "size-10 md:size-12" : "size-11 md:size-16"
             }`}
           />
           <span className="flex flex-col md:flex-row md:items-baseline gap-0.5 md:gap-2">

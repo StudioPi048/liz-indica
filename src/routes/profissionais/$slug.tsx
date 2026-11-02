@@ -323,6 +323,9 @@ function ProfessionalProfilePage() {
                     ))}
                   </ul>
                 )}
+                <p className="mt-3 text-sm text-[var(--color-sepia)]">
+                  Perfil no Diretório Oficial · Instituto LIZ
+                </p>
 
                 {lead && (
                   <p className="mt-6 hidden max-w-reading font-display text-xl leading-snug text-[var(--color-ink)]/90 lg:block">

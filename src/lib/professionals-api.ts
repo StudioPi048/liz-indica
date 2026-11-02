@@ -304,3 +304,17 @@ export function getPrimaryContact(
   }
   return null;
 }
+
+/**
+ * Directory listing rule (pre-existing): entries with the same normalized name AND the same
+ * photo are shown once. Nothing is deleted; all records stay reachable by their profile URL.
+ */
+export function dedupeForDirectory<T extends Pick<Professional, "name" | "photo_url">>(list: T[]) {
+  const seen = new Set<string>();
+  return list.filter((p) => {
+    const key = `${p.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()}-${p.photo_url || ""}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}

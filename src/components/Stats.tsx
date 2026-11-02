@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { fetchProfessionals } from "@/lib/professionals-api";
+import { dedupeForDirectory, fetchProfessionals } from "@/lib/professionals-api";
 import { gsap, ScrollTrigger, prefersReducedMotion } from "@/hooks/use-gsap";
 
 type Stat = { target: number; suffix?: string; label: string };
@@ -95,7 +95,7 @@ export function Stats() {
         Números da rede e da formação do Instituto, não da listagem abaixo.{" "}
         {professionals ? (
           <a href="#diretorio" className="font-semibold text-[var(--color-ink)] underline underline-offset-4">
-            Neste diretório agora: {professionals.length} perfis publicados.
+            Neste diretório agora: {dedupeForDirectory(professionals).length} perfis listados.
           </a>
         ) : null}
       </p>

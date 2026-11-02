@@ -2,12 +2,22 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { ProfessionalCard } from "./ProfessionalCard";
 import {
+  dedupeForDirectory,
   fetchProfessionals,
   getProfessionalLocation,
   getProfessionalLocationParts,
   type Professional,
 } from "@/lib/professionals-api";
-import { Search, SlidersHorizontal, X } from "lucide-react";
+import { Heart, RotateCcw, Search, SlidersHorizontal, X } from "lucide-react";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
+import { useFavorites } from "@/hooks/use-favorites";
 import rootsBg from "@/assets/roots-soft.webp";
 import { gsap, prefersReducedMotion } from "@/hooks/use-gsap";
 
@@ -26,7 +36,11 @@ type WritableDirectoryFilters = Omit<DirectoryFilters, "specialties"> & {
   specialties: Set<string>;
 };
 
-type DirectorySearchEvent = CustomEvent<{ query?: string; resetFilters?: boolean }>;
+type DirectorySearchEvent = CustomEvent<{
+  query?: string;
+  modality?: Modality;
+  resetFilters?: boolean;
+}>;
 
 const INITIAL_VISIBLE_COUNT = 12;
 const LOAD_MORE_COUNT = 12;
@@ -141,7 +155,16 @@ export function Directory() {
     () => new Set(getInitialDirectoryFilters().specialties),
   );
 
-  const { data: professionals = [], isLoading } = useQuery({
+  const [onlyFavorites, setOnlyFavorites] = useState(false);
+  const favorites = useFavorites();
+
+  const {
+    data: professionals = [],
+    isLoading,
+    isError,
+    refetch,
+    isFetching,
+  } = useQuery({
     queryKey: ["professionals", "public"],
     queryFn: () => fetchProfessionals(),
     staleTime: 1000 * 60 * 5,
@@ -175,6 +198,7 @@ export function Directory() {
         applyFilters({
           ...emptyFilters,
           query: customEvent.detail.query ?? "",
+          modality: customEvent.detail.modality ?? "all",
         });
         return;
       }
@@ -193,20 +217,7 @@ export function Directory() {
     };
   }, []);
 
-  const uniqueProfessionals = useMemo(() => {
-    const list: Professional[] = [];
-    const seen = new Set<string>();
-
-    for (const professional of professionals) {
-      const key = `${normalize(professional.name)}-${professional.photo_url || ""}`;
-      if (!seen.has(key)) {
-        seen.add(key);
-        list.push(professional);
-      }
-    }
-
-    return list;
-  }, [professionals]);
+  const uniqueProfessionals = useMemo(() => dedupeForDirectory(professionals), [professionals]);
 
   const allCountries = useMemo(() => {
     return uniqueSorted(
@@ -279,6 +290,7 @@ export function Directory() {
     setCity("");
     setLanguage("");
     setSelectedSpecialties(new Set());
+    setOnlyFavorites(false);
     writeDirectoryUrl({ ...emptyFilters, specialties: new Set() });
   };
 
@@ -330,7 +342,10 @@ export function Directory() {
               selectedSpecialties.has(specialty),
             );
 
+      const matchesFavorite = !onlyFavorites || favorites.ids.includes(professional.id);
+
       return (
+        matchesFavorite &&
         matchesText &&
         matchesModality &&
         matchesCountry &&
@@ -339,11 +354,21 @@ export function Directory() {
         matchesSpecialty
       );
     });
-  }, [city, country, language, modality, query, selectedSpecialties, uniqueProfessionals]);
+  }, [
+    city,
+    country,
+    language,
+    modality,
+    query,
+    selectedSpecialties,
+    uniqueProfessionals,
+    onlyFavorites,
+    favorites.ids,
+  ]);
 
   useEffect(() => {
     setVisibleCount(INITIAL_VISIBLE_COUNT);
-  }, [city, country, language, modality, query, selectedSpecialties]);
+  }, [city, country, language, modality, query, selectedSpecialties, onlyFavorites]);
 
   const visibleProfessionals = useMemo(
     () => filtered.slice(0, visibleCount),
@@ -351,7 +376,7 @@ export function Directory() {
   );
   const remainingProfessionals = Math.max(filtered.length - visibleProfessionals.length, 0);
 
-  const gridRef = useRef<HTMLDivElement | null>(null);
+  const gridRef = useRef<HTMLUListElement | null>(null);
   const prevVisibleCountRef = useRef(0);
 
   useEffect(() => {
@@ -372,8 +397,8 @@ export function Directory() {
     if (targets.length) {
       gsap.from(targets, {
         opacity: 0,
-        y: 32,
-        duration: 0.7,
+        y: 16,
+        duration: 0.5,
         ease: "power3.out",
         stagger: 0.06,
         scrollTrigger: prevCount === 0
@@ -431,31 +456,141 @@ export function Directory() {
     Boolean(filter),
   );
 
+  const secondaryCount =
+    (country ? 1 : 0) + (city ? 1 : 0) + (language ? 1 : 0) + selectedSpecialties.size;
+  const hasAnyFilter = activeFilters.length > 0 || onlyFavorites;
+  const countLabel = `${filtered.length} profissiona${filtered.length !== 1 ? "is" : "l"}`;
+
+  const labelClass = "text-sm font-semibold uppercase tracking-wider text-primary-deep";
+  const selectClass =
+    "h-12 w-full rounded-xl border border-border bg-card px-3 text-sm text-foreground shadow-sm outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/20";
+
+  const renderSecondaryFilters = (prefix: string) => (
+    <div className="space-y-7">
+      {allCountries.length > 0 && (
+        <div className="space-y-3">
+          <label htmlFor={`${prefix}-country`} className={labelClass}>
+            País
+          </label>
+          <select
+            id={`${prefix}-country`}
+            value={country}
+            onChange={(event) => handleCountryChange(event.target.value)}
+            className={selectClass}
+          >
+            <option value="">Todos os países</option>
+            {allCountries.map((item) => (
+              <option key={item} value={item}>
+                {item}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
+
+      {allCities.length > 0 && (
+        <div className="space-y-3">
+          <label htmlFor={`${prefix}-city`} className={labelClass}>
+            Cidade
+          </label>
+          <select
+            id={`${prefix}-city`}
+            value={city}
+            onChange={(event) => handleCityChange(event.target.value)}
+            className={selectClass}
+          >
+            <option value="">Todas as cidades</option>
+            {allCities.map((item) => (
+              <option key={item} value={item}>
+                {item}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
+
+      {allLanguages.length > 0 && (
+        <div className="space-y-3">
+          <label htmlFor={`${prefix}-language`} className={labelClass}>
+            Idioma
+          </label>
+          <select
+            id={`${prefix}-language`}
+            value={language}
+            onChange={(event) => handleLanguageChange(event.target.value)}
+            className={selectClass}
+          >
+            <option value="">Todos os idiomas</option>
+            {allLanguages.map((item) => (
+              <option key={item} value={item}>
+                {item}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
+
+      {allSpecialties.length > 0 && (
+        <fieldset className="space-y-3">
+          <legend className={labelClass}>Especialidades</legend>
+          <p id={`${prefix}-spec-help`} className="text-xs leading-relaxed text-muted-foreground">
+            Termos informados por cada profissional. Um perfil pode aparecer em mais de uma
+            especialidade; marque várias para ampliar a busca.
+          </p>
+          <div
+            className="flex flex-col gap-1 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar"
+            aria-describedby={`${prefix}-spec-help`}
+          >
+            {allSpecialties.map((specialty) => {
+              const isSelected = selectedSpecialties.has(specialty);
+              return (
+                <label
+                  key={specialty}
+                  className="flex min-h-11 items-center gap-3 cursor-pointer rounded-lg p-2 -ml-2 hover:bg-muted/50 transition-colors focus-within:bg-muted/60"
+                >
+                  <input
+                    type="checkbox"
+                    className="size-5 shrink-0 accent-[var(--color-terracotta)]"
+                    checked={isSelected}
+                    onChange={() => toggleSpecialty(specialty)}
+                  />
+                  <span
+                    className={`text-sm select-none ${isSelected ? "font-medium text-foreground" : "text-muted-foreground"}`}
+                  >
+                    {specialty}
+                  </span>
+                </label>
+              );
+            })}
+          </div>
+        </fieldset>
+      )}
+    </div>
+  );
+
   return (
     <section
       id="diretorio"
-      className="relative z-10 border-t border-[var(--color-gold)]/45 py-12 md:py-20 px-6 sm:px-8 lg:px-12 bg-background/50 min-h-screen scroll-mt-20 overflow-hidden"
+      aria-labelledby="diretorio-titulo"
+      className="relative z-10 border-t border-[var(--color-gold)]/45 py-12 md:py-20 px-4 sm:px-8 lg:px-12 bg-background/50 min-h-screen scroll-mt-20 overflow-hidden"
     >
       <div className="absolute inset-0 bg-noise opacity-30 mix-blend-overlay pointer-events-none z-0"></div>
       <img
         src={rootsBg}
         alt=""
-        className="absolute top-0 right-[-10%] w-[800px] opacity-[0.15] mix-blend-multiply pointer-events-none rotate-[15deg] z-0"
-        aria-hidden="true"
-      />
-      <img
-        src={rootsBg}
-        alt=""
-        className="absolute bottom-[-10%] left-[-15%] w-[900px] opacity-[0.10] mix-blend-multiply pointer-events-none -rotate-[45deg] z-0"
+        className="absolute top-0 right-[-10%] w-[800px] opacity-[0.08] mix-blend-multiply pointer-events-none rotate-[15deg] z-0"
         aria-hidden="true"
       />
 
-      <div className="max-w-[1600px] mx-auto relative z-10">
-        <header className="mb-8 md:mb-12 max-w-3xl">
+      <div className="max-w-[1400px] mx-auto relative z-10">
+        <header className="mb-6 md:mb-10 max-w-3xl">
           <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-primary">
             Diretório oficial
           </span>
-          <h2 className="font-display text-4xl md:text-5xl mt-3 mb-4 text-balance text-primary-deep">
+          <h2
+            id="diretorio-titulo"
+            className="font-display text-3xl md:text-5xl mt-3 mb-4 text-balance text-primary-deep"
+          >
             Mentorados do Instituto LIZ
           </h2>
           <p className="text-muted-foreground leading-relaxed">
@@ -464,276 +599,253 @@ export function Directory() {
           </p>
         </header>
 
-        <button
-          type="button"
-          onClick={() => setFiltersOpen((open) => !open)}
-          className="mb-5 flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-border bg-card px-4 py-2.5 text-sm font-semibold text-primary-deep shadow-sm transition-colors hover:bg-muted lg:hidden"
-          aria-expanded={filtersOpen}
-          aria-controls="directory-filters"
+        {/* Primary controls — always visible on every viewport */}
+        <div
+          role="search"
+          aria-label="Buscar no diretório"
+          className="mb-6 grid gap-3 rounded-2xl border border-border/70 bg-card/90 p-3 shadow-sm md:grid-cols-[minmax(0,1fr)_auto] md:items-end md:p-4"
         >
-          <SlidersHorizontal className="size-4" />
-          Filtros
-          {activeFilters.length > 0 && (
-            <span className="rounded-full bg-primary px-2 py-0.5 text-[11px] text-primary-foreground">
-              {activeFilters.length}
-            </span>
-          )}
-        </button>
+          <div>
+            <label htmlFor="directory-search" className="sr-only">
+              Buscar por nome, cidade, país ou especialidade
+            </label>
+            <div className="relative">
+              <Search
+                className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground"
+                aria-hidden="true"
+              />
+              <input
+                id="directory-search"
+                type="search"
+                value={query}
+                onChange={(event) => handleQueryChange(event.target.value)}
+                placeholder="Nome, cidade, país ou especialidade"
+                className="w-full h-12 pl-10 pr-4 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none text-base shadow-sm"
+              />
+            </div>
+          </div>
+
+          <div role="group" aria-label="Modalidade de atendimento">
+            <div className="grid grid-cols-3 gap-1 rounded-xl border border-border/50 bg-muted/50 p-1">
+              {[
+                ["all", "Todos"],
+                ["online", "Online"],
+                ["in_person", "Presencial"],
+              ].map(([value, label]) => (
+                <button
+                  key={value}
+                  type="button"
+                  onClick={() => handleModalityChange(value as Modality)}
+                  aria-pressed={modality === value}
+                  className={`min-h-11 rounded-lg px-3 text-sm font-medium transition-colors ${
+                    modality === value
+                      ? "bg-[var(--color-ink)] text-[var(--color-parchment)] shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex flex-wrap gap-2 md:col-span-2">
+            <button
+              type="button"
+              onClick={() => setFiltersOpen(true)}
+              aria-haspopup="dialog"
+              className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl border border-border bg-background px-4 text-sm font-semibold text-primary-deep lg:hidden"
+            >
+              <SlidersHorizontal className="size-4" aria-hidden="true" />
+              Mais filtros
+              {secondaryCount > 0 && (
+                <span className="rounded-full bg-[var(--color-ink)] px-2 py-0.5 text-[11px] text-[var(--color-parchment)]">
+                  {secondaryCount}
+                  <span className="sr-only"> ativos</span>
+                </span>
+              )}
+            </button>
+            <button
+              type="button"
+              onClick={() => setOnlyFavorites((v) => !v)}
+              aria-pressed={onlyFavorites}
+              className={`inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl border px-4 text-sm font-semibold lg:flex-none ${
+                onlyFavorites
+                  ? "border-[var(--color-terracotta)] bg-[var(--color-terracotta)] text-white"
+                  : "border-border bg-background text-primary-deep"
+              }`}
+            >
+              <Heart className={`size-4 ${onlyFavorites ? "fill-current" : ""}`} aria-hidden="true" />
+              Favoritos ({favorites.ids.length})
+            </button>
+          </div>
+        </div>
+
+        <Sheet open={filtersOpen} onOpenChange={setFiltersOpen}>
+          <SheetContent side="bottom" className="flex max-h-[88dvh] flex-col p-0 lg:hidden">
+            <SheetHeader className="border-b border-border px-5 py-4 text-left">
+              <SheetTitle>Mais filtros</SheetTitle>
+              <SheetDescription>
+                País, cidade, idioma e especialidades. Os resultados atualizam na hora.
+              </SheetDescription>
+            </SheetHeader>
+            <div className="flex-1 overflow-y-auto px-5 py-5">{renderSecondaryFilters("m-directory")}</div>
+            <SheetFooter className="flex-row gap-2 border-t border-border px-5 py-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
+              <button
+                type="button"
+                onClick={clearFilters}
+                className="min-h-12 flex-1 rounded-xl border border-border text-sm font-semibold text-primary-deep"
+              >
+                Limpar
+              </button>
+              <button
+                type="button"
+                onClick={() => setFiltersOpen(false)}
+                className="btn-primary min-h-12 flex-[2]"
+              >
+                Ver {countLabel}
+              </button>
+            </SheetFooter>
+          </SheetContent>
+        </Sheet>
 
         <div className="flex flex-col lg:flex-row gap-8">
           <aside
-            id="directory-filters"
-            className={`${filtersOpen ? "block" : "hidden"} lg:block lg:w-64 xl:w-72 shrink-0 space-y-7 rounded-2xl border border-border/60 bg-card/70 p-5 shadow-sm lg:rounded-none lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none`}
+            aria-label="Filtros adicionais"
+            className="hidden lg:block lg:w-64 xl:w-72 shrink-0"
           >
-            <div className="space-y-3">
-              <label
-                htmlFor="directory-search"
-                className="text-sm font-semibold uppercase tracking-wider text-primary-deep"
-              >
-                Buscar
-              </label>
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-                <input
-                  id="directory-search"
-                  type="search"
-                  value={query}
-                  onChange={(event) => handleQueryChange(event.target.value)}
-                  placeholder="Nome, cidade, estado…"
-                  className="w-full h-12 pl-10 pr-4 bg-card border border-border rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-sm shadow-sm"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-3">
-              <span className="text-sm font-semibold uppercase tracking-wider text-primary-deep">
-                Modalidade
-              </span>
-              <div className="grid grid-cols-3 gap-1 bg-muted/50 p-1 rounded-xl border border-border/50">
-                {[
-                  ["all", "Todos"],
-                  ["online", "Online"],
-                  ["in_person", "Presencial"],
-                ].map(([value, label]) => (
-                  <button
-                    key={value}
-                    type="button"
-                    onClick={() => handleModalityChange(value as Modality)}
-                    aria-pressed={modality === value}
-                    className={`min-h-11 rounded-lg px-2 text-xs font-medium transition-colors ${
-                      modality === value
-                        ? "bg-background shadow-sm text-foreground"
-                        : "text-muted-foreground hover:text-foreground"
-                    }`}
-                  >
-                    {label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {allCountries.length > 0 && (
-              <div className="space-y-3">
-                <label
-                  htmlFor="directory-country"
-                  className="text-sm font-semibold uppercase tracking-wider text-primary-deep"
-                >
-                  País
-                </label>
-                <select
-                  id="directory-country"
-                  value={country}
-                  onChange={(event) => handleCountryChange(event.target.value)}
-                  className="h-12 w-full rounded-xl border border-border bg-card px-3 text-sm text-foreground shadow-sm outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/20"
-                >
-                  <option value="">Todos os países</option>
-                  {allCountries.map((item) => (
-                    <option key={item} value={item}>
-                      {item}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )}
-
-            {allCities.length > 0 && (
-              <div className="space-y-3">
-                <label
-                  htmlFor="directory-city"
-                  className="text-sm font-semibold uppercase tracking-wider text-primary-deep"
-                >
-                  Cidade
-                </label>
-                <select
-                  id="directory-city"
-                  value={city}
-                  onChange={(event) => handleCityChange(event.target.value)}
-                  className="h-12 w-full rounded-xl border border-border bg-card px-3 text-sm text-foreground shadow-sm outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/20"
-                >
-                  <option value="">Todas as cidades</option>
-                  {allCities.map((item) => (
-                    <option key={item} value={item}>
-                      {item}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )}
-
-            {allLanguages.length > 0 && (
-              <div className="space-y-3">
-                <label
-                  htmlFor="directory-language"
-                  className="text-sm font-semibold uppercase tracking-wider text-primary-deep"
-                >
-                  Idioma
-                </label>
-                <select
-                  id="directory-language"
-                  value={language}
-                  onChange={(event) => handleLanguageChange(event.target.value)}
-                  className="h-12 w-full rounded-xl border border-border bg-card px-3 text-sm text-foreground shadow-sm outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/20"
-                >
-                  <option value="">Todos os idiomas</option>
-                  {allLanguages.map((item) => (
-                    <option key={item} value={item}>
-                      {item}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )}
-
-            {allSpecialties.length > 0 && (
-              <div className="space-y-3">
-                <span className="text-sm font-semibold uppercase tracking-wider text-primary-deep">
-                  Especialidades
-                </span>
-                <div className="flex flex-col gap-1.5 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
-                  {allSpecialties.map((specialty) => {
-                    const isSelected = selectedSpecialties.has(specialty);
-                    return (
-                      <label
-                        key={specialty}
-                        className="flex min-h-11 items-start gap-2.5 cursor-pointer group p-2 -ml-2 rounded-lg hover:bg-muted/50 transition-colors"
-                      >
-                        <div className="relative flex items-center justify-center mt-0.5">
-                          <input
-                            type="checkbox"
-                            className="peer sr-only"
-                            checked={isSelected}
-                            onChange={() => toggleSpecialty(specialty)}
-                          />
-                          <div className="size-4 rounded border border-border bg-card peer-checked:bg-primary peer-checked:border-primary transition-colors"></div>
-                          <svg
-                            className={`absolute size-3 text-primary-foreground pointer-events-none transition-opacity ${isSelected ? "opacity-100" : "opacity-0"}`}
-                            viewBox="0 0 14 14"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                            aria-hidden="true"
-                          >
-                            <path
-                              d="M11.6666 3.5L5.24992 9.91667L2.33325 7"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                        </div>
-                        <span
-                          className={`text-sm select-none ${isSelected ? "font-medium text-foreground" : "text-muted-foreground group-hover:text-foreground"}`}
-                        >
-                          {specialty}
-                        </span>
-                      </label>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
+            {renderSecondaryFilters("directory")}
           </aside>
 
           <div className="flex-1 min-w-0">
-            <div className="flex flex-col gap-4 mb-6 pb-4 border-b border-border/50">
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <h3 className="text-lg font-display text-primary-deep">
+            <div className="flex flex-col gap-3 mb-6 pb-4 border-b border-border/50">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <p
+                  aria-live="polite"
+                  aria-atomic="true"
+                  className="text-lg font-display text-primary-deep"
+                >
                   {isLoading
-                    ? "Buscando…"
-                    : `${filtered.length} mentorado${filtered.length !== 1 ? "s" : ""}`}
-                </h3>
+                    ? "Buscando profissionais…"
+                    : isError
+                      ? "Não foi possível carregar o diretório"
+                      : filtered.length === 0
+                        ? "Nenhum profissional encontrado"
+                        : `${countLabel} encontrado${filtered.length !== 1 ? "s" : ""}`}
+                </p>
 
-                {activeFilters.length > 0 && (
+                {hasAnyFilter && (
                   <button
                     type="button"
                     onClick={clearFilters}
-                    className="min-h-11 text-xs text-muted-foreground hover:text-primary transition-colors flex items-center gap-1 self-start sm:self-auto"
+                    className="min-h-11 rounded-lg px-2 text-sm text-primary-deep underline-offset-4 hover:underline flex items-center gap-1"
                   >
-                    <X className="size-3" /> Limpar filtros
+                    <X className="size-4" aria-hidden="true" /> Limpar filtros
                   </button>
                 )}
               </div>
 
-              {activeFilters.length > 0 && (
-                <div className="flex flex-wrap gap-2">
+              {(activeFilters.length > 0 || onlyFavorites) && (
+                <ul className="flex flex-wrap gap-2" aria-label="Filtros ativos">
+                  {onlyFavorites && (
+                    <li>
+                      <button
+                        type="button"
+                        onClick={() => setOnlyFavorites(false)}
+                        className="inline-flex min-h-11 items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 text-xs font-medium text-primary-deep"
+                        aria-label="Remover filtro: somente favoritos"
+                      >
+                        Somente favoritos
+                        <X className="size-3" aria-hidden="true" />
+                      </button>
+                    </li>
+                  )}
                   {activeFilters.map((filter) => (
-                    <button
-                      key={filter.key}
-                      type="button"
-                      onClick={filter.onRemove}
-                      className="inline-flex min-h-9 items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-medium text-primary-deep transition-colors hover:bg-primary/15"
-                    >
-                      {filter.label}
-                      <X className="size-3" aria-hidden="true" />
-                    </button>
+                    <li key={filter.key}>
+                      <button
+                        type="button"
+                        onClick={filter.onRemove}
+                        aria-label={`Remover filtro: ${filter.label}`}
+                        className="inline-flex min-h-11 items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 text-xs font-medium text-primary-deep transition-colors hover:bg-primary/15"
+                      >
+                        {filter.label}
+                        <X className="size-3" aria-hidden="true" />
+                      </button>
+                    </li>
                   ))}
-                </div>
+                </ul>
               )}
             </div>
 
             {isLoading ? (
               <div
-                className="grid gap-6"
-                style={{ gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 350px), 1fr))" }}
+                className="grid gap-4"
+                style={{ gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 340px), 1fr))" }}
+                aria-hidden="true"
               >
                 {[1, 2, 3, 4, 5, 6].map((item) => (
                   <div
                     key={item}
-                    className="h-[360px] bg-card rounded-2xl border border-border animate-pulse"
+                    className="h-[200px] bg-card rounded-2xl border border-border motion-safe:animate-pulse"
                   ></div>
                 ))}
               </div>
-            ) : filtered.length === 0 ? (
-              <div className="text-center py-24 bg-card/50 rounded-2xl border border-border/50">
+            ) : isError ? (
+              <div role="alert" className="text-center py-16 bg-card/60 rounded-2xl border border-border/50 px-6">
                 <p className="text-muted-foreground mb-4">
-                  Nenhum mentorado encontrado com os filtros atuais.
+                  Houve uma falha de conexão. Seus filtros foram mantidos.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => refetch()}
+                  disabled={isFetching}
+                  className="btn-primary"
+                >
+                  <RotateCcw className="size-4" aria-hidden="true" />
+                  {isFetching ? "Tentando…" : "Tentar novamente"}
+                </button>
+              </div>
+            ) : filtered.length === 0 ? (
+              <div className="text-center py-16 bg-card/50 rounded-2xl border border-border/50 px-6">
+                <p className="text-muted-foreground mb-4">
+                  {onlyFavorites && favorites.ids.length === 0
+                    ? "Você ainda não salvou favoritos neste dispositivo. Use o coração em um perfil para salvá-lo."
+                    : "Nenhum mentorado encontrado com os filtros atuais."}
                 </p>
                 <button
                   type="button"
                   onClick={clearFilters}
-                  className="min-h-11 px-6 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-xl hover:opacity-90 transition-opacity"
+                  className="btn-primary"
                 >
                   Limpar todos os filtros
                 </button>
               </div>
             ) : (
               <>
-                <div
+                <ul
                   ref={gridRef}
-                  className="grid gap-6"
+                  className="grid gap-4"
                   style={{
-                    gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 350px), 1fr))",
+                    gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 340px), 1fr))",
                   }}
+                  aria-label="Profissionais"
                 >
                   {visibleProfessionals.map((professional) => (
-                    <div key={professional.id} data-pro-card>
-                      <ProfessionalCard pro={professional} />
-                    </div>
+                    <li key={professional.id} data-pro-card>
+                      <ProfessionalCard
+                        pro={professional}
+                        isFavorite={favorites.has(professional.id)}
+                        onToggleFavorite={favorites.toggle}
+                      />
+                    </li>
                   ))}
-                </div>
+                </ul>
 
                 {remainingProfessionals > 0 && (
-                  <div className="mt-10 flex justify-center">
+                  <div className="mt-10 flex flex-col items-center gap-2">
+                    <p className="text-sm text-muted-foreground">
+                      Mostrando {visibleProfessionals.length} de {filtered.length}
+                    </p>
                     <button
                       type="button"
                       onClick={() => setVisibleCount((count) => count + LOAD_MORE_COUNT)}

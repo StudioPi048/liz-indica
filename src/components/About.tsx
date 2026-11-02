@@ -12,6 +12,16 @@ export function About() {
             acadêmico, metodologia própria e sensibilidade humana para capacitar profissionais em
             mais de oito países.
           </p>
+          <div className="mt-10 max-w-reading rounded-2xl border border-[var(--color-gold)]/30 p-6">
+            <h3 className="font-display text-xl text-[var(--color-parchment)]">
+              O que significa “indicado pelo Instituto LIZ”
+            </h3>
+            <p className="mt-3 text-sm leading-relaxed text-[var(--color-parchment)]/80">
+              Os profissionais deste diretório passaram pela formação do Instituto LIZ e integram
+              sua rede de mentorados. Cada perfil traz as informações enviadas pelo próprio
+              profissional; modalidade, valores e agenda são combinados diretamente com ele(a).
+            </p>
+          </div>
         </div>
         <ul className="space-y-6">
           {[

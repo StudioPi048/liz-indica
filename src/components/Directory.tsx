@@ -1,3 +1,4 @@
+import rootsImage from "@/assets/roots-soft.webp";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { ProfessionalCard } from "./ProfessionalCard";
@@ -583,13 +584,11 @@ export function Directory() {
       <div className="absolute inset-0 bg-noise opacity-30 mix-blend-overlay pointer-events-none z-0"></div>
 
       <div className="max-w-7xl mx-auto relative z-10">
-        <header className="mb-6 md:mb-10 max-w-3xl">
-          <span className="label-mono text-[var(--color-terracotta)]">
-            Diretório oficial · Mentorados do Instituto LIZ
-          </span>
+        <div className="mb-6 flex items-start justify-between gap-6 md:mb-10">
+        <header className="max-w-3xl">
           <h2
             id="diretorio-titulo"
-            className="font-display text-3xl md:text-5xl mt-3 mb-4 text-balance text-[var(--color-ink)]"
+            className="font-display text-3xl md:text-5xl mb-4 text-balance text-[var(--color-ink)]"
           >
             Conheça as pessoas da rede
           </h2>
@@ -597,7 +596,28 @@ export function Directory() {
             Todos os profissionais aqui presentes passaram pela formação do Instituto LIZ e integram
             nossa rede de especialistas comprometidos com a ética e a excelência.
           </p>
+          <p className="mt-3 text-sm font-medium text-[var(--color-terracotta)]">
+            Diretório oficial · Mentorados do Instituto LIZ
+          </p>
         </header>
+          {/* Raízes: narrativa visual da linhagem, ao lado do título, nunca sob texto/controles */}
+          <div aria-hidden="true" className="isolate w-24 shrink-0 bg-[var(--color-parchment)] sm:w-36 md:w-56">
+          <img
+            src={rootsImage}
+            alt=""
+            aria-hidden="true"
+            width={640}
+            height={640}
+            loading="lazy"
+            decoding="async"
+            className="block w-full mix-blend-multiply"
+            style={{
+              maskImage: "radial-gradient(closest-side, #000 62%, transparent 100%)",
+              WebkitMaskImage: "radial-gradient(closest-side, #000 62%, transparent 100%)",
+            }}
+          />
+          </div>
+        </div>
 
         {/* Primary controls — always visible on every viewport */}
         <div

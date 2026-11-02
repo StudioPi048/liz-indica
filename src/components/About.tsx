@@ -1,17 +1,35 @@
+import instituteImage from "@/assets/hero-bg2.webp";
+
 export function About() {
   return (
-    <section className="relative z-10 border-y border-[var(--color-gold)]/45 bg-[var(--color-ink)] px-6 py-20 text-[var(--color-parchment)] md:py-28">
-      <div className="mx-auto mb-14 max-w-7xl border-b border-[var(--color-gold)]/25 pb-12 md:mb-20 md:pb-16">
+    <section
+      aria-labelledby="instituto-titulo"
+      className="relative z-10 border-y border-[var(--color-gold)]/45 bg-[var(--color-ink)] px-6 py-20 text-[var(--color-parchment)] md:py-28"
+    >
+      <div className="mx-auto mb-14 grid max-w-7xl items-center gap-8 border-b border-[var(--color-gold)]/25 pb-12 md:mb-20 md:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)] md:gap-12 md:pb-16">
         <p className="font-display text-3xl leading-[1.1] text-balance md:text-5xl">
           A Maior Rede de{" "}
           <em className="font-normal italic text-[var(--color-gold-soft)]">Psicogenealogistas</em> do
           Mundo
         </p>
+        <figure className="overflow-hidden rounded-2xl border border-[var(--color-gold)]/30">
+          <img
+            src={instituteImage}
+            alt="Corredor de arquivo com fotografias e cartas de família ligadas por fios dourados"
+            width={1920}
+            height={1071}
+            loading="lazy"
+            decoding="async"
+            className="block h-auto w-full"
+          />
+          <figcaption className="px-4 py-3 text-sm text-[var(--color-parchment)]/75">
+            O Instituto LIZ
+          </figcaption>
+        </figure>
       </div>
       <div className="mx-auto grid max-w-7xl items-start gap-16 md:grid-cols-2">
         <div>
-          <span className="label-mono text-[var(--color-gold-soft)]">O Instituto LIZ</span>
-          <h2 className="mt-3 mb-8 font-display text-4xl leading-tight md:text-5xl">
+          <h2 id="instituto-titulo" className="mb-8 font-display text-4xl leading-tight md:text-5xl">
             A autoridade por trás de cada indicação
           </h2>
           <p className="max-w-reading text-lg leading-relaxed text-[var(--color-parchment)]/80">

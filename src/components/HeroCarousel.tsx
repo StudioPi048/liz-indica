@@ -138,7 +138,7 @@ export function HeroCarousel({ people, className = "" }: { people: Professional[
                         key={p.id}
                         {...getResponsivePhotoAttrs(p.photo_url, "(min-width: 1024px) 200px, 200px")}
                         alt={`Foto de ${p.name}`}
-                        className="block h-full w-auto max-w-[52vw] lg:h-auto lg:max-h-full lg:w-full lg:max-w-full"
+                        className="mx-auto block h-full w-auto max-w-[52vw] object-contain object-center lg:h-auto lg:max-h-full lg:w-full lg:max-w-full"
                         decoding="async"
                         loading={slot === 0 ? "eager" : "lazy"}
                       />

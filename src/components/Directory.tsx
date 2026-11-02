@@ -19,7 +19,6 @@ import {
 } from "@/components/ui/sheet";
 import { useFavorites } from "@/hooks/use-favorites";
 import { useIsMobile } from "@/hooks/use-mobile";
-import rootsBg from "@/assets/roots-soft.webp";
 import { gsap, prefersReducedMotion } from "@/hooks/use-gsap";
 
 type Modality = "all" | "online" | "in_person";
@@ -582,13 +581,6 @@ export function Directory() {
       className="relative z-10 border-t border-[var(--color-gold)]/45 py-12 md:py-20 px-4 sm:px-8 lg:px-12 bg-[var(--color-parchment)] scroll-mt-20 overflow-hidden"
     >
       <div className="absolute inset-0 bg-noise opacity-30 mix-blend-overlay pointer-events-none z-0"></div>
-      <img
-        src={rootsBg}
-        hidden
-        alt=""
-        className="absolute top-0 right-[-10%] w-[800px] opacity-[0.08] mix-blend-multiply pointer-events-none rotate-[15deg] z-0"
-        aria-hidden="true"
-      />
 
       <div className="max-w-7xl mx-auto relative z-10">
         <header className="mb-6 md:mb-10 max-w-3xl">
@@ -679,7 +671,7 @@ export function Directory() {
               aria-pressed={onlyFavorites}
               className={`inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl border px-4 text-sm font-semibold lg:flex-none ${
                 onlyFavorites
-                  ? "border-[var(--color-terracotta)] bg-[var(--color-terracotta)] text-white"
+                  ? "border-[var(--color-terracotta)] bg-[var(--color-terracotta)] text-[var(--color-parchment)]"
                   : "border-border bg-background text-primary-deep"
               }`}
             >
@@ -826,10 +818,7 @@ export function Directory() {
               <>
                 <ul
                   ref={gridRef}
-                  className="grid gap-4"
-                  style={{
-                    gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 340px), 1fr))",
-                  }}
+                  className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
                   aria-label="Profissionais"
                 >
                   {visibleProfessionals.map((professional) => (

@@ -5,6 +5,7 @@ import { gsap, prefersReducedMotion } from "@/hooks/use-gsap";
 
 export function Hero() {
   const [heroQuery, setHeroQuery] = useState("");
+  const [heroModality, setHeroModality] = useState<"all" | "online" | "in_person">("all");
   const rootRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
@@ -29,7 +30,7 @@ export function Hero() {
     return () => ctx.revert();
   }, []);
 
-  const applyDirectorySearch = (term: string) => {
+  const applyDirectorySearch = (term: string, mode: "all" | "online" | "in_person" = heroModality) => {
     const query = term.trim();
     const params = new URLSearchParams(window.location.search);
     [
@@ -48,6 +49,8 @@ export function Hero() {
 
     if (query) params.set("q", query);
     else params.delete("q");
+    if (mode === "online") params.set("modalidade", "online");
+    if (mode === "in_person") params.set("modalidade", "presencial");
 
     const search = params.toString();
     window.history.replaceState(
@@ -56,9 +59,11 @@ export function Hero() {
       `${window.location.pathname}${search ? `?${search}` : ""}#diretorio`,
     );
     window.dispatchEvent(
-      new CustomEvent("liz-directory-search", { detail: { query, resetFilters: true } }),
+      new CustomEvent("liz-directory-search", { detail: { query, modality: mode, resetFilters: true } }),
     );
-    document.getElementById("diretorio")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    const target = document.getElementById("diretorio");
+    target?.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth", block: "start" });
+    window.setTimeout(() => document.getElementById("directory-search")?.focus({ preventScroll: true }), 50);
   };
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -69,7 +74,7 @@ export function Hero() {
   return (
     <section
       ref={rootRef}
-      className="relative z-10 min-h-[90vh] flex items-center pt-24 pb-20 overflow-hidden bg-[var(--color-ink)] border-b border-[var(--color-gold)]/70"
+      className="relative z-10 md:min-h-[90vh] flex items-center pt-24 pb-12 md:pb-20 overflow-hidden bg-[var(--color-ink)] border-b border-[var(--color-gold)]/70"
     >
       {/* Background Image (Immersive) — parallax removed for calmer feel */}
       <div className="absolute inset-0 w-full h-full z-0">
@@ -92,15 +97,15 @@ export function Hero() {
         <div className="max-w-2xl flex flex-col justify-center">
           <span
             data-hero-eyebrow
-            className="inline-flex items-center gap-3 font-mono text-[10px] md:text-xs uppercase tracking-[0.3em] text-white/80 mb-8 bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/20 shadow-sm w-fit"
+            className="inline-flex items-center gap-3 font-mono text-[10px] md:text-xs uppercase tracking-[0.3em] text-white/80 mb-5 md:mb-8 bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/20 shadow-sm w-fit"
           >
-            <span className="size-1.5 rounded-full bg-white animate-pulse" />
+            <span className="size-1.5 rounded-full bg-white motion-safe:animate-pulse" />
             Rede oficial Instituto LIZ
           </span>
 
           <h1
             data-hero-title
-            className="font-display text-4xl sm:text-5xl md:text-7xl lg:text-[5rem] leading-[1.05] mb-6 md:mb-8 text-balance text-white drop-shadow-lg"
+            className="font-display text-[2.1rem] sm:text-5xl md:text-7xl lg:text-[5rem] leading-[1.05] mb-4 md:mb-8 text-balance text-white drop-shadow-lg"
           >
             <span className="block">A Maior Rede de</span>
             <span className="block">
@@ -113,7 +118,7 @@ export function Hero() {
 
           <p
             data-hero-lede
-            className="text-lg md:text-xl text-white/80 mb-10 leading-relaxed text-pretty font-light max-w-[45ch]"
+            className="order-last md:order-none text-base md:text-xl text-white/80 mt-6 md:mt-0 mb-0 md:mb-10 leading-relaxed text-pretty font-light max-w-[45ch]"
           >
             Encontre profissionais indicados pelo Instituto LIZ para atendimentos online ou
             presenciais — comprometidos com a ética, o estudo contínuo e a excelência no
@@ -125,6 +130,9 @@ export function Hero() {
             onSubmit={handleSubmit}
             className="mb-5 max-w-2xl rounded-2xl border border-white/20 bg-white/95 p-2 shadow-2xl shadow-black/30 backdrop-blur-md"
           >
+            <p className="px-2 pb-2 pt-1 font-display text-lg text-[var(--color-ink)]" id="hero-search-title">
+              Encontre um(a) psicogenealogista
+            </p>
             <label htmlFor="hero-directory-search" className="sr-only">
               Buscar psicogenealogista por nome, cidade ou país
             </label>
@@ -142,14 +150,41 @@ export function Hero() {
               </div>
               <button
                 type="submit"
-                className="h-13 rounded-xl bg-primary px-6 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-deep focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                className="h-13 min-h-12 rounded-xl bg-[var(--color-ink)] text-[var(--color-parchment)] px-6 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-deep focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
               >
                 Buscar
               </button>
             </div>
+            <div
+              role="group"
+              aria-label="Modalidade de atendimento"
+              className="mt-2 grid grid-cols-3 gap-1 rounded-xl bg-muted/70 p-1"
+            >
+              {(
+                [
+                  ["all", "Todos"],
+                  ["online", "Online"],
+                  ["in_person", "Presencial"],
+                ] as const
+              ).map(([value, label]) => (
+                <button
+                  key={value}
+                  type="button"
+                  aria-pressed={heroModality === value}
+                  onClick={() => setHeroModality(value)}
+                  className={`min-h-11 rounded-lg text-sm font-medium transition-colors ${
+                    heroModality === value
+                      ? "bg-[var(--color-ink)] text-[var(--color-parchment)]"
+                      : "text-foreground/75 hover:text-foreground"
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
           </form>
 
-          <div className="mb-8 flex flex-wrap gap-2">
+          <div className="mb-6 md:mb-8 flex flex-wrap gap-2">
             {["Online", "São Paulo", "Portugal"].map((term) => (
               <button
                 key={term}
@@ -157,9 +192,9 @@ export function Hero() {
                 type="button"
                 onClick={() => {
                   setHeroQuery(term);
-                  applyDirectorySearch(term);
+                  applyDirectorySearch(term, "all");
                 }}
-                className="rounded-full border border-white/20 bg-white/10 px-3.5 py-2 text-xs font-medium text-white/85 backdrop-blur-sm transition-colors hover:bg-white/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                className="rounded-full border border-white/20 bg-white/10 min-h-11 px-4 py-2 text-sm font-medium text-white/90 backdrop-blur-sm transition-colors hover:bg-white/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
               >
                 {term}
               </button>

@@ -1,4 +1,6 @@
 import { useEffect, useRef } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { fetchProfessionals } from "@/lib/professionals-api";
 import { gsap, ScrollTrigger, prefersReducedMotion } from "@/hooks/use-gsap";
 
 type Stat = { target: number; suffix?: string; label: string };
@@ -12,6 +14,11 @@ const stats: Stat[] = [
 ];
 
 export function Stats() {
+  const { data: professionals } = useQuery({
+    queryKey: ["professionals", "public"],
+    queryFn: () => fetchProfessionals(),
+    staleTime: 1000 * 60 * 5,
+  });
   const sectionRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
@@ -27,6 +34,7 @@ export function Stats() {
         const suffix = node.dataset.statSuffix ?? "";
         const counter = { value: 0 };
 
+        node.textContent = `0${suffix}`;
         gsap.to(counter, {
           value: target,
           duration: 1.8,
@@ -62,6 +70,11 @@ export function Stats() {
       ref={sectionRef}
       className="relative z-10 border-y border-[var(--color-gold)]/45 bg-[var(--color-parchment)] py-14"
     >
+      <div className="max-w-7xl mx-auto px-6">
+        <h2 className="label-mono mb-6 text-center md:text-left">
+          Alcance institucional do Instituto LIZ
+        </h2>
+      </div>
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-5 gap-8">
         {stats.map((s) => (
           <div key={s.label} data-stat-item className="text-center md:text-left">
@@ -70,7 +83,7 @@ export function Stats() {
               data-stat-suffix={s.suffix ?? ""}
               className="font-display text-4xl md:text-5xl text-[var(--color-ink)] mb-1 tabular-nums"
             >
-              {`0${s.suffix ?? ""}`}
+              {`${s.target}${s.suffix ?? ""}`}
             </div>
             <div className="label-mono">
               {s.label}
@@ -78,6 +91,14 @@ export function Stats() {
           </div>
         ))}
       </div>
+      <p className="max-w-7xl mx-auto mt-8 px-6 text-center text-sm text-[var(--color-sepia)] md:text-left">
+        Números da rede e da formação do Instituto, não da listagem abaixo.{" "}
+        {professionals ? (
+          <a href="#diretorio" className="font-semibold text-[var(--color-ink)] underline underline-offset-4">
+            Neste diretório agora: {professionals.length} perfis publicados.
+          </a>
+        ) : null}
+      </p>
     </section>
   );
 }
